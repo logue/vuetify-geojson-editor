@@ -7,7 +7,7 @@ import * as directives from 'vuetify/directives';
 // import { aliases, mdi } from 'vuetify/iconsets/mdi-svg';
 import * as labsComponents from 'vuetify/labs/components';
 // Translations provided by Vuetify
-import { en } from 'vuetify/locale';
+import { en, ja } from 'vuetify/locale';
 
 // Misc
 import { loadFonts } from '@/plugins/webfontloader';
@@ -50,9 +50,9 @@ let vuetifyConfig: VuetifyOptions = {
   // Internationalization (i18n)
   // https://vuetifyjs.com/en/features/internationalization/#internationalization-i18n
   locale: {
-    locale: 'en',
+    locale: 'ja',
     fallback: 'en',
-    messages: { en }
+    messages: { ja, en }
   },
   // Theme
   // https://vuetifyjs.com/en/features/theme/

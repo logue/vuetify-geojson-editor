@@ -7,25 +7,43 @@ export default defineStore(
   () => {
     /** Dark Theme mode */
     const theme: Ref<boolean> = ref(window.matchMedia('(prefers-color-scheme: dark)').matches);
-
+    /** Language */
     const locale: Ref<string> = ref(window.navigator.languages[0] ?? window.navigator.language);
+    /** Fullscreen */
+    const fullscreen: Ref<boolean> = ref(false);
+    /** Show number to feature */
+    const featureNumberVisibility: Ref<boolean> = ref(false);
 
     /** Toggle Dark/Light mode */
-    const toggleTheme = () => (theme.value = !theme.value);
-    /**
-     * Set Locale.
-     *
-     * @param locale - Locale
-     */
-    const setLocale = (l: string) => (locale.value = l);
+    function toggleTheme() {
+      theme.value = !theme.value;
+    }
+    /** Toggle Fullscreen */
+    function toggleFullscreen() {
+      fullscreen.value = !fullscreen.value;
+    }
+    /** Set Locale. */
+    function setLocale(l: string) {
+      locale.value = l;
+    }
+    /** Set visibility feature to number */
+    function toggleFeatureNumberVisibility() {
+      featureNumberVisibility.value = !featureNumberVisibility.value;
+    }
 
-    return { theme, toggleTheme, setLocale };
+    return {
+      theme,
+      featureNumberVisibility,
+      toggleTheme,
+      toggleFullscreen,
+      setLocale,
+      toggleFeatureNumberVisibility
+    };
   },
   {
     // Data persistence destination
     persist: {
-      key: import.meta.env.VITE_APP_WEBSTORAGE_NAMESPACE ?? 'vuetify',
-      storage: window.sessionStorage
+      storage: window.localStorage
     }
   }
 );

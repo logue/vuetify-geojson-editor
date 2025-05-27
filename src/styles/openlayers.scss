@@ -1,0 +1,512 @@
+@use 'vuetify/settings';
+@use 'sass:map';
+@import 'ol/ol.css';
+@import 'ol-ext/dist/ol-ext.css';
+
+/** マップコンポーネント */
+.map-component {
+  width: 100%;
+  height: 100%;
+}
+
+/** イーズニングをVuetifyに合わせる */
+.ol-control,
+.ol-overlay,
+.ol-gridreference li {
+  transition: settings.$standard-easing;
+}
+
+/** ツールチップ用オーバーレイ */
+.ol-tooltip {
+  background: settings.$tooltip-background-color;
+  color: settings.$tooltip-text-color;
+  border-radius: settings.$tooltip-border-radius;
+  font-size: settings.$tooltip-font-size;
+  line-height: settings.$tooltip-line-height;
+  display: inline-block;
+  padding: settings.$tooltip-padding;
+  text-transform: initial;
+  min-width: auto !important;
+  width: auto;
+  opacity: 1;
+  pointer-events: none;
+  transition-property: opacity, transform;
+
+  &[class*='enter-active'] {
+    transition-timing-function: settings.$decelerated-easing;
+    transition-duration: settings.$tooltip-transition-enter-duration;
+  }
+
+  &[class*='leave-active'] {
+    transition-timing-function: settings.$accelerated-easing;
+    transition-duration: settings.$tooltip-transition-leave-duration;
+  }
+  margin-top: 3rem;
+}
+
+/** 各種ボタンの位置 */
+.ol-control {
+  /** ボタンのアイコンサイズ */
+  button .v-icon {
+    font-size: 1.25rem;
+  }
+
+  // 左側に設置
+
+  /** 地図切り替え */
+  &.mapselect {
+    top: 0.5em;
+    left: 2.5em;
+  }
+
+  /** マーカーの表示切り替え */
+  &.marker {
+    top: 0.5em;
+    left: 4.5em;
+  }
+
+  /** 階層切替 */
+  &.level {
+    top: 0.5em;
+    left: 6.5em;
+  }
+
+  /** グリッドの表示切替 */
+  &.grid {
+    top: 0.5em;
+    left: 8.5em;
+  }
+
+  // 右側に設置
+
+  /** 索引 */
+  &.search {
+    top: 0.5em;
+    right: 0.5em;
+  }
+
+  /** カテゴリ */
+  &.category {
+    top: 2.5em;
+    right: 0.5em;
+  }
+}
+
+/** オーバーレイ */
+.ol-overlay {
+  /** サイドメニューのポップアップ */
+  &.side-menu {
+    right: 0;
+    left: auto;
+    overflow-y: scroll;
+    width: 16rem;
+    z-index: 10;
+    padding: 3rem 0.5rem 0.5rem;
+  }
+}
+
+/** ol-extのポップアップ位置とデザイン */
+.ol-popup {
+  min-width: 50vh;
+  &.v-card {
+    background-color: transparent;
+  }
+
+  > div {
+    border-color: map.get(settings.$light-blue, 'base');
+
+    .anchor {
+      z-index: 100;
+    }
+  }
+
+  &.border__ {
+    &red {
+      > div {
+        border-color: map.get(settings.$red, 'base');
+      }
+
+      .anchor {
+        color: map.get(settings.$red, 'base');
+      }
+    }
+
+    &pink {
+      > div {
+        border-color: map.get(settings.$pink, 'base');
+      }
+
+      .anchor {
+        color: map.get(settings.$pink, 'base');
+      }
+    }
+
+    &purple {
+      > div {
+        border-color: map.get(settings.$purple, 'base');
+      }
+
+      .anchor {
+        color: map.get(settings.$purple, 'base');
+      }
+    }
+
+    &deep-purple {
+      > div {
+        border-color: map.get(settings.$deep-purple, 'base');
+      }
+
+      .anchor {
+        color: map.get(settings.$deep-purple, 'base');
+      }
+    }
+
+    &indigo {
+      > div {
+        border-color: map.get(settings.$indigo, 'base');
+      }
+
+      .anchor {
+        color: map.get(settings.$indigo, 'base');
+      }
+    }
+
+    &blue {
+      > div {
+        border-color: map.get(settings.$blue, 'base');
+      }
+
+      .anchor {
+        color: map.get(settings.$blue, 'base');
+      }
+    }
+
+    &light-blue {
+      > div {
+        border-color: map.get(settings.$light-blue, 'base');
+      }
+
+      .anchor {
+        color: map.get(settings.$light-blue, 'base');
+      }
+    }
+
+    &cyan {
+      > div {
+        border-color: map.get(settings.$cyan, 'base');
+      }
+
+      .anchor {
+        color: map.get(settings.$cyan, 'base');
+      }
+    }
+
+    &teal {
+      > div {
+        border-color: map.get(settings.$teal, 'base');
+      }
+
+      .anchor {
+        color: map.get(settings.$teal, 'base');
+      }
+    }
+
+    &green {
+      > div {
+        border-color: map.get(settings.$green, 'base');
+      }
+
+      .anchor {
+        color: map.get(settings.$green, 'base');
+      }
+    }
+
+    &light-green {
+      > div {
+        border-color: map.get(settings.$light-green, 'base');
+      }
+
+      .anchor {
+        color: map.get(settings.$light-green, 'base');
+      }
+    }
+
+    &lime {
+      > div {
+        border-color: map.get(settings.$lime, 'base');
+      }
+
+      .anchor {
+        color: map.get(settings.$lime, 'base');
+      }
+    }
+
+    &yellow {
+      > div {
+        border-color: map.get(settings.$yellow, 'base');
+      }
+
+      .anchor {
+        color: map.get(settings.$yellow, 'base');
+      }
+    }
+
+    &amber {
+      > div {
+        border-color: map.get(settings.$amber, 'base');
+      }
+
+      .anchor {
+        color: map.get(settings.$amber, 'base');
+      }
+    }
+
+    &orange {
+      > div {
+        border-color: map.get(settings.$orange, 'base');
+      }
+
+      .anchor {
+        color: map.get(settings.$orange, 'base');
+      }
+    }
+
+    &deep-orange {
+      > div {
+        border-color: map.get(settings.$deep-orange, 'base');
+      }
+
+      .anchor {
+        color: map.get(settings.$deep-orange, 'base');
+      }
+    }
+
+    &brown {
+      > div {
+        border-color: map.get(settings.$brown, 'base');
+      }
+
+      .anchor {
+        color: map.get(settings.$brown, 'base');
+      }
+    }
+
+    &blue-grey {
+      > div {
+        border-color: map.get(settings.$blue-grey, 'base');
+      }
+
+      .anchor {
+        color: map.get(settings.$blue-grey, 'base');
+      }
+    }
+
+    &grey {
+      > div {
+        border-color: map.get(settings.$grey, 'base');
+      }
+
+      .anchor {
+        color: map.get(settings.$grey, 'base');
+      }
+    }
+  }
+}
+
+.v-theme-- {
+  /** ダークモード */
+  &dark {
+    .ol-attribution ul {
+      color: map.get(settings.$shades, 'white');
+      text-shadow: 0 0 2px map.get(settings.$shades, 'black');
+
+      a {
+        color: map.get(settings.$blue, 'lighten-2');
+      }
+    }
+
+    .ol-control {
+      background-color: rgba(map.get(settings.$grey, 'darken-4'), 0.5);
+
+      &:hover {
+        background-color: rgba(map.get(settings.$grey, 'darken-4'), 0.75);
+      }
+
+      button {
+        color: map.get(settings.$blue, 'lighten-5');
+        background-color: rgba(map.get(settings.$blue, 'lighten-1'), 0.5);
+
+        &:hover {
+          background-color: rgba(map.get(settings.$blue, 'lighten-1'), 0.75);
+        }
+      }
+
+      .ol-toggle.ol-active {
+        button {
+          background-color: rgba(map.get(settings.$green, 'lighten-1'), 0.5);
+
+          &:hover {
+            background-color: rgba(map.get(settings.$green, 'lighten-1'), 0.75);
+          }
+        }
+      }
+
+      &.ol-progress-bar {
+        background-color: transparent;
+
+        > .ol-bar {
+          background-color: rgba(map.get(settings.$blue, 'lighten-1'), 0.75);
+        }
+      }
+    }
+
+    .ol-overlay {
+      background-color: rgba(map.get(settings.$grey, 'darken-4'), 0.75);
+      color: map.get(settings.$grey, 'darken-4');
+
+      .ol-closebox {
+        color: map.get(settings.$blue, 'lighten-4');
+      }
+    }
+
+    .ol-gridreference {
+      color: map.get(settings.$grey, 'lighten-3');
+      background-color: rgba(map.get(settings.$grey, 'darken-1'), 0.5);
+
+      li {
+        &:hover {
+          background-color: rgba(map.get(settings.$grey, 'darken-4'), 0.75);
+        }
+
+        &.ol-title {
+          background-color: rgba(map.get(settings.$blue, 'darken-1'), 0.75);
+          color: map.get(settings.$grey, 'lighten-2');
+
+          &:hover {
+            background-color: map.get(settings.$blue, 'darken-3');
+          }
+        }
+
+        .ol-ref {
+          color: map.get(settings.$blue, 'lighten-3');
+        }
+      }
+    }
+
+    .ol-ext-dialog > * {
+      background-color: map.get(settings.$grey, 'darken-4');
+    }
+
+    .ol-popup.default {
+      > div {
+        background-color: map.get(settings.$grey, 'darken-4');
+      }
+
+      .anchor::after {
+        border-color: map.get(settings.$grey, 'darken-4') transparent;
+      }
+
+      .closeBox {
+        background-color: rgba(map.get(settings.$blue, 'darken-4'), 0.75);
+
+        &:hover {
+          background-color: map.get(settings.$blue, 'darken-4');
+        }
+      }
+    }
+  }
+
+  /** ライトモード */
+  &light {
+    .ol-attribution ul {
+      color: map.get(settings.$shades, 'black');
+      text-shadow: 0 0 2px map.get(settings.$shades, 'white');
+
+      a {
+        color: map.get(settings.$blue, 'darken-2');
+      }
+    }
+
+    .ol-control {
+      background-color: rgba(map.get(settings.$grey, 'lighten-4'), 0.5);
+
+      &:hover {
+        background-color: rgba(map.get(settings.$grey, 'lighten-5'), 0.75);
+      }
+
+      button {
+        color: map.get(settings.$blue, 'lighten-5');
+        background-color: rgba(map.get(settings.$blue, 'darken-4'), 0.5);
+
+        &:hover {
+          background-color: rgba(map.get(settings.$blue, 'darken-4'), 0.75);
+        }
+      }
+
+      &.ol-toggle.ol-active {
+        button {
+          background-color: rgba(map.get(settings.$green, 'darken-4'), 0.5);
+
+          &:hover {
+            background-color: rgba(map.get(settings.$green, 'darken-4'), 0.75);
+          }
+        }
+      }
+
+      &.ol-progress-bar {
+        background-color: transparent;
+
+        > .ol-bar {
+          background-color: rgba(map.get(settings.$blue, 'darken-1'), 0.75);
+        }
+      }
+    }
+
+    .ol-ext-dialog > * {
+      background-color: map.get(settings.$grey, 'lighten-4');
+    }
+
+    .ol-overlay {
+      background-color: rgba(map.get(settings.$grey, 'lighten-1'), 0.75);
+      color: map.get(settings.$shades, 'black');
+
+      .ol-closebox {
+        color: map.get(settings.$blue, 'darken-4');
+      }
+    }
+
+    .ol-gridreference {
+      color: map.get(settings.$grey, 'darken-3');
+      background-color: rgba(map.get(settings.$grey, 'lighten-4'), 0.5);
+
+      li {
+        &:hover {
+          background-color: rgba(map.get(settings.$grey, 'lighten-4'), 0.75);
+        }
+
+        &.ol-title {
+          background-color: rgba(map.get(settings.$blue, 'lighten-1'), 0.75);
+          color: map.get(settings.$grey, 'darken-2');
+
+          &:hover {
+            background-color: map.get(settings.$blue, 'lighten-3');
+          }
+        }
+
+        .ol-ref {
+          color: map.get(settings.$blue, 'darken-3');
+        }
+      }
+    }
+
+    .ol-popup.default {
+      > div {
+        background-color: map.get(settings.$grey, 'lighten-4');
+      }
+
+      .anchor::after {
+        border-color: map.get(settings.$grey, 'lighten-4') transparent;
+      }
+    }
+  }
+}

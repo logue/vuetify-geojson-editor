@@ -29,13 +29,7 @@ export async function loadFonts(): Promise<void> {
           families: [
             'Roboto:100,300,400,500,700,900',
             'Roboto+Mono:100,300,400,500,700,900',
-            /*
-            // if you use Noto Sans, replace bellow lines.
-            'Noto+Sans:100,300,400,500,700,900',
             'Noto+Sans+JP:100,300,400,500,700,900',
-            'Noto+Sans+KR:100,300,400,500,700,900',
-            'Noto+Sans+Mono:100,300,400,500,700,900',
-            */
 
             // Emoji Fix
             // (Only put `display=swap` on the last line.)

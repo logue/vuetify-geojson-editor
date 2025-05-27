@@ -64,6 +64,7 @@ export default defineConfigWithVueTs(
     },
     rules: {
       'no-unused-vars': 'off',
+      '@typescript-eslint/no-explicit-any': 'warn',
       // const lines: string[] = []; style
       '@typescript-eslint/array-type': [
         'error',

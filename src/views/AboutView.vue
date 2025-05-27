@@ -1,16 +1,9 @@
-<script lang="ts" setup>
-import { useGlobal } from '@/store';
-
-/** Global Store */
-const globalStore = useGlobal();
-
-/** Display snackbar */
-const showSnackbar = (message: string) => globalStore.setMessage(message);
-</script>
-
 <template>
   <v-container class="about">
-    <h1>This is an about page</h1>
-    <v-btn @click="showSnackbar('Test')">Snackbar test</v-btn>
+    <h1>Vuetify GeoJson Editor</h1>
+    <p>
+      This is a simple Vue.js application that allows users to edit GeoJSON data using Vuetify
+      components. It provides a user-friendly interface for viewing and modifying geographical data.
+    </p>
   </v-container>
 </template>
