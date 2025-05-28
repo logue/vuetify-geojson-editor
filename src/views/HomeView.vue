@@ -28,6 +28,7 @@ import type { SelectEvent } from 'ol/interaction/Select';
 
 // コンポーネント
 import MapComponent from '@/components/Map/MapComponent.vue';
+import MapContextMenu from '@/components/Map/MapContextMenu.vue';
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue';
 import PropertiesEditorModal from '@/components/Modals/GeoJsonEditor/PropertiesEditorModal.vue';
 import SourceModal from '@/components/Modals/GeoJsonEditor/SourceModal.vue';
@@ -48,6 +49,8 @@ const locationMarkerStore = useLocationMarker();
 
 /** マップ */
 const mapComponent: Ref<InstanceType<typeof MapComponent> | undefined> = ref();
+/** 確認モーダル */
+const mapContextMenu: Ref<InstanceType<typeof MapContextMenu> | undefined> = ref();
 /** プロパティ編集モーダル */
 const propertiesModal: Ref<InstanceType<typeof PropertiesEditorModal> | undefined> = ref();
 
@@ -447,6 +450,18 @@ onMounted(async () => {
   loading.value = false;
 });
 
+const contextmenu = (e: MouseEvent) => {
+  /** マップのインスタンス */
+  const map = mapComponent.value?.map;
+  if (!map) {
+    return;
+  }
+  console.log('contextmenu', e);
+
+  // コンテキストメニューを表示
+  mapContextMenu.value?.show(e);
+};
+
 /** DOM更新時 */
 onUpdated(() => {
   /** マップのインスタンス */
@@ -610,6 +625,8 @@ onBeforeRouteUpdate(async (to, from, next) => {
       <source-modal ref="codeModal" @close="redraw" />
     </v-toolbar>
     <!-- マップ -->
-    <map-component ref="mapComponent" class="my-0" />
+    <map-component ref="mapComponent" @contextmenu="contextmenu" />
+    <!-- コンテキストメニュー -->
+    <map-context-menu ref="mapContextMenu" :map="mapComponent?.map" />
   </v-container>
 </template>

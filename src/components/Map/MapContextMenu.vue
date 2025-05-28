@@ -13,7 +13,7 @@ import type { Size } from 'ol/size';
 /** プロップ */
 const props = defineProps({
   /** マップ */
-  map: { type: Object as PropType<Map>, default: undefined }
+  map: { type: Object as PropType<Map | undefined>, default: undefined }
 });
 
 /** Route */
@@ -38,8 +38,8 @@ const copyLink = async (): Promise<void> => {
   /** パス */
   const path = router.resolve({
     query: {
-      x: Math.round(coordinate.value[1]).toString(),
-      y: Math.round(coordinate.value[0]).toString(),
+      x: coordinate.value[1].toFixed(6).toString(),
+      y: coordinate.value[0].toFixed(6).toString(),
       zoom: Math.round(zoom.value).toString()
     }
   });
@@ -156,30 +156,36 @@ defineExpose({ show, hide, position, coordinate });
 
 <template>
   <v-menu v-model="visibility" absolute :style="`top: ${position.y}px; left: ${position.x}px`">
-    <v-list dencity="compact">
+    <v-list density="compact">
       <!-- 座標やズーム値 -->
       <v-list-subheader>
         <v-icon size="small">mdi-crosshairs</v-icon>
         Coordinate
         <v-icon size="small">mdi-arrow-left-right</v-icon>
-        {{ coordinate[0] }},
+        {{ coordinate[0].toFixed(6) }},
         <v-icon size="small">mdi-arrow-up-down</v-icon>
-        {{ coordinate[1] }}
+        {{ coordinate[1].toFixed(6) }}
         &nbsp;
         <v-icon size="small">mdi-magnify</v-icon>
-        Zoom: {{ zoom }}
+        Zoom: {{ Math.round(zoom) }}
       </v-list-subheader>
       <!-- メニュー項目 -->
-      <v-list-item prepend-icon="mdi-link-variant" @click="copyLink">
-        <v-list-item-title>Copy link to this coordinate</v-list-item-title>
-      </v-list-item>
+      <v-list-item
+        prepend-icon="mdi-link-variant"
+        title="Copy link to the clipboard"
+        @click="copyLink"
+      />
       <v-divider />
-      <v-list-item prepend-icon="mdi-image-marker" @click="toImage(false)">
-        <v-list-item-title>Copy the map image to the clipboard</v-list-item-title>
-      </v-list-item>
-      <v-list-item prepend-icon="mdi-file-image-marker" @click="toImage(true)">
-        <v-list-item-title>Save map images to file</v-list-item-title>
-      </v-list-item>
+      <v-list-item
+        prepend-icon="mdi-image-marker"
+        title="Copy the map image to the clipboard"
+        @click="toImage(false)"
+      />
+      <v-list-item
+        prepend-icon="mdi-file-image-marker"
+        title="Save map image to file"
+        @click="toImage(true)"
+      />
     </v-list>
   </v-menu>
 </template>

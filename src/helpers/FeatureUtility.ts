@@ -3,10 +3,6 @@ import { useGlobal, useConfig } from '@/store';
 
 import chroma from 'chroma-js';
 // openlayers
-import { Feature, type Map } from 'ol';
-import { singleClick } from 'ol/events/condition';
-import Point from 'ol/geom/Point';
-import { Select } from 'ol/interaction';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import { Icon, Style } from 'ol/style';
