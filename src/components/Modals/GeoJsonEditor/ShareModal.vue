@@ -95,8 +95,7 @@ defineExpose({ show, hide });
 
 <template>
   <v-dialog v-model="modal" max-width="640px" @keydown.esc="hide">
-    <v-card>
-      <template #title>Share</template>
+    <v-card title="Share" subtitle="Save the displayed markers and polygons as a URL.">
       <template #append>
         <v-tooltip text="Close">
           <template #activator="{ props }">
@@ -104,7 +103,6 @@ defineExpose({ show, hide });
           </template>
         </v-tooltip>
       </template>
-      <v-card-subtitle>Save the displayed markers and polygons as a URL.</v-card-subtitle>
       <v-card-text>
         <v-alert density="compact" icon="mdi-alert" type="warning" class="mb-0 mt-1">
           No third party can retrieve data from this shared URL and edit the coordinate information.

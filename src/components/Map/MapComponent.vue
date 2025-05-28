@@ -17,6 +17,7 @@ import { useRoute } from 'vue-router';
 import { compact } from 'lodash';
 // openlayers
 import Feature from 'ol/Feature';
+import Geolocation from 'ol/Geolocation';
 import Map from 'ol/Map';
 import View from 'ol/View';
 import { Attribution, MousePosition, Zoom, ZoomSlider } from 'ol/control';
@@ -56,7 +57,7 @@ interface Emits {
 
 /** プロップ */
 const props = defineProps({
-  zoom: { type: Number, default: 12 },
+  zoom: { type: Number, default: 6 },
   /** 最小ズームアウト値 */
   minZoom: { type: Number, default: 0 },
   /** 最大ズームイン値 */
@@ -118,11 +119,33 @@ const cursorFeature: Feature<Point> = new Feature({
   name: 'cursor'
 });
 
+/** ビュー */
+const view: View = new View({
+  projection: 'EPSG:4326',
+  center: currentPosition.value,
+  zoom: currentZoom.value,
+  minZoom: props.minZoom,
+  maxZoom: props.maxZoom,
+  extent: props.extentLimit
+});
+
+/** ジオロケーション設定 */
+const geolocation = new Geolocation();
+geolocation.setProjection(view.getProjection());
+
+// トラッキング開始
+geolocation.setTracking(true);
+
+geolocation.on('change:position', () => {
+  const coordinates = geolocation.getPosition();
+  cursorFeature.setGeometry(coordinates ? new Point(coordinates) : undefined);
+});
+
 /** カーソルレイヤ */
 const cursorLayer = new VectorLayer({
   zIndex: 999,
   style: pinStyle,
-  visible: false,
+  visible: true,
   source: new VectorSource({
     features: [cursorFeature]
   }),
@@ -147,12 +170,7 @@ const map: ShallowRef<Map> = shallowRef(
       new ScaleLine(),
       notification
     ],
-    view: new View({
-      zoom: currentZoom.value,
-      projection: 'EPSG:4326', // OpenLayersのデフォルトの座標系はEPSG:4326
-      // OpenLayerwのデフォルトの座標系は、PSG:4326なのに対して、日本で一般的な座標系はEPSG:3857なので変換する
-      center: currentPosition.value // transform(currentPosition.value, 'EPSG:4326', 'EPSG:3857'),
-    }),
+    view,
     layers: compact([
       new Tile({
         zIndex: 0,
@@ -186,13 +204,13 @@ const pinchRotateInteraction = interactions.filter((interaction: Interaction) =>
 })[0];
 pinchRotateInteraction.setActive(false);
 
-/** カーソルピンをクリックした時はピンを隠す */
+/** カーソルピンをクリックした時 */
 const cursorClick = new Select({
   condition: singleClick,
   layers: [cursorLayer]
 });
 cursorClick.on('select', () => {
-  cursorLayer.setVisible(false);
+  // cursorLayer.setVisible(false);
 });
 map.value.addInteraction(cursorClick);
 

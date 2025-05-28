@@ -57,8 +57,7 @@ defineExpose({ show });
 
 <template>
   <v-dialog v-model="modal" persistent max-width="640px" @keydown.esc="hide">
-    <v-card append-icon="mdi-close">
-      <template #title>{{ title }}</template>
+    <v-card :title="title" :subtitle="message">
       <template #append>
         <v-tooltip text="Close">
           <template #activator="{ props }">
@@ -66,9 +65,6 @@ defineExpose({ show });
           </template>
         </v-tooltip>
       </template>
-      <v-card-subtitle v-if="message" class="text-wrap">
-        {{ message }}
-      </v-card-subtitle>
       <v-card-actions>
         <v-btn
           v-if="discardable"

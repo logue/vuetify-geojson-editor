@@ -162,12 +162,12 @@ defineExpose({ show, hide, position, coordinate });
         <v-icon size="small">mdi-crosshairs</v-icon>
         Coordinate
         <v-icon size="small">mdi-arrow-left-right</v-icon>
-        {{ Math.round(coordinate[0]) }},
+        {{ coordinate[0] }},
         <v-icon size="small">mdi-arrow-up-down</v-icon>
-        {{ Math.round(coordinate[1]) }}
+        {{ coordinate[1] }}
         &nbsp;
         <v-icon size="small">mdi-magnify</v-icon>
-        Zoom: {{ Math.round(zoom) }}
+        Zoom: {{ zoom }}
       </v-list-subheader>
       <!-- メニュー項目 -->
       <v-list-item prepend-icon="mdi-link-variant" @click="copyLink">

@@ -82,7 +82,7 @@ defineExpose({ show });
 <template>
   <v-dialog v-model="modal" fullscreen transition="dialog-bottom-transition">
     <v-card class="d-flex flex-column">
-      <template #title>GeoJsonEditor</template>
+      <template #title>Source</template>
       <template #append>
         <v-tooltip text="Close">
           <template #activator="{ props }">

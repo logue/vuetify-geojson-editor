@@ -475,109 +475,83 @@ onBeforeRouteUpdate(async (to, from, next) => {
       <v-btn-toggle v-model="interaction" class="px-0" variant="text" theme="dark">
         <v-tooltip location="bottom">
           <template #activator="{ props }">
-            <v-btn icon tile value="default" v-bind="props">
-              <v-icon>mdi-cursor-default</v-icon>
-            </v-btn>
+            <v-btn icon="mdi-cursor-default" tile value="default" v-bind="props" />
           </template>
           Default
         </v-tooltip>
         <v-divider vertical />
         <v-tooltip location="bottom">
           <template #activator="{ props }">
-            <v-btn icon tile value="edit" v-bind="props">
-              <v-icon>mdi-vector-point-select</v-icon>
-            </v-btn>
+            <v-btn icon="mdi-vector-point-select" tile value="edit" v-bind="props" />
           </template>
           Edit Properties
         </v-tooltip>
         <v-tooltip location="bottom">
           <template #activator="{ props }">
-            <v-btn icon tile value="translate" v-bind="props">
-              <v-icon>mdi-arrow-all</v-icon>
-            </v-btn>
+            <v-btn icon="mdi-arrow-all" tile value="translate" v-bind="props" />
           </template>
           Move
         </v-tooltip>
         <v-divider vertical />
         <v-tooltip location="bottom">
           <template #activator="{ props }">
-            <v-btn icon tile value="modify" v-bind="props">
-              <v-icon>mdi-vector-polyline-edit</v-icon>
-            </v-btn>
+            <v-btn icon="mdi-vector-polyline-edit" tile value="modify" v-bind="props" />
           </template>
           Modify (Alt + Click to delete point.)
         </v-tooltip>
         <v-tooltip location="bottom">
           <template #activator="{ props }">
-            <v-btn icon tile value="transform" v-bind="props">
-              <v-icon>mdi-vector-square-edit</v-icon>
-            </v-btn>
+            <v-btn icon="mdi-vector-square-edit" tile value="transform" v-bind="props" />
           </template>
           Rotate
         </v-tooltip>
         <v-tooltip location="bottom">
           <template #activator="{ props }">
-            <v-btn icon tile value="delete" v-bind="props">
-              <v-icon>mdi-vector-square-remove</v-icon>
-            </v-btn>
+            <v-btn icon="mdi-vector-square-remove" tile value="delete" v-bind="props" />
           </template>
           Delete
         </v-tooltip>
         <v-divider vertical />
         <v-tooltip location="bottom">
           <template #activator="{ props }">
-            <v-btn icon tile value="point" v-bind="props">
-              <v-icon>mdi-vector-point-plus</v-icon>
-            </v-btn>
+            <v-btn icon="mdi-vector-point-plus" tile value="point" v-bind="props" />
           </template>
           Point
         </v-tooltip>
         <v-tooltip location="bottom">
           <template #activator="{ props }">
-            <v-btn icon tile value="line" v-bind="props">
-              <v-icon>mdi-vector-line</v-icon>
-            </v-btn>
+            <v-btn icon="mdi-vector-line" tile value="line" v-bind="props" />
           </template>
           Line
         </v-tooltip>
         <v-tooltip location="bottom">
           <template #activator="{ props }">
-            <v-btn icon tile value="polygon" v-bind="props">
-              <v-icon>mdi-vector-polygon</v-icon>
-            </v-btn>
+            <v-btn icon="mdi-vector-polygon" tile value="polygon" v-bind="props" />
           </template>
           Polygon
         </v-tooltip>
         <v-tooltip location="bottom">
           <template #activator="{ props }">
-            <v-btn icon tile value="hole" v-bind="props">
-              <v-icon>mdi-vector-difference</v-icon>
-            </v-btn>
+            <v-btn icon="mdi-vector-difference" tile value="hole" v-bind="props" />
           </template>
           Draw Hole
         </v-tooltip>
         <v-tooltip location="bottom">
           <template #activator="{ props }">
-            <v-btn icon tile value="square" v-bind="props">
-              <v-icon>mdi-vector-square</v-icon>
-            </v-btn>
+            <v-btn icon="mdi-vector-square" tile value="square" v-bind="props" />
           </template>
           Square
         </v-tooltip>
         <v-tooltip location="bottom">
           <template #activator="{ props }">
-            <v-btn icon tile value="circle" v-bind="props">
-              <v-icon>mdi-vector-circle</v-icon>
-            </v-btn>
+            <v-btn icon="mdi-vector-circle" tile value="circle" v-bind="props" />
           </template>
           Circle
         </v-tooltip>
         <v-divider vertical />
         <v-tooltip location="bottom">
           <template #activator="{ props }">
-            <v-btn icon tile value="fill" v-bind="props">
-              <v-icon>mdi-format-color-fill</v-icon>
-            </v-btn>
+            <v-btn icon="mdi-format-color-fill" tile value="fill" v-bind="props" />
           </template>
           Fill
         </v-tooltip>
@@ -585,9 +559,7 @@ onBeforeRouteUpdate(async (to, from, next) => {
       <v-divider vertical />
       <v-tooltip location="bottom">
         <template #activator="{ props }">
-          <v-btn icon tile v-bind="props" @click="toggleSnap">
-            <v-icon>mdi-toggle-switch{{ snap ? '' : '-off' }}</v-icon>
-          </v-btn>
+          <v-btn :icon="`mdi-grid${snap ? '' : '-off'}`" tile v-bind="props" @click="toggleSnap" />
         </template>
         Snap
       </v-tooltip>
@@ -595,35 +567,27 @@ onBeforeRouteUpdate(async (to, from, next) => {
       <v-spacer />
       <v-tooltip location="bottom">
         <template #activator="{ props }">
-          <v-btn icon tile v-bind="props" @click="undoRedoInteraction.undo()">
-            <v-icon>mdi-undo</v-icon>
-          </v-btn>
+          <v-btn icon="mdi-undo" tile v-bind="props" @click="undoRedoInteraction.undo()" />
         </template>
         Undo
       </v-tooltip>
       <v-tooltip location="bottom">
         <template #activator="{ props }">
-          <v-btn icon tile v-bind="props" @click="undoRedoInteraction.redo()">
-            <v-icon>mdi-redo</v-icon>
-          </v-btn>
+          <v-btn icon="mdi-redo" tile v-bind="props" @click="undoRedoInteraction.redo()" />
         </template>
         Redo
       </v-tooltip>
       <v-divider vertical />
       <v-tooltip location="bottom">
         <template #activator="{ props }">
-          <v-btn icon tile v-bind="props" @click="showClearConfirm">
-            <v-icon>mdi-delete</v-icon>
-          </v-btn>
+          <v-btn icon="mdi-delete" tile v-bind="props" @click="showClearConfirm" />
         </template>
         Clear
       </v-tooltip>
       <v-divider vertical />
       <v-tooltip location="bottom">
         <template #activator="{ props }">
-          <v-btn icon tile v-bind="props" @click="showSource">
-            <v-icon>mdi-code-json</v-icon>
-          </v-btn>
+          <v-btn icon="mdi-code-json" tile v-bind="props" @click="showSource" />
         </template>
         Geojson Source
       </v-tooltip>

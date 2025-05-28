@@ -96,8 +96,7 @@ defineExpose({ show });
 
 <template>
   <v-dialog v-model="modal" persistent max-width="1024px" @keydown.esc="hide">
-    <v-card>
-      <template #title>Edit Properties</template>
+    <v-card title="Edit Properties" subtitle="Edit the properties of the selected feature.">
       <template #append>
         <v-tooltip text="Close">
           <template #activator="{ props }">
@@ -105,7 +104,6 @@ defineExpose({ show });
           </template>
         </v-tooltip>
       </template>
-      <v-card-subtitle>Edit the feature properties.</v-card-subtitle>
       <v-card-text>
         <v-tabs v-model="tab">
           <v-tab value="basic" prepend-icon="mdi-information">Basic</v-tab>
@@ -130,7 +128,6 @@ defineExpose({ show });
                   prepend-icon="mdi-form-textbox"
                 />
               </v-col>
-
               <v-col cols="12" md="3">
                 <v-select
                   v-model="properties.color"

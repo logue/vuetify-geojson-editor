@@ -8,6 +8,8 @@ import { feature } from 'topojson-client';
 import { v4 as uuidv4 } from 'uuid';
 
 import type { Feature, FeatureCollection } from 'geojson';
+import type { GeoJSONObject } from 'ol/format/GeoJSON';
+import type { Topology } from 'topojson-specification';
 
 const emits = defineEmits(['loaded']);
 
@@ -74,10 +76,7 @@ const load = async () => {
     /** 入力データ */
     const ret = reader.result as string;
     /** Jsonパース */
-    let json = {
-      type: 'FeatureCollection',
-      features: []
-    };
+    let json: GeoJSONObject | Topology;
     try {
       json = JSON.parse(ret);
     } catch (_e) {
@@ -91,6 +90,7 @@ const load = async () => {
       try {
         json = feature(json, 'data');
       } catch (_e) {
+        error.value = true;
         errors.value = ['Topojson parse error.'];
         loading.value = false;
         return;
@@ -101,11 +101,13 @@ const load = async () => {
       json = rewind(json) as FeatureCollection;
     }
 
-    // UUIDを付与
-    json.features.forEach((feature: Feature) => {
-      feature.id = uuidv4();
-      return feature;
-    });
+    if (json.type === 'FeatureCollection') {
+      // UUIDを付与
+      json.features.forEach((feature: Feature) => {
+        feature.id = uuidv4();
+        return feature;
+      });
+    }
 
     geoJsonEditorStore.setGeoJson(json);
     geoJsonEditorStore.setRefresh(true);

@@ -40,12 +40,14 @@ export async function getGeoJson(file: string): Promise<FeatureCollection | null
 /** ピンマーカーのスタイル */
 export const pinStyle = new Style({
   image: new Icon({
-    anchor: [0.5, 24],
+    anchor: [0.5, 86],
     anchorXUnits: 'fraction',
     anchorYUnits: 'pixels',
-    src: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHRpdGxlPm1hcC1tYXJrZXI8L3RpdGxlPjxwYXRoIGQ9Ik0xMiwxMS41QTIuNSwyLjUgMCAwLDEgOS41LDlBMi41LDIuNSAwIDAsMSAxMiw2LjVBMi41LDIuNSAwIDAsMSAxNC41LDlBMi41LDIuNSAwIDAsMSAxMiwxMS41TTEyLDJBNyw3IDAgMCwwIDUsOUM1LDE0LjI1IDEyLDIyIDEyLDIyQzEyLDIyIDE5LDE0LjI1IDE5LDlBNyw3IDAgMCwwIDEyLDJaIiAvPjwvc3ZnPg==',
-    size: [24, 24],
-    scale: 1
+    src: '/img/spotlight-poi2_hdpi.png',
+    crossOrigin: 'anonymous',
+    opacity: 1,
+    size: [54, 86],
+    scale: 0.5
   })
 });
 
@@ -116,7 +118,7 @@ export function setFeaturesVisibility(
     const isCurrentLevel = (props.level ?? 0) === level;
 
     // 表示／非表示制御
-    if (checked !== null && props.type && !checked.includes(props.type)) {
+    if (checked !== null) {
       // Invisible
       return new Style({});
     }
@@ -218,43 +220,4 @@ export function getFeatureStyle(
   }
 
   return style;
-}
-
-/**
- * カーソルレイヤをセットアップ
- *
- * @param  map - OpenLayerのマップのインスタンス
- */
-export function setCursorLayer(map: Map): void {
-  /** カーソル */
-  const cursorFeature: Feature<Point> = new Feature({
-    geometry: new Point([0, 0]),
-    name: 'cursor'
-  });
-
-  /** 現在のカーソルレイヤー */
-  const cursorLayer = new VectorLayer({
-    zIndex: 999,
-    style: pinStyle,
-    visible: false,
-    source: new VectorSource({
-      features: [cursorFeature]
-    }),
-    properties: {
-      id: 'cursorLayer'
-    }
-  });
-
-  // カーソルレイヤーをマップに書き込む
-  map.addLayer(cursorLayer);
-
-  /** カーソルピンをクリックした時はピンを隠す */
-  const cursorClick = new Select({
-    condition: singleClick,
-    layers: [cursorLayer]
-  });
-  cursorClick.on('select', () => {
-    cursorLayer.setVisible(false);
-  });
-  map.addInteraction(cursorClick);
 }

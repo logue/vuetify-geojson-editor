@@ -47,8 +47,7 @@ defineExpose({ show });
 
 <template>
   <v-dialog v-model="modal" max-width="480px" @keydown.esc="hide">
-    <v-card>
-      <template #title>Export</template>
+    <v-card title="Export" subtitle="Import a local GeoJSON / TopoJSON file.">
       <template #append>
         <v-tooltip text="Close">
           <template #activator="{ props }">
@@ -56,7 +55,6 @@ defineExpose({ show });
           </template>
         </v-tooltip>
       </template>
-      <v-card-subtitle>Import a local GeoJSON / TopoJSON file.</v-card-subtitle>
       <v-card-text>
         <v-radio-group v-model="type" label="File Type" inline>
           <v-radio label="GeoJson" value="geojson" />
