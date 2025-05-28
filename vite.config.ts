@@ -70,7 +70,15 @@ export default defineConfig(({ command, mode }): UserConfig => {
         output: {
           manualChunks: {
             // Split external library from transpiled code.
-            vue: ['vue', 'vue-router', 'pinia', 'pinia-plugin-persistedstate']
+            vue: ['vue', 'vue-router', 'pinia', 'pinia-plugin-persistedstate'],
+            vuetify: ['vuetify', 'webfontloader'],
+            ol: ['ol', 'ol-ext'],
+            codemirror: ['vue-codemirror6'],
+            'codemirror-lang': [
+              // Add the following as needed.
+              '@codemirror/lang-json',
+              '@codemirror/lang-markdown'
+            ]
           },
           plugins: [
             mode === 'analyze'
