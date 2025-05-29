@@ -3,8 +3,8 @@ import { useGlobal, useConfig } from '@/store';
 
 import chroma from 'chroma-js';
 // openlayers
-import VectorLayer from 'ol/layer/Vector';
-import VectorSource from 'ol/source/Vector';
+import { Vector as VectorLayer } from 'ol/layer';
+import { Vector as VectorSource } from 'ol/source';
 import { Icon, Style } from 'ol/style';
 
 import type { FeatureStatusType } from '@/helpers/FeatureStyles/FeatureStatus';
@@ -39,7 +39,7 @@ export const pinStyle = new Style({
     anchor: [0.5, 86],
     anchorXUnits: 'fraction',
     anchorYUnits: 'pixels',
-    src: '/img/spotlight-poi2_hdpi.png',
+    src: `${import.meta.env.BASE_URL}img/spotlight-poi2_hdpi.png`,
     crossOrigin: 'anonymous',
     opacity: 1,
     size: [54, 86],

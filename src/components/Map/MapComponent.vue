@@ -20,18 +20,16 @@ import Feature from 'ol/Feature';
 import Geolocation from 'ol/Geolocation';
 import Map from 'ol/Map';
 import View from 'ol/View';
-import { Attribution, MousePosition, Zoom, ZoomSlider } from 'ol/control';
-import ScaleLine from 'ol/control/ScaleLine';
+import { Attribution, MousePosition, Zoom, ZoomSlider, ScaleLine } from 'ol/control';
 import { createStringXY } from 'ol/coordinate';
 import { singleClick } from 'ol/events/condition';
 //import MVT from 'ol/format/MVT';
 import Point from 'ol/geom/Point';
 import { Interaction, PinchRotate, Select } from 'ol/interaction';
-import Tile from 'ol/layer/Tile';
-import VectorLayer from 'ol/layer/Vector';
+import { Tile, Vector as VectorLayer } from 'ol/layer';
+import { transform } from 'ol/proj';
+import { OSM, Vector as VectorSource } from 'ol/source';
 //import VectorTileLayer from 'ol/layer/VectorTile';
-import { OSM } from 'ol/source';
-import VectorSource from 'ol/source/Vector';
 //import VectorTileSource from 'ol/source/VectorTile';
 // ol-ext
 import Notification from 'ol-ext/control/Notification';
@@ -121,8 +119,8 @@ const cursorFeature: Feature<Point> = new Feature({
 
 /** ビュー */
 const view: View = new View({
-  projection: 'EPSG:4326',
-  center: currentPosition.value,
+  center: transform(currentPosition.value, 'EPSG:4326', 'EPSG:3857'),
+  projection: 'EPSG:3857',
   zoom: currentZoom.value,
   minZoom: props.minZoom,
   maxZoom: props.maxZoom,
@@ -162,7 +160,10 @@ const map: ShallowRef<Map> = shallowRef(
   new Map({
     controls: [
       new Zoom(),
-      new MousePosition({ coordinateFormat: createStringXY(6) }),
+      new MousePosition({
+        coordinateFormat: createStringXY(4),
+        projection: 'EPSG:4326'
+      }),
       new ZoomSlider(),
       new Attribution({ collapsible: false }),
       new ProgressBar({ label: props.loadingMessage }),

@@ -72,9 +72,7 @@ const showImport = () => importModal.value?.show();
 const showExport = () => exportModal.value?.show();
 
 /** インポート完了時にソースを上書き */
-const onLoaded = () => {
-  source.value = JSON.stringify(geoJsonEditorStore.geojson, null, 2);
-};
+const onLoaded = () => (source.value = JSON.stringify(geoJsonEditorStore.geojson, null, 2));
 
 defineExpose({ show });
 </script>
@@ -94,13 +92,13 @@ defineExpose({ show });
       <code-mirror
         ref="editor"
         v-model="source"
-        class="flex-grow-1"
-        style="flex-basis: 0; overflow-y: scroll"
         :dark="dark"
         :lang="json()"
         :linter="jsonParseLinter()"
-        gutter
         basic
+        class="flex-grow-1"
+        gutter
+        style="flex-basis: 0; overflow-y: scroll"
         wrap
       />
       <v-card-actions class="flex-grow-0" style="flex-basis: auto">
@@ -117,7 +115,7 @@ defineExpose({ show });
           Export
         </v-btn>
         <v-spacer />
-        <v-btn color="secondary" prepend-icon="mdi-close" variant="text" @click="hide">
+        <v-btn color="secondary" prepend-icon="mdi-cancel" variant="text" @click="hide">
           Cancel
         </v-btn>
         <v-btn

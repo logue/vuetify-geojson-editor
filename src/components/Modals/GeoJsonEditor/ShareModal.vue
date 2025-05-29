@@ -72,23 +72,6 @@ const copy = async () => {
   await nextTick();
   modal.value = false;
 };
-/*
-const save = async (type: 'topojson' | 'geojson') => {
-  loading.value = true;
-  // ファイルとして保存
-  const blob: Blob = geoJsonEditorStore.export(type, true);
-
-  const fileStream = createWriteStream('export.json', {
-    size: blob.size,
-  });
-  const res = new Response(blob).body?.pipeTo(fileStream);
-  await res;
-
-  loading.value = false;
-  await nextTick();
-  modal.value = false;
-};
-*/
 
 defineExpose({ show, hide });
 </script>

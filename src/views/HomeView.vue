@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useGlobal, useMapCursor, useGeoJsonEditor, useLocationMarker } from '@/store';
+import { useGlobal, useMapCursor, useGeoJsonEditor } from '@/store';
 import {
   computed,
   nextTick,
@@ -13,7 +13,6 @@ import {
 import { onBeforeRouteUpdate } from 'vue-router';
 
 import MapBrowserEventType from 'ol/MapBrowserEventType';
-import GeoJSON, { type GeoJSONObject } from 'ol/format/GeoJSON';
 import { Draw, Interaction, Select, Snap } from 'ol/interaction';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
@@ -44,8 +43,6 @@ const globalStore = useGlobal();
 const mapCursorStore = useMapCursor();
 /** GeoJsonエディタストア */
 const geoJsonEditorStore = useGeoJsonEditor();
-/** マップのロケーションマーカーのストア */
-const locationMarkerStore = useLocationMarker();
 
 /** マップ */
 const mapComponent: Ref<InstanceType<typeof MapComponent> | undefined> = ref();
@@ -78,12 +75,6 @@ const message: WritableComputedRef<string> = computed({
   set: v => globalStore.setMessage(v)
 });
 
-/** GeoJsonデータ */
-const geojson: WritableComputedRef<GeoJSONObject> = computed({
-  get: () => geoJsonEditorStore.geojson,
-  set: value => geoJsonEditorStore.setGeoJson(value)
-});
-
 /** 更新要求フラグ */
 const requestRefresh: WritableComputedRef<boolean> = computed({
   get: () => geoJsonEditorStore.requestRefresh,
@@ -104,31 +95,8 @@ const level: WritableComputedRef<number> = computed({
 
 /** ピン一覧 */
 const features: WritableComputedRef<Feature[]> = computed({
-  get: () => new GeoJSON().readFeatures(geojson.value),
-  set: feats => {
-    // カウンタ
-    let count = 0;
-    // 番号振り直し
-    feats.forEach((f: Feature) => {
-      count++;
-      // 各ピンにUUIDとプロパティを入れる
-      if (!f.getId()) {
-        // IDがない場合補完
-        f.setId(uuidv4());
-      }
-
-      /** プロパティ */
-      let p = f.getProperties();
-      if (!p) {
-        // プロパティがない場合デフォルト値を入れておく
-        p = DefaultProperties;
-        p.no = count;
-      }
-      f.setProperties(p);
-    });
-
-    geojson.value = JSON.parse(new GeoJSON().writeFeatures(feats));
-  }
+  get: () => geoJsonEditorStore.getFeatures(),
+  set: feats => geoJsonEditorStore.setFeatures(feats)
 });
 
 /** 場所レイヤー */
@@ -209,6 +177,7 @@ watch(
       }
     }
 
+    // 吸着インタラクション
     if (!snap.value) {
       map.addInteraction(snapInteraction);
     } else {
@@ -227,7 +196,7 @@ watch(
       (currentInteraction as Draw).on('drawend', (e: DrawEvent) => {
         /** プロパティ */
         const p = DefaultProperties;
-        // ユニークIDをピンに追記
+        // ユニークIDをピン／ライン／ポリゴンに追記
         e.feature.setId(uuidv4());
         e.feature.setProperties(p);
         // カーソルをポインタに戻す
@@ -284,7 +253,7 @@ const redraw = async () => {
   // 一旦クリア
   editorSource.clear();
   // ピン流し込み
-  editorSource.addFeatures(new GeoJSON().readFeatures(geojson.value));
+  editorSource.addFeatures(features.value);
   // ピン一覧データを流し込み
   editorLayer.setSource(editorSource);
   await nextTick();
@@ -403,11 +372,7 @@ onMounted(async () => {
     return;
   }
   loading.value = true;
-  locationLayer.setSource(
-    new VectorSource({
-      features: new GeoJSON().readFeatures(locationMarkerStore.geojson)
-    })
-  );
+  locationLayer.setSource(new VectorSource({ features: features.value }));
   setFeaturesStyle(locationLayer, level.value);
 
   // 場所レイヤを追加

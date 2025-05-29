@@ -71,13 +71,61 @@ export default defineConfig(({ command, mode }): UserConfig => {
           manualChunks: {
             // Split external library from transpiled code.
             vue: ['vue', 'vue-router', 'pinia', 'pinia-plugin-persistedstate'],
-            vuetify: ['vuetify', 'webfontloader'],
-            ol: ['ol', 'ol-ext'],
+            vuetify: ['vuetify', 'vuetify/components', 'vuetify/directives', 'webfontloader'],
+            openlayers: [
+              'ol',
+              'ol/control',
+              'ol/format',
+              'ol/interaction',
+              'ol/interaction/Draw.js',
+              'ol/interaction/Modify.js',
+              'ol/interaction/Select.js',
+              'ol/interaction/Snap.js',
+              'ol/interaction/Translate.js',
+              'ol/reproj.js',
+              'ol/source',
+              'ol/source/Vector.js',
+              'ol/tilegrid.js',
+              'ol/tilegrid',
+              'ol/tileurlfunction.js',
+              'ol-ext',
+              'ol-ext/control/Button.js',
+              'ol-ext/control/CanvasBase.js',
+              'ol-ext/control/GridReference.js',
+              'ol-ext/control/Notification.js',
+              'ol-ext/control/Overlay.js',
+              'ol-ext/control/ProgressBar.js',
+              'ol-ext/control/Scale.js',
+              'ol-ext/control/Toggle.js',
+              'ol-ext/interaction/Delete.js',
+              'ol-ext/interaction/DrawHole.js',
+              'ol-ext/interaction/DrawRegular.js',
+              'ol-ext/interaction/FillAttribute.js',
+              'ol-ext/interaction/Hover.js',
+              'ol-ext/interaction/ModifyTouch.js',
+              'ol-ext/interaction/Transform.js',
+              'ol-ext/interaction/UndoRedo.js',
+              'ol-ext/geom/sphere.js',
+              'ol-ext/overlay/Popup.js',
+              'ol-ext/style/defaultStyle.js'
+            ],
             codemirror: ['vue-codemirror6'],
             'codemirror-lang': [
               // Add the following as needed.
               '@codemirror/lang-json',
               '@codemirror/lang-markdown'
+            ],
+            misc: [
+              '@turf/clean-coords',
+              '@turf/rewind',
+              'axios',
+              'chroma-js',
+              'geojson-precision-ts',
+              'lodash',
+              'streamsaver/StreamSaver.js',
+              'topojson-client',
+              'topojson-server',
+              'uuid'
             ]
           },
           plugins: [
