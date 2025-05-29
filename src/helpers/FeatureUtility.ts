@@ -1,5 +1,5 @@
 /** ピンのデザインなどのユーティリティー関数群 */
-import { useGlobal, useConfig } from '@/store';
+import { useGlobal } from '@/store';
 
 import chroma from 'chroma-js';
 // openlayers
@@ -140,9 +140,6 @@ export function getFeatureStyle(
   status: FeatureStatusType = FeatureStatus.ACTIVE,
   layerId?: string
 ): Style {
-  /** 設定ストア */
-  const configStore = useConfig();
-
   // GeoJsonのプロパティを取得
   const props: FeatureProperties = feature.getProperties() as FeatureProperties;
 
@@ -161,7 +158,7 @@ export function getFeatureStyle(
     const index = 6; // どっから6という数字が・・・？
 
     // ピンにカテゴリ別番号を表示する場合annotationを上書き
-    if (!props.annotation && configStore.featureNumberVisibility) {
+    if (!props.annotation) {
       props.annotation = index + 1;
       props.annotationStyle = '500 0.5rem';
     }

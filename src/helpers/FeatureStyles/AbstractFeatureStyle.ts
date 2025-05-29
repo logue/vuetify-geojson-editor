@@ -1,5 +1,5 @@
 import chroma from 'chroma-js';
-import { camelCase } from 'lodash';
+import { camelCase } from 'es-toolkit';
 import { Style, Circle, Text, Fill, Stroke, Icon } from 'ol/style';
 import colors from 'vuetify/lib/util/colors.mjs';
 

@@ -14,7 +14,7 @@ import {
 } from 'vue';
 import { useRoute } from 'vue-router';
 
-import { compact } from 'lodash';
+import { compact } from 'es-toolkit';
 // openlayers
 import Feature from 'ol/Feature';
 import Geolocation from 'ol/Geolocation';
