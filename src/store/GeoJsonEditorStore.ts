@@ -49,12 +49,14 @@ export default defineStore(
         }
         f.setProperties(p);
       });
-      new GeoJSON().writeFeatures(features, {
-        // GeoJSON側の座標系
-        dataProjection: 'EPSG:4326',
-        // 地図表示用（Web Mercator）
-        featureProjection: 'EPSG:3857'
-      });
+      geojson.value = JSON.parse(
+        new GeoJSON().writeFeatures(features, {
+          // GeoJSON側の座標系
+          dataProjection: 'EPSG:4326',
+          // 地図表示用（Web Mercator）
+          featureProjection: 'EPSG:3857'
+        })
+      );
     }
 
     /** GeoJsonからフィーチャーを取得 */

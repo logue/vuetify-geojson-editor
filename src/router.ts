@@ -29,7 +29,7 @@ const router: Router = createRouter({
    *
    * @see {@link https://router.vuejs.org/guide/essentials/history-mode.html }
    */
-  history: createWebHistory(import.meta.env.BASE_URL), // createWebHashHistory(import.meta.env.BASE_URL)
+  history: createWebHistory(), // createWebHashHistory(import.meta.env.BASE_URL)
   routes
 });
 

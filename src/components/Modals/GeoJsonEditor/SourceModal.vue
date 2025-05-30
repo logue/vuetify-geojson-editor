@@ -33,7 +33,7 @@ const dark: Ref<boolean> = ref(theme.current.value.dark);
 const modal: Ref<boolean> = ref(false);
 
 /** テキストエディタの値 */
-const source: Ref<string> = ref(JSON.stringify(geoJsonEditorStore.geojson, null, 2));
+const source: Ref<string> = ref('');
 
 /** リンターエラーの数 */
 const errorCount: Ref<number> = ref(0);
