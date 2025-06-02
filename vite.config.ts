@@ -19,7 +19,7 @@ import pkg from './package.json';
 export default defineConfig(({ command, mode }): UserConfig => {
   const config: UserConfig = {
     // https://vitejs.dev/config/shared-options.html#base
-    base: './',
+    base: '/vuetify-geojson-editor/',
     // https://vitejs.dev/config/shared-options.html#define
     define: { 'process.env': {} },
     plugins: [

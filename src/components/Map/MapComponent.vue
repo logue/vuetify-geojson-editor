@@ -23,14 +23,14 @@ import View from 'ol/View';
 import { Attribution, MousePosition, Zoom, ZoomSlider, ScaleLine } from 'ol/control';
 import { createStringXY } from 'ol/coordinate';
 import { singleClick } from 'ol/events/condition';
-//import MVT from 'ol/format/MVT';
+import MVT from 'ol/format/MVT';
 import Point from 'ol/geom/Point';
 import { Interaction, PinchRotate, Select } from 'ol/interaction';
 import { Tile, Vector as VectorLayer } from 'ol/layer';
+import VectorTileLayer from 'ol/layer/VectorTile';
 import { transform } from 'ol/proj';
-import { OSM, Vector as VectorSource } from 'ol/source';
-//import VectorTileLayer from 'ol/layer/VectorTile';
-//import VectorTileSource from 'ol/source/VectorTile';
+import { OSM, Vector as VectorSource, XYZ } from 'ol/source';
+import VectorTileSource from 'ol/source/VectorTile';
 // ol-ext
 import Notification from 'ol-ext/control/Notification';
 import ProgressBar from 'ol-ext/control/ProgressBar';
@@ -40,6 +40,7 @@ import type { Coordinate } from 'ol/coordinate';
 import type { Extent } from 'ol/extent';
 
 // ヘルパ
+import { stylingVectorTile } from '@/helpers/FeatureStyles/stylingVectorTile';
 import { pinStyle } from '@/helpers/FeatureUtility';
 
 // import featureAnimation from 'ol-ext/featureanimation/FeatureAnimation';
@@ -55,9 +56,9 @@ interface Emits {
 
 /** プロップ */
 const props = defineProps({
-  zoom: { type: Number, default: 6 },
+  zoom: { type: Number, default: 8 },
   /** 最小ズームアウト値 */
-  minZoom: { type: Number, default: 0 },
+  minZoom: { type: Number, default: 4 },
   /** 最大ズームイン値 */
   maxZoom: { type: Number, default: 18 },
   /** 表示限界領域（↓←↑→） */
@@ -179,19 +180,33 @@ const map: ShallowRef<Map> = shallowRef(
         source: new OSM(),
         visible: true
       }),
-      /*
+      new Tile({
+        zIndex: 1,
+        properties: { id: 'gsi' },
+        source: new XYZ({
+          url: 'https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png',
+          attributions: [
+            '<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank">国土地理院</a>'
+          ]
+        }),
+        visible: false
+      }),
       new VectorTileLayer({
+        zIndex: 2,
+        properties: { id: 'gsi-vector' },
         source: new VectorTileSource({
           format: new MVT(),
           url: 'https://cyberjapandata.gsi.go.jp/xyz/experimental_bvmap/{z}/{x}/{y}.pbf',
-          maxZoom: 18,
+          maxZoom: 17,
           minZoom: 4,
           attributions: [
             '<a href="https://maps.gsi.go.jp/vector/" target="_blank">地理院地図Vector</a>'
           ]
-        })
+        }),
+        renderBuffer: 100,
+        style: stylingVectorTile, //スタイリング用の関数（後述）
+        visible: false
       }),
-      */
       cursorLayer
     ])
   })

@@ -152,17 +152,6 @@ export function getFeatureStyle(
     // 注釈を入れる
     style.getText()?.setText(props.annotation?.toString());
   } else {
-    // カテゴリレイヤの場合
-
-    /** Get all type list. */
-    const index = 6; // どっから6という数字が・・・？
-
-    // ピンにカテゴリ別番号を表示する場合annotationを上書き
-    if (!props.annotation) {
-      props.annotation = index + 1;
-      props.annotationStyle = '500 0.5rem';
-    }
-
     // Apply marker color
     if (layerId === 'sectionLayer' && feature.getGeometry()?.getType() === 'Polygon') {
       style = FeatureStyles.getSectionPolygonStyle(props.color, status);
