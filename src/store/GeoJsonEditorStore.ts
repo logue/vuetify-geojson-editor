@@ -18,6 +18,14 @@ import { DefaultProperties } from '@/interfaces/FeatureProperties';
 export default defineStore(
   'geojson-editor',
   () => {
+    /** GeoJsonからフィーチャーを取得 */
+    const features: ComputedRef<Feature[]> = computed(() =>
+      new GeoJSON().readFeatures(geojson.value, {
+        dataProjection: 'EPSG:4326',
+        featureProjection: 'EPSG:3857'
+      })
+    );
+
     /** Raw Geojson Object */
     const geojson: Ref<GeoJSONObject> = ref({
       type: 'FeatureCollection',
@@ -57,14 +65,6 @@ export default defineStore(
           featureProjection: 'EPSG:3857'
         })
       );
-    }
-
-    /** GeoJsonからフィーチャーを取得 */
-    function getFeatures(): Feature[] {
-      return new GeoJSON().readFeatures(geojson.value, {
-        dataProjection: 'EPSG:4326',
-        featureProjection: 'EPSG:3857'
-      });
     }
 
     /**
@@ -147,13 +147,13 @@ export default defineStore(
     }
 
     return {
+      features,
       geojson,
       topojson,
       requestRefresh,
       exportBlob,
       setGeoJson,
       setFeatures,
-      getFeatures,
       clear,
       setRefresh
     };

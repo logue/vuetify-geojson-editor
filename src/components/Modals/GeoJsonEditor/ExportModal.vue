@@ -1,14 +1,14 @@
 <script setup lang="ts">
 /** エクスポートモーダル */
-import { useGeoJsonEditor, useGlobal } from '@/store';
+import { useGeoJsonEditorStore, useGlobalStore } from '@/store';
 import { nextTick, ref, type Ref } from 'vue';
 
 import { createWriteStream } from 'streamsaver';
 
 /** グローバルストア */
-const globalStore = useGlobal();
+const globalStore = useGlobalStore();
 /** 設計書ストア */
-const GeoJsonEditorStore = useGeoJsonEditor();
+const GeoJsonEditorStore = useGeoJsonEditorStore();
 
 /** モーダルの表示制御 */
 const modal: Ref<boolean> = ref(false);

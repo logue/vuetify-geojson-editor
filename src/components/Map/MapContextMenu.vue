@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useGlobal, useMapCursor } from '@/store';
+import { useGlobalStore, useMapCursorStore } from '@/store';
 import { computed, ref, type ComputedRef, type PropType, type Ref } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -19,9 +19,9 @@ const props = defineProps({
 /** Route */
 const router = useRouter();
 /** グローバルストア */
-const globalStore = useGlobal();
+const globalStore = useGlobalStore();
 /** マップのカーソルストア */
-const mapCursorStore = useMapCursor();
+const mapCursorStore = useMapCursorStore();
 
 /** コンテキストメニュー */
 const visibility: Ref<boolean> = ref(false);

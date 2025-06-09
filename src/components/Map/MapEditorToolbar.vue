@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import { useGeoJsonEditor } from '@/store';
+import { useGeoJsonEditorStore } from '@/store';
 import {
   computed,
-  nextTick,
   onMounted,
   ref,
   watch,
@@ -26,9 +25,9 @@ import type VectorSource from 'ol/source/Vector';
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue';
 import PropertiesEditorModal from '@/components/Modals/GeoJsonEditor/PropertiesEditorModal.vue';
 import SourceModal from '@/components/Modals/GeoJsonEditor/SourceModal.vue';
+import { getInteraction } from '@/composables/useGeoJsonEditor';
 import FeatureStatus from '@/helpers/FeatureStyles/FeatureStatus';
 import { getFeatureStyle } from '@/helpers/FeatureUtility';
-import { getInteraction } from '@/helpers/GeoJsonEditor';
 import { DefaultProperties } from '@/interfaces/FeatureProperties';
 
 const props = defineProps({
@@ -45,7 +44,7 @@ const props = defineProps({
 });
 
 /** GeoJsonエディタストア */
-const geoJsonEditorStore = useGeoJsonEditor();
+const geoJsonEditorStore = useGeoJsonEditorStore();
 
 /** GeoJsonソースモーダル */
 const codeModal: Ref<InstanceType<typeof SourceModal> | undefined> = ref();
@@ -73,7 +72,7 @@ const requestRefresh: WritableComputedRef<boolean> = computed({
 
 /** ピン一覧 */
 const features: WritableComputedRef<Feature[]> = computed({
-  get: () => geoJsonEditorStore.getFeatures(),
+  get: () => geoJsonEditorStore.features,
   set: feats => geoJsonEditorStore.setFeatures(feats)
 });
 
@@ -190,7 +189,7 @@ const unSelectFeature = () => selectInteraction.getFeatures().clear();
  *
  * @param feature - 対象ピン
  */
-const updateFeature = async (feature: Feature) => {
+const updateFeature = (feature: Feature) => {
   /** UUIDを取得 */
   const uuid = feature.getId();
   /** ソース */
@@ -212,7 +211,6 @@ const updateFeature = async (feature: Feature) => {
 
   // 代入
   f.setProperties(feature.getProperties());
-  await nextTick();
 
   // ピンをセット
   features.value = source.getFeatures();
@@ -229,7 +227,7 @@ const updateFeature = async (feature: Feature) => {
  *
  * @param feature - 対象ピン
  */
-const deleteFeature = async (feature: Feature) => {
+const deleteFeature = (feature: Feature) => {
   /** UUIDを取得 */
   const uuid = feature.getId();
   /** ソース */
@@ -256,7 +254,6 @@ const deleteFeature = async (feature: Feature) => {
 
   features.value = source.getFeatures();
   requestRefresh.value = true;
-  await nextTick();
 };
 
 /** ソースを表示 */
@@ -266,7 +263,7 @@ const showSource = () => {
 };
 
 /** ピンを再描画 */
-const redraw = async () => {
+const redraw = () => {
   const source = props.layer.getSource()!;
   // 一旦クリア
   source.clear();
@@ -274,7 +271,6 @@ const redraw = async () => {
   source.addFeatures(features.value);
   // ピン一覧データを流し込み
   props.layer.setSource(source);
-  await nextTick();
 };
 
 /** すべてのピンを削除する */

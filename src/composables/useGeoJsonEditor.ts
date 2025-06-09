@@ -1,19 +1,261 @@
-// OpenLayers
+import { useGeoJsonEditorStore } from '@/store';
+import { ref, watch, onUnmounted, unref, type Ref } from 'vue';
+
+import MapBrowserEventType from 'ol/MapBrowserEventType';
 import { shiftKeyOnly } from 'ol/events/condition';
-import { Draw, Modify, Translate } from 'ol/interaction';
-// ol-ext
+import { Draw, Modify, Translate, Select, Snap, Interaction } from 'ol/interaction';
 import Delete from 'ol-ext/interaction/Delete';
 import DrawHole from 'ol-ext/interaction/DrawHole';
 import DrawRegular from 'ol-ext/interaction/DrawRegular';
 import FillAttribute from 'ol-ext/interaction/FillAttribute';
 import Transform from 'ol-ext/interaction/Transform';
+import UndoRedo from 'ol-ext/interaction/UndoRedo';
+import { v4 } from 'uuid';
 
+import type { Map, Feature, MapBrowserEvent } from 'ol';
 import type Collection from 'ol/Collection';
-import type Feature from 'ol/Feature';
+import type { FeatureLike } from 'ol/Feature';
 import type Geometry from 'ol/geom/Geometry';
-import type { Interaction } from 'ol/interaction';
+import type { DrawEvent } from 'ol/interaction/Draw';
+import type { SelectEvent } from 'ol/interaction/Select';
 import type VectorLayer from 'ol/layer/Vector';
 import type VectorSource from 'ol/source/Vector';
+
+import FeatureStatus from '@/helpers/FeatureStyles/FeatureStatus';
+import { getFeatureStyle } from '@/helpers/FeatureUtility';
+import { DefaultProperties } from '@/interfaces/FeatureProperties';
+
+/** GeoJsonエディタストア */
+const geoJsonEditorStore = useGeoJsonEditorStore();
+
+// Composableに渡すオプションの型定義
+interface UseGeoJsonEditorOptions {
+  /** OpenLayersマップオブジェクト */
+  map: Ref<Map>;
+  /** 編集対象のベクターレイヤー */
+  layer: Ref<VectorLayer<VectorSource>>;
+}
+
+// Composableの本体
+export default function useGeoJsonEditor(options: UseGeoJsonEditorOptions) {
+  const { map, layer } = options;
+
+  // --- State ---
+  const selectedTool = ref('default');
+  const tolerance = ref(2);
+  const isSnapEnabled = ref(false);
+
+  // --- OpenLayers Interactions ---
+  // Composable内でインタラクションを管理
+
+  /** 取り消し／やり直し */
+  const undoRedoInteraction = new UndoRedo();
+
+  /**
+   * 選択インタラクション
+   *
+   * @see {@link https://openlayers.org/en/latest/apidoc/module-ol_interaction_Select-Select.html}
+   */
+  const selectInteraction = new Select({
+    condition: (e: MapBrowserEvent) => e.type === MapBrowserEventType.SINGLECLICK,
+    layers: [unref(layer)], // Refから値を取り出す
+    hitTolerance: unref(tolerance),
+    style: (f: FeatureLike) => getFeatureStyle(f, FeatureStatus.SELECTED),
+    multi: false
+  });
+
+  /** グリッドに吸着インタラクション */
+  const snapInteraction: Snap = new Snap({ source: unref(layer).getSource()! });
+
+  /** 登録されているインタラクション */
+  let currentInteraction: Interaction | undefined = undefined;
+
+  // --- Feature to be Edited ---
+  // 編集対象のFeatureをコンポーネントに通知するためのRef
+  const featureToEdit = ref<Feature>();
+
+  // --- Event Handlers ---
+  selectInteraction.on('select', (e: SelectEvent) => {
+    if (unref(selectedTool) !== 'edit' || e.selected.length === 0) {
+      return;
+    }
+    const feature = e.selected[0];
+    if (feature) {
+      // 編集対象のFeatureをセットする。コンポーネント側でこれをwatchしてモーダルを開く
+      featureToEdit.value = feature;
+    }
+  });
+
+  // --- Watcher for tool changes ---
+  // ツールの変更を監視し、適切なインタラクションを設定
+  watch(selectedTool, newTool => {
+    const olMap = unref(map);
+
+    // 初期化
+    selectInteraction.getFeatures().clear();
+    if (currentInteraction) {
+      olMap.removeInteraction(currentInteraction);
+    }
+    // 'default'モードは何もしない
+    if (newTool === 'default') {
+      currentInteraction = undefined;
+      return;
+    }
+
+    // 新しいインタラクションを取得して設定
+    currentInteraction = getInteraction(
+      newTool,
+      unref(layer),
+      unref(tolerance),
+      selectInteraction.getFeatures()
+    );
+
+    if (!currentInteraction) {
+      return;
+    }
+    // Drawインタラクションにイベントハンドラを設定
+    (currentInteraction as Draw).on('drawend', (e: DrawEvent) => {
+      onFeatureChange(e.feature);
+      return e;
+    });
+    currentInteraction.on('change', e => console.log(e));
+    currentInteraction.on('error', e => console.error(e));
+    currentInteraction.on('propertychange', e => console.log(e));
+
+    olMap.addInteraction(currentInteraction);
+  });
+
+  // --- Methods exposed to the component ---
+  const onFeatureChange = (feature: Feature) => {
+    feature.setId(v4());
+    feature.setProperties(DefaultProperties);
+    // 描画後は自動で移動モードに切り替える
+    selectedTool.value = 'translate';
+    updateFeature(feature);
+  };
+
+  const unSelectFeature = () => {
+    selectInteraction.getFeatures().clear();
+    featureToEdit.value = undefined; // 編集対象もクリア
+  };
+
+  /**
+   * ピンを更新
+   *
+   * @param feature - 対象ピン
+   */
+  const updateFeature = (feature: Feature) => {
+    const source = unref(layer).getSource();
+    if (!source) return;
+
+    // 既存のフィーチャーをIDで取得
+    const id = feature.getId();
+    // IDがない場合は新規作成
+    const existingFeature = id ? source.getFeatureById(id) : null;
+
+    if (existingFeature) {
+      // 既存のフィーチャーがある場合は更新
+      existingFeature.setProperties(feature.getProperties());
+      // ストアに保存
+      geoJsonEditorStore.setFeatures(source.getFeatures());
+      geoJsonEditorStore.setRefresh(true);
+      console.log(geoJsonEditorStore.features);
+    }
+
+    unSelectFeature();
+  };
+
+  /**
+   * ピンを削除
+   *
+   * @param feature - 対象ピン
+   */
+  const deleteFeature = (feature: Feature) => {
+    const source = unref(layer).getSource();
+    if (!source) return;
+
+    const id = feature.getId();
+    const existingFeature = id ? source.getFeatureById(id) : null;
+
+    if (existingFeature) {
+      // 対象のフィーチャーを削除
+      source.removeFeature(existingFeature);
+      // ストアからも削除
+      geoJsonEditorStore.setFeatures(source.getFeatures());
+      geoJsonEditorStore.setRefresh(true);
+    }
+    unSelectFeature();
+  };
+
+  /** ピンを再描画 */
+  const redrawFeatures = () => {
+    const source = unref(layer).getSource();
+    if (!source) return;
+    // 一旦クリア
+    source.clear();
+    // ストアからフィーチャーを取得してソースに追加
+    source.addFeatures(geoJsonEditorStore.features);
+  };
+
+  /** 全てのフィーチャーをクリア */
+  const clearAllFeatures = () => {
+    geoJsonEditorStore.clear();
+    redrawFeatures();
+  };
+
+  /** スナップ機能のトグル */
+  const toggleSnap = () => (isSnapEnabled.value = !isSnapEnabled.value);
+
+  // --- Undo/Redo Methods ---
+  const undo = () => undoRedoInteraction.undo();
+  const redo = () => undoRedoInteraction.redo();
+
+  // --- Lifecycle Hooks ---
+  watch(
+    map,
+    newMap => {
+      if (newMap) {
+        // マップに基本的なインタラクションを追加
+        newMap.addInteraction(undoRedoInteraction);
+        newMap.addInteraction(selectInteraction);
+        if (isSnapEnabled.value) {
+          newMap.addInteraction(snapInteraction);
+        } else {
+          newMap.removeInteraction(snapInteraction);
+        }
+      }
+    },
+    { immediate: true }
+  );
+
+  onUnmounted(() => {
+    const olMap = unref(map);
+    if (olMap) {
+      // コンポーネントが破棄される際にインタラクションを全て削除
+      olMap.removeInteraction(undoRedoInteraction);
+      olMap.removeInteraction(selectInteraction);
+      olMap.removeInteraction(snapInteraction);
+      if (currentInteraction) {
+        olMap.removeInteraction(currentInteraction);
+      }
+    }
+  });
+
+  // コンポーネント側で利用する状態とメソッドを返す
+  return {
+    selectedTool,
+    isSnapEnabled,
+    featureToEdit,
+    undo,
+    redo,
+    toggleSnap,
+    clearAllFeatures,
+    redrawFeatures,
+    updateFeature,
+    deleteFeature,
+    unSelectFeature
+  };
+}
 
 /**
  * インタラクションを取得
@@ -53,14 +295,12 @@ export function getInteraction(
         type: 'Point'
       });
     case 'line':
-      // store.dispatch('setMessage', i18n.t('hint.line'));
       // 線を描画
       return new Draw({
         source,
         type: 'LineString'
       });
     case 'square':
-      // store.dispatch('setMessage', i18n.t('hint.draw-regular'));
       // 四角形を描画
       return new DrawRegular({
         // 対象ソース
@@ -71,7 +311,6 @@ export function getInteraction(
         canRotate: true
       });
     case 'circle':
-      // store.dispatch('setMessage', i18n.t('hint.draw-regular'));
       // 円形を描画
       return new DrawRegular({
         // 対象ソース
@@ -89,7 +328,6 @@ export function getInteraction(
       });
     case 'transform': {
       // 変形
-      // store.dispatch('setMessage', i18n.t('hint.transform'));
 
       // 変化カーソルの塗りつぶし
       Transform.prototype.Cursors.rotate =

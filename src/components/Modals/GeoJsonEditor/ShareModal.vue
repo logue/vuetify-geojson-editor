@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** 共有モーダル */
-import { useGlobal, useGeoJsonEditor, useMapCursor } from '@/store';
+import { useGlobalStore, useGeoJsonEditorStore, useMapCursorStore } from '@/store';
 import { computed, nextTick, ref, type ComputedRef, type Ref, type WritableComputedRef } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -14,11 +14,11 @@ import type { Coordinate } from 'ol/coordinate';
 const router = useRouter();
 
 /** グローバルストア */
-const globalStore = useGlobal();
+const globalStore = useGlobalStore();
 /** マップカーソルストア */
-const mapCursorStore = useMapCursor();
+const mapCursorStore = useMapCursorStore();
 /** GeoJSONエディタストア */
-const geoJsonEditorStore = useGeoJsonEditor();
+const geoJsonEditorStore = useGeoJsonEditorStore();
 
 /** loading overlay visibility */
 const loading: WritableComputedRef<boolean> = computed({

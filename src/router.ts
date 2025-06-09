@@ -1,4 +1,4 @@
-import { useGlobal } from '@/store';
+import { useGlobalStore } from '@/store';
 import {
   createRouter,
   createWebHistory,
@@ -41,13 +41,13 @@ router.beforeEach(
     _from: RouteLocationNormalized,
     next: NavigationGuardNext
   ) => {
-    const globalStore = useGlobal();
+    const globalStore = useGlobalStore();
     // Show Loading
     // comment out for https://github.com/logue/vite-vuetify-ts-starter/issues/16
     // globalStore.setLoading(true);
 
     // Hide snack bar
-    globalStore.setMessage('');
+    globalStore.setMessage();
     next();
   }
 );
@@ -55,7 +55,7 @@ router.beforeEach(
 // Global After Hooks
 // https://router.vuejs.org/guide/advanced/navigation-guards.html#global-after-hooks}
 router.afterEach(() => {
-  const globalStore = useGlobal();
+  const globalStore = useGlobalStore();
   // Hide Loading
   globalStore.setLoading(false);
 });

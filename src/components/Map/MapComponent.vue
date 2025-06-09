@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** マップコンポーネント */
-import { useMapCursor } from '@/store';
+import { useMapCursorStore } from '@/store';
 import {
   computed,
   onMounted,
@@ -82,7 +82,7 @@ const emit = defineEmits<Emits>();
 /** Route */
 const route = useRoute();
 /** マップのカーソルストア */
-const mapCursorStore = useMapCursor();
+const mapCursorStore = useMapCursorStore();
 
 /** マップのDOM */
 const ol: Ref<InstanceType<typeof HTMLDivElement> | undefined> = ref();

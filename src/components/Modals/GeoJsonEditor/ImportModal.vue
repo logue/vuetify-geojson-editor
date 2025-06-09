@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** 座標データインポートモーダル */
-import { useGlobal, useGeoJsonEditor } from '@/store';
+import { useGlobalStore, useGeoJsonEditorStore } from '@/store';
 import { computed, nextTick, ref, type Ref, type WritableComputedRef } from 'vue';
 
 import rewind from '@turf/rewind';
@@ -14,9 +14,9 @@ import type { Topology } from 'topojson-specification';
 const emits = defineEmits(['loaded']);
 
 /** グローバルストア */
-const globalStore = useGlobal();
+const globalStore = useGlobalStore();
 /** GeoJSONエディタストア */
-const geoJsonEditorStore = useGeoJsonEditor();
+const geoJsonEditorStore = useGeoJsonEditorStore();
 
 /** loading overlay visibility */
 const loading: WritableComputedRef<boolean> = computed({

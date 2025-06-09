@@ -1,32 +1,24 @@
 <script setup lang="ts">
-import { useGlobal, useMapCursor, useGeoJsonEditor } from '@/store';
+import { useGlobalStore, useMapCursorStore, useGeoJsonEditorStore } from '@/store';
 import { computed, nextTick, onMounted, ref, watch, type Ref, type WritableComputedRef } from 'vue';
 import { onBeforeRouteUpdate } from 'vue-router';
 
-import MapBrowserEventType from 'ol/MapBrowserEventType';
-import { Select } from 'ol/interaction';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
-import UndoRedo from 'ol-ext/interaction/UndoRedo';
-
-import type { FeatureLike } from 'ol/Feature';
-import type Feature from 'ol/Feature';
-import type MapBrowserEvent from 'ol/MapBrowserEvent';
 
 // コンポーネント
 import MapComponent from '@/components/Map/MapComponent.vue';
 import MapContextMenu from '@/components/Map/MapContextMenu.vue';
 import MapEditorToolbar from '@/components/Map/MapEditorToolbar.vue';
 // ヘルパ
-import FeatureStatus from '@/helpers/FeatureStyles/FeatureStatus';
 import { getFeatureStyle, setFeaturesStyle } from '@/helpers/FeatureUtility';
 
 /** グローバルストア */
-const globalStore = useGlobal();
+const globalStore = useGlobalStore();
 /** マップカーソルストア */
-const mapCursorStore = useMapCursor();
+const mapCursorStore = useMapCursorStore();
 /** GeoJsonエディタストア */
-const geoJsonEditorStore = useGeoJsonEditor();
+const geoJsonEditorStore = useGeoJsonEditorStore();
 
 /** マップ */
 const mapComponent: Ref<InstanceType<typeof MapComponent> | undefined> = ref();
@@ -55,45 +47,16 @@ const level: WritableComputedRef<number> = computed({
   set: l => mapCursorStore.setLevel(l)
 });
 
-/** ピン一覧 */
-const features: WritableComputedRef<Feature[]> = computed({
-  get: () => geoJsonEditorStore.getFeatures(),
-  set: feats => geoJsonEditorStore.setFeatures(feats)
-});
-
-/** 場所レイヤー */
-const locationLayer: VectorLayer<VectorSource> = new VectorLayer({
-  properties: { id: 'locationLayer' },
-  zIndex: 5
-});
-
 /** 編集用レイヤ */
 const editorLayer: VectorLayer<VectorSource> = new VectorLayer<VectorSource>({
   source: new VectorSource({
-    features: features.value
+    features: geoJsonEditorStore.features
   }),
   style: f => getFeatureStyle(f),
   zIndex: 10,
   properties: {
     id: 'editorLayer'
   }
-});
-
-/**
- * 選択インタラクション
- *
- * @see {@link https://openlayers.org/en/latest/apidoc/module-ol_interaction_Select-Select.html}
- */
-const selectInteraction = new Select({
-  // シングルクリックのみ
-  condition: (e: MapBrowserEvent) => e.type === MapBrowserEventType.SINGLECLICK,
-  // 対象レイヤ
-  layers: [editorLayer],
-  // 許容ピクセル
-  hitTolerance: 2,
-  // 選択時のスタイル
-  style: (f: FeatureLike) => getFeatureStyle(f, FeatureStatus.SELECTED),
-  multi: false
 });
 
 /** レイヤー切替時 */
@@ -133,28 +96,12 @@ onMounted(async () => {
     return;
   }
   loading.value = true;
-  locationLayer.setSource(new VectorSource({ features: features.value }));
-  setFeaturesStyle(locationLayer, level.value);
-
-  // 場所レイヤを追加
-  map.addLayer(locationLayer);
   // 記入用レイヤをマップに追加
   map.addLayer(editorLayer);
-
-  // 取り消し／やり直しインタラクションを登録
-  map.addInteraction(new UndoRedo());
-
-  // ピン選択を有効化
-  map.addInteraction(selectInteraction);
 
   // 初期選択
   loading.value = false;
 });
-
-const contextmenu = (e: MouseEvent) => {
-  // コンテキストメニューを表示
-  mapContextMenu.value?.show(e);
-};
 
 onBeforeRouteUpdate(async (to, from, next) => {
   if (to.params.region !== from.params.region) {
@@ -178,7 +125,7 @@ onBeforeRouteUpdate(async (to, from, next) => {
       :layer="editorLayer"
     />
     <!-- マップ -->
-    <map-component ref="mapComponent" @contextmenu="contextmenu" />
+    <map-component ref="mapComponent" @contextmenu="mapContextMenu?.show" />
     <!-- コンテキストメニュー -->
     <map-context-menu v-if="mapComponent" ref="mapContextMenu" :map="mapComponent.map" />
   </v-container>

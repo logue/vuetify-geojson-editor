@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** GeoJsonエディタ */
-import { useGeoJsonEditor } from '@/store';
+import { useGeoJsonEditorStore } from '@/store';
 import { ref, type Ref } from 'vue';
 
 import { json, jsonParseLinter } from '@codemirror/lang-json';
@@ -14,7 +14,7 @@ import ImportModal from '@/components/Modals/GeoJsonEditor/ImportModal.vue';
 /** Emits */
 const emits = defineEmits({ close: () => true });
 
-const geoJsonEditorStore = useGeoJsonEditor();
+const geoJsonEditorStore = useGeoJsonEditorStore();
 
 /** vuetify */
 const theme = useTheme();
@@ -48,8 +48,6 @@ const show = () => {
 const submit = () => {
   try {
     const j = JSON.parse(source.value);
-    // console.log('[GeoJsonEditor] Setter');
-    // console.log(json);
     geoJsonEditorStore.setGeoJson(j);
   } catch (e) {
     console.warn(`⚠️${e}`, source);

@@ -1,5 +1,5 @@
 /** ピンのデザインなどのユーティリティー関数群 */
-import { useGlobal } from '@/store';
+import { useGlobalStore } from '@/store';
 
 import chroma from 'chroma-js';
 // openlayers
@@ -23,7 +23,7 @@ import axios from '@/plugins/axios';
  * @returns
  */
 export async function getGeoJson(file: string): Promise<FeatureCollection | null> {
-  const globalStore = useGlobal();
+  const globalStore = useGlobalStore();
   try {
     const ret = await axios.get(`${import.meta.env.BASE_URL}data/${file}.geojson`);
     return ret.data;
