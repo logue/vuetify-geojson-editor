@@ -72,7 +72,7 @@ export default defineConfig(({ command, mode }): UserConfig => {
             // Split external library from transpiled code.
             vue: ['vue', 'vue-router', 'pinia', 'pinia-plugin-persistedstate'],
             vuetify: ['vuetify', 'vuetify/components', 'vuetify/directives', 'webfontloader'],
-            openlayers: [
+            ol: [
               'ol',
               'ol/control',
               'ol/format',
@@ -82,17 +82,25 @@ export default defineConfig(({ command, mode }): UserConfig => {
               'ol/interaction/Select.js',
               'ol/interaction/Snap.js',
               'ol/interaction/Translate.js',
-              'ol/reproj.js',
+              'ol/layer',
+              'ol/proj',
+              'ol/reproj',
+              'ol/render',
               'ol/source',
               'ol/source/Vector.js',
               'ol/tilegrid.js',
               'ol/tilegrid',
               'ol/tileurlfunction.js',
+              'ol/webgl'
+            ],
+            'ol-ext': [
               'ol-ext',
               'ol-ext/control/Button.js',
               'ol-ext/control/CanvasBase.js',
               'ol-ext/control/GridReference.js',
               'ol-ext/control/Notification.js',
+              'ol-ext/control/LayerSwitcher.js',
+              'ol-ext/control/LayerPopup.js',
               'ol-ext/control/Overlay.js',
               'ol-ext/control/ProgressBar.js',
               'ol-ext/control/Scale.js',
