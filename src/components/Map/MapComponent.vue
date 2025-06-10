@@ -32,6 +32,7 @@ import { transform } from 'ol/proj';
 import { OSM, Vector as VectorSource, XYZ } from 'ol/source';
 import VectorTileSource from 'ol/source/VectorTile';
 // ol-ext
+import LayerPopup from 'ol-ext/control/LayerPopup';
 import Notification from 'ol-ext/control/Notification';
 import ProgressBar from 'ol-ext/control/ProgressBar';
 import Scale from 'ol-ext/control/Scale';
@@ -170,17 +171,24 @@ const map: ShallowRef<Map> = shallowRef(
       new ProgressBar({ label: props.loadingMessage }),
       new Scale({}),
       new ScaleLine(),
+      new LayerPopup(),
       notification
     ],
     view,
     layers: compact([
       new Tile({
-        zIndex: 0,
+        // @ts-ignore
+        title: 'OpenStreetMap',
+        baseLayer: true,
+        zIndex: 1,
         properties: { id: 'osm' },
         source: new OSM(),
         visible: true
       }),
       new Tile({
+        // @ts-ignore
+        title: '国土地理院標準地図',
+        baseLayer: true,
         zIndex: 1,
         properties: { id: 'gsi' },
         source: new XYZ({
@@ -192,6 +200,9 @@ const map: ShallowRef<Map> = shallowRef(
         visible: false
       }),
       new VectorTileLayer({
+        // @ts-ignore
+        title: '国土地理院ベクトルタイル',
+        baseLayer: true,
         zIndex: 2,
         properties: { id: 'gsi-vector' },
         source: new VectorTileSource({
@@ -205,6 +216,20 @@ const map: ShallowRef<Map> = shallowRef(
         }),
         renderBuffer: 100,
         style: stylingVectorTile, //スタイリング用の関数（後述）
+        visible: false
+      }),
+      new Tile({
+        // @ts-ignore
+        title: '全国最新写真（シームレス）',
+        baseLayer: false,
+        zIndex: 0,
+        properties: { id: 'seamlessphoto' },
+        source: new XYZ({
+          url: 'https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg',
+          attributions: [
+            '<a href="https://maps.gsi.go.jp/development/ichiran.html#seamlessphoto" target="_blank">国土地理院</a>'
+          ]
+        }),
         visible: false
       }),
       cursorLayer
