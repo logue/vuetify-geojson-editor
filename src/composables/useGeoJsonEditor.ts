@@ -67,7 +67,7 @@ export default function useGeoJsonEditor(options: UseGeoJsonEditorOptions) {
   /** グリッドに吸着インタラクション */
   const snapInteraction: Snap = new Snap({ source: unref(layer).getSource()! });
 
-  /** 登録されているインタラクション */
+  /** 現在選択されているインタラクション */
   let currentInteraction: Interaction | undefined = undefined;
 
   // --- Feature to be Edited ---

@@ -2,7 +2,7 @@
 import { useGeoJsonEditorStore } from '@/store';
 import {
   computed,
-  onMounted,
+  toRefs,
   ref,
   watch,
   type PropType,
@@ -10,30 +10,19 @@ import {
   type WritableComputedRef
 } from 'vue';
 
-import MapBrowserEventType from 'ol/MapBrowserEventType';
-import { Interaction, Select, Snap, type Draw } from 'ol/interaction';
-import UndoRedo from 'ol-ext/interaction/UndoRedo';
-import { v4 } from 'uuid';
-
-import type { Feature, Map, MapBrowserEvent } from 'ol';
-import type { FeatureLike } from 'ol/Feature';
-import type { DrawEvent } from 'ol/interaction/Draw';
-import type { SelectEvent } from 'ol/interaction/Select';
+import type { Feature, Map } from 'ol';
 import type VectorLayer from 'ol/layer/Vector';
 import type VectorSource from 'ol/source/Vector';
 
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue';
 import PropertiesEditorModal from '@/components/Modals/GeoJsonEditor/PropertiesEditorModal.vue';
 import SourceModal from '@/components/Modals/GeoJsonEditor/SourceModal.vue';
-import { getInteraction } from '@/composables/useGeoJsonEditor';
-import FeatureStatus from '@/helpers/FeatureStyles/FeatureStatus';
-import { getFeatureStyle } from '@/helpers/FeatureUtility';
-import { DefaultProperties } from '@/interfaces/FeatureProperties';
+import useGeoJsonEditor from '@/composables/useGeoJsonEditor';
 
 const props = defineProps({
   /** Openlayersのマップオブジェクト */
   map: {
-    type: Object as PropType<Map | undefined>,
+    type: Object as PropType<Map>,
     required: true
   },
   /** 編集対象のレイヤー */
@@ -43,8 +32,17 @@ const props = defineProps({
   }
 });
 
+// propsをリアクティブなRefに変換
+const { map, layer } = toRefs(props);
+
 /** GeoJsonエディタストア */
 const geoJsonEditorStore = useGeoJsonEditorStore();
+
+/** フィーチャー */
+const features: WritableComputedRef<Feature[]> = computed({
+  get: () => geoJsonEditorStore.features,
+  set: feats => geoJsonEditorStore.setFeatures(feats)
+});
 
 /** GeoJsonソースモーダル */
 const codeModal: Ref<InstanceType<typeof SourceModal> | undefined> = ref();
@@ -55,263 +53,52 @@ const confirmModal: Ref<InstanceType<typeof ConfirmModal> | undefined> = ref();
 /** プロパティ編集モーダル */
 const propertiesModal: Ref<InstanceType<typeof PropertiesEditorModal> | undefined> = ref();
 
-/** 選択されているインタラクション名 */
-const selected: Ref<string> = ref('default');
-
-/** クリック時の許容ピクセル */
-const tolerance: Ref<number> = ref(2);
-
-/** グリッドに吸着 */
-const snap: Ref<boolean> = ref(false);
-
-/** 更新要求フラグ */
-const requestRefresh: WritableComputedRef<boolean> = computed({
-  get: () => geoJsonEditorStore.requestRefresh,
-  set: v => geoJsonEditorStore.setRefresh(v)
+// --- Composableの利用 ---
+// Composableに必要なリアクティブな値を渡す
+const {
+  selectedTool, // Composableから受け取る選択中のツール
+  isSnapEnabled, // Composableから受け取るスナップの状態
+  featureToEdit, // Composableから受け取る編集対象のFeature
+  undo, // Undoメソッド
+  redo, // Redoメソッド
+  toggleSnap, // スナップ切り替えメソッド
+  clearAllFeatures, // 全削除メソッド
+  redrawFeatures, // 再描画メソッド
+  updateFeature, // 更新メソッド
+  deleteFeature, // 削除メソッド
+  unSelectFeature // 選択解除メソッド
+} = useGeoJsonEditor({
+  map,
+  layer
 });
 
-/** ピン一覧 */
-const features: WritableComputedRef<Feature[]> = computed({
-  get: () => geoJsonEditorStore.features,
-  set: feats => geoJsonEditorStore.setFeatures(feats)
-});
+// --- Component-specific Logic ---
 
-/**
- * 選択インタラクション
- *
- * @see {@link https://openlayers.org/en/latest/apidoc/module-ol_interaction_Select-Select.html}
- */
-const selectInteraction = new Select({
-  // シングルクリックのみ
-  condition: (e: MapBrowserEvent) => e.type === MapBrowserEventType.SINGLECLICK,
-  // 対象レイヤ
-  layers: [props.layer],
-  // 許容ピクセル
-  hitTolerance: tolerance.value,
-  // 選択時のスタイル
-  style: (f: FeatureLike) => getFeatureStyle(f, FeatureStatus.SELECTED),
-  multi: false
-});
-
-// プロパティ編集
-selectInteraction.on('select', async (e: SelectEvent) => {
-  if (selected.value !== 'edit') {
-    // 選択モードでない場合は何もしない
-    return;
-  }
-  /** UUID */
-  const uuid = e.selected[0].getId();
-  /** 対象レイヤーのソース */
-  const source = props.layer.getSource();
-
-  // selectが選択されていたときで、なおかつピンが一つ以上選択されていた時
-  if (!uuid || !source) {
-    return;
-  }
-
-  /** 選択されているピン */
-  const feature = source.getFeatureById(uuid);
-
-  if (!feature) {
-    return;
-  }
-
-  // モーダルを開く
-  propertiesModal.value?.show(feature);
-});
-
-/** グリッドに吸着インタラクション */
-const snapInteraction: Snap = new Snap({ source: props.layer.getSource()! });
-
-/** 登録されているインタラクション */
-let currentInteraction: Interaction | undefined = undefined;
-
-/** 取り消し／やり直し */
-const undoRedoInteraction: UndoRedo = new UndoRedo();
-
-/** ツールバーの選択変更時 */
-watch(selected, current => {
-  /** マップのインスタンス */
-  const map = props.map!;
-  console.log('mode: ', current);
-
-  // 選択されているピンを解除
-  selectInteraction.getFeatures().clear();
-
-  // 一旦インタラクションを解除する
-  if (currentInteraction) {
-    map.removeInteraction(currentInteraction);
-    if (current === 'default') {
-      return;
-    }
-  }
-
-  // 吸着インタラクション
-  if (!snap.value) {
-    map.addInteraction(snapInteraction);
-  } else {
-    map.removeInteraction(snapInteraction);
-  }
-
-  currentInteraction = getInteraction(
-    current,
-    props.layer,
-    tolerance.value,
-    selectInteraction.getFeatures()
-  );
-
-  if (currentInteraction) {
-    // 描画完了時に実行
-    (currentInteraction as Draw).on('drawend', (e: DrawEvent) => {
-      /** プロパティ */
-      const p = DefaultProperties;
-      // ユニークIDをピン／ライン／ポリゴンに追記
-      e.feature.setId(v4());
-      e.feature.setProperties(p);
-      // カーソルをポインタに戻す
-      selected.value = 'translate';
-      return e;
-    });
-
-    // console.log('set: ', interaction.value, currentInteraction);
-    currentInteraction.on('change', e => console.log(e));
-    currentInteraction.on('error', e => console.error(e));
-    currentInteraction.on('propertychange', e => console.log(e));
-    map.addInteraction(currentInteraction);
+// Composableから渡された編集対象のFeatureを監視し、モーダルを開く
+watch(featureToEdit, feature => {
+  if (feature) {
+    propertiesModal.value?.show(feature);
   }
 });
 
-/** ピンの選択解除 */
-const unSelectFeature = () => selectInteraction.getFeatures().clear();
-
-/**
- * ピンを更新
- *
- * @param feature - 対象ピン
- */
-const updateFeature = (feature: Feature) => {
-  /** UUIDを取得 */
-  const uuid = feature.getId();
-  /** ソース */
-  const source = props.layer.getSource();
-
-  if (!uuid || !source) {
-    // UUIDがセットされていない場合は何もしない
-    //message.value = t('map.editor.messages.feature-notfound');
-    return;
-  }
-
-  /** 一致するピン */
-  const f = source.getFeatureById(uuid);
-
-  if (!f) {
-    //message.value = t('map.editor.messages.feature-notfound');
-    return;
-  }
-
-  // 代入
-  f.setProperties(feature.getProperties());
-
-  // ピンをセット
-  features.value = source.getFeatures();
-  requestRefresh.value = true;
-
-  // ピンの選択解除
-  unSelectFeature();
-
-  //message.value = t('map.editor.messages.feature-saved');
-};
-
-/**
- * ピンを削除
- *
- * @param feature - 対象ピン
- */
-const deleteFeature = (feature: Feature) => {
-  /** UUIDを取得 */
-  const uuid = feature.getId();
-  /** ソース */
-  const source = props.layer.getSource()!;
-
-  if (!uuid || !source) {
-    // セットされていない場合は何もしない
-    // message.value = t('map.editor.messages.feature-notfound');
-    return;
-  }
-
-  /** 一致するピン */
-  const f = source.getFeatureById(uuid);
-
-  if (!f) {
-    // message.value = t('map.editor.messages.feature-notfound');
-    return;
-  }
-
-  // 削除
-  source.removeFeature(f);
-  // ピンの選択解除
-  unSelectFeature();
-
-  features.value = source.getFeatures();
-  requestRefresh.value = true;
-};
-
-/** ソースを表示 */
+/** ソースモーダルを表示 */
 const showSource = () => {
+  // ソース表示の準備はストアの更新に任せる
   features.value = props.layer.getSource()!.getFeatures();
   codeModal.value?.show();
 };
 
-/** ピンを再描画 */
-const redraw = () => {
-  const source = props.layer.getSource()!;
-  // 一旦クリア
-  source.clear();
-  // ピン流し込み
-  source.addFeatures(features.value);
-  // ピン一覧データを流し込み
-  props.layer.setSource(source);
-};
-
-/** すべてのピンを削除する */
+/** フィーチャーを全削除する */
 const clear = () => {
-  geoJsonEditorStore.clear();
-  redraw();
+  geoJsonEditorStore.clear(); // Piniaストアをクリア
+  clearAllFeatures(); // Composableのメソッドを呼ぶ
 };
-
-/** グリッドに吸着 */
-const toggleSnap = () => {
-  const map = props.map!;
-  if (!snap.value) {
-    map.addInteraction(snapInteraction);
-  } else {
-    map.removeInteraction(snapInteraction);
-  }
-  snap.value = !snap.value;
-};
-
-/** DOM更新時 */
-onMounted(() => {
-  /** マップのインスタンス */
-  const map = props?.map;
-  if (!map) {
-    return;
-  }
-  if (currentInteraction) {
-    // 現在のインタラクションをマップに追加
-    map.addInteraction(currentInteraction);
-  }
-  // 取り消し／やり直しインタラクションを登録
-  map.addInteraction(undoRedoInteraction);
-  // ピン選択を有効化
-  map.addInteraction(selectInteraction);
-});
 </script>
 
 <template>
   <!-- ツールバー -->
   <v-toolbar color="primary" dense elevation="2">
-    <v-btn-toggle v-model="selected" class="px-0" variant="text" theme="dark">
+    <v-btn-toggle v-model="selectedTool" class="px-0" variant="text" theme="dark">
       <v-tooltip location="bottom">
         <template #activator="{ props: slotProps }">
           <v-btn icon="mdi-cursor-default" tile value="default" v-bind="slotProps" />
@@ -399,7 +186,7 @@ onMounted(() => {
     <v-tooltip location="bottom">
       <template #activator="{ props: slotProps }">
         <v-btn
-          :icon="`mdi-grid${snap ? '' : '-off'}`"
+          :icon="`mdi-grid${isSnapEnabled ? '' : '-off'}`"
           tile
           v-bind="slotProps"
           @click="toggleSnap"
@@ -411,13 +198,13 @@ onMounted(() => {
     <v-spacer />
     <v-tooltip location="bottom">
       <template #activator="{ props: slotProps }">
-        <v-btn icon="mdi-undo" tile v-bind="slotProps" @click="undoRedoInteraction.undo()" />
+        <v-btn icon="mdi-undo" tile v-bind="slotProps" @click="undo()" />
       </template>
       Undo
     </v-tooltip>
     <v-tooltip location="bottom">
       <template #activator="{ props: slotProps }">
-        <v-btn icon="mdi-redo" tile v-bind="slotProps" @click="undoRedoInteraction.redo()" />
+        <v-btn icon="mdi-redo" tile v-bind="slotProps" @click="redo()" />
       </template>
       Redo
     </v-tooltip>
@@ -452,5 +239,5 @@ onMounted(() => {
     @submit="updateFeature"
   />
   <!-- GeoJson Editor-->
-  <source-modal ref="codeModal" @close="redraw" />
+  <source-modal ref="codeModal" @close="redrawFeatures" />
 </template>
