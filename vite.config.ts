@@ -68,73 +68,42 @@ export default defineConfig(({ command, mode }): UserConfig => {
       // https://vitejs.dev/config/build-options.html#build-rollupoptions
       rollupOptions: {
         output: {
-          manualChunks: {
+          manualChunks: (id: string) => {
             // Split external library from transpiled code.
-            vue: ['vue', 'vue-router', 'pinia', 'pinia-plugin-persistedstate'],
-            vuetify: ['vuetify', 'vuetify/components', 'vuetify/directives', 'webfontloader'],
-            ol: [
-              'ol',
-              'ol/control',
-              'ol/format',
-              'ol/interaction',
-              'ol/interaction/Draw.js',
-              'ol/interaction/Modify.js',
-              'ol/interaction/Select.js',
-              'ol/interaction/Snap.js',
-              'ol/interaction/Translate.js',
-              'ol/layer',
-              'ol/proj',
-              'ol/reproj',
-              'ol/render',
-              'ol/source',
-              'ol/source/Vector.js',
-              'ol/tilegrid.js',
-              'ol/tilegrid',
-              'ol/tileurlfunction.js',
-              'ol/webgl'
-            ],
-            'ol-ext': [
-              'ol-ext',
-              'ol-ext/control/Button.js',
-              'ol-ext/control/CanvasBase.js',
-              'ol-ext/control/GridReference.js',
-              'ol-ext/control/Notification.js',
-              'ol-ext/control/LayerSwitcher.js',
-              'ol-ext/control/LayerPopup.js',
-              'ol-ext/control/Overlay.js',
-              'ol-ext/control/ProgressBar.js',
-              'ol-ext/control/Scale.js',
-              'ol-ext/control/Toggle.js',
-              'ol-ext/interaction/Delete.js',
-              'ol-ext/interaction/DrawHole.js',
-              'ol-ext/interaction/DrawRegular.js',
-              'ol-ext/interaction/FillAttribute.js',
-              'ol-ext/interaction/Hover.js',
-              'ol-ext/interaction/ModifyTouch.js',
-              'ol-ext/interaction/Transform.js',
-              'ol-ext/interaction/UndoRedo.js',
-              'ol-ext/geom/sphere.js',
-              'ol-ext/overlay/Popup.js',
-              'ol-ext/style/defaultStyle.js'
-            ],
-            codemirror: ['vue-codemirror6'],
-            'codemirror-lang': [
-              // Add the following as needed.
-              '@codemirror/lang-json',
-              '@codemirror/lang-markdown'
-            ],
-            misc: [
-              '@turf/clean-coords',
-              '@turf/rewind',
-              'axios',
-              'chroma-js',
-              'es-toolkit',
-              'geojson-precision-ts',
-              'streamsaver/StreamSaver.js',
-              'topojson-client',
-              'topojson-server',
-              'uuid'
-            ]
+            if (
+              id.includes('/node_modules/vuetify') ||
+              id.includes('/node_modules/webfontloader') ||
+              id.includes('/node_modules/@mdi/font')
+            ) {
+              // VueよりもVuetifyの方が大きいので、vuetifyを先に分割する
+              return 'vuetify';
+            }
+            if (
+              id.includes('/node_modules/@vue/') ||
+              id.includes('/node_modules/vue') ||
+              id.includes('/node_modules/pinia')
+            ) {
+              // VueとPiniaをまとめる
+              return 'vue';
+            }
+            // OpenLayersとol-ext
+            if (id.includes('/node_modules/ol/')) {
+              return 'ol';
+            }
+            if (id.includes('/node_modules/ol-ext/')) {
+              return 'ol-ext';
+            }
+            // CodeMirror6
+            if (id.includes('/node_modules/vue-codemirror6/')) {
+              return 'codemirror';
+            }
+            if (id.includes('/node_modules/@codemirror/')) {
+              return 'codemirror-lang';
+            }
+            // その他のnode_modules内のパッケージを'vendor'にまとめる
+            if (id.includes('/node_modules/')) {
+              return 'vendor';
+            }
           },
           plugins: [
             mode === 'analyze'

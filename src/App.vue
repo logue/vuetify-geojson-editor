@@ -57,6 +57,8 @@ watch(
   message => (snackbarVisibility.value = message !== '')
 );
 
+watch(progress, async () => await nextTick(), { immediate: true });
+
 /** Clear store when snackbar hide */
 const onSnackbarChanged = async () => {
   globalStore.setMessage();
