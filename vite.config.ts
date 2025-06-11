@@ -94,11 +94,16 @@ export default defineConfig(({ command, mode }): UserConfig => {
               return 'ol-ext';
             }
             // CodeMirror6
-            if (id.includes('/node_modules/vue-codemirror6/')) {
+            if (
+              id.includes('/node_modules/vue-codemirror6/') ||
+              id.includes('/node_modules/codemirror/') ||
+              id.includes('/node_modules/@codemirror/') ||
+              id.includes('/node_modules/style-mod/')
+            ) {
               return 'codemirror';
             }
-            if (id.includes('/node_modules/@codemirror/')) {
-              return 'codemirror-lang';
+            if (id.includes('/node_modules/@lezer/')) {
+              return 'lezer';
             }
             // その他のnode_modules内のパッケージを'vendor'にまとめる
             if (id.includes('/node_modules/')) {

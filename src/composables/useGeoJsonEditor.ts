@@ -159,7 +159,6 @@ export default function useGeoJsonEditor(options: UseGeoJsonEditorOptions) {
       // ストアに保存
       geoJsonEditorStore.setFeatures(source.getFeatures());
       geoJsonEditorStore.setRefresh(true);
-      console.log(geoJsonEditorStore.features);
     }
 
     unSelectFeature();
@@ -230,14 +229,12 @@ export default function useGeoJsonEditor(options: UseGeoJsonEditorOptions) {
 
   onUnmounted(() => {
     const olMap = unref(map);
-    if (olMap) {
-      // コンポーネントが破棄される際にインタラクションを全て削除
-      olMap.removeInteraction(undoRedoInteraction);
-      olMap.removeInteraction(selectInteraction);
-      olMap.removeInteraction(snapInteraction);
-      if (currentInteraction) {
-        olMap.removeInteraction(currentInteraction);
-      }
+    // コンポーネントが破棄される際にインタラクションを全て削除
+    olMap.removeInteraction(undoRedoInteraction);
+    olMap.removeInteraction(selectInteraction);
+    olMap.removeInteraction(snapInteraction);
+    if (currentInteraction) {
+      olMap.removeInteraction(currentInteraction);
     }
   });
 
@@ -265,10 +262,10 @@ export default function useGeoJsonEditor(options: UseGeoJsonEditorOptions) {
  * @param tolerance - 許容誤差
  * @param features - 選択済みのピン／ポリゴン
  */
-export function getInteraction(
+function getInteraction(
   name: string,
   vector: VectorLayer<VectorSource>,
-  tolerance = 2,
+  tolerance: number,
   features?: Collection<Feature<Geometry>>
 ): Interaction | undefined {
   const source = vector.getSource();
@@ -287,7 +284,7 @@ export function getInteraction(
       return new Modify({ source });
     case 'delete':
       // 選択を削除
-      return new Delete({ layers: [vector] });
+      return new Delete({ layers: [vector], hitTolerance: tolerance });
     case 'point':
       // 点を描画
       return new Draw({
@@ -308,7 +305,9 @@ export function getInteraction(
         // 角の数。2以下は円。
         sides: 4,
         // 回転可能か
-        canRotate: true
+        canRotate: true,
+        // クリック許容範囲
+        clickTolerance: tolerance
       });
     case 'circle':
       // 円形を描画
@@ -318,13 +317,17 @@ export function getInteraction(
         // 円
         sides: 2,
         // 回転可能か
-        canRotate: false
+        canRotate: false,
+        // クリック許容範囲
+        clickTolerance: tolerance
       });
     case 'polygon':
       // 多角形を描画
       return new Draw({
         source,
-        type: 'Polygon'
+        type: 'Polygon',
+        // クリック許容範囲
+        clickTolerance: tolerance
       });
     case 'transform': {
       // 変形
@@ -353,8 +356,8 @@ export function getInteraction(
         scale: true,
         // 回転
         rotate: true,
-        // アスペクト比を保持したまま拡大縮小（Shiftキー押しながらで実行するためコメントアウト）
-        // keepAspectRatio: true,
+        // アスペクト比を保持したまま拡大縮小
+        keepAspectRatio: shiftKeyOnly,
         // オブジェクトの範囲を常時表示
         keepRectangle: false,
         // 移動
