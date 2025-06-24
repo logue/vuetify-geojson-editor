@@ -143,6 +143,8 @@ geolocation.on('change:position', () => {
 
 /** カーソルレイヤ */
 const cursorLayer = new VectorLayer({
+  // @ts-ignore
+  title: '現在地',
   zIndex: 999,
   style: pinStyle,
   visible: true,
@@ -221,7 +223,7 @@ const map: ShallowRef<Map> = shallowRef(
       new Tile({
         // @ts-ignore
         title: '全国最新写真（シームレス）',
-        baseLayer: false,
+        baseLayer: true,
         zIndex: 0,
         properties: { id: 'seamlessphoto' },
         source: new XYZ({

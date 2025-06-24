@@ -49,6 +49,8 @@ const level: WritableComputedRef<number> = computed({
 
 /** 編集用レイヤ */
 const editorLayer: VectorLayer<VectorSource> = new VectorLayer<VectorSource>({
+  // @ts-ignore
+  title: 'Editor Layer',
   source: new VectorSource({
     features: geoJsonEditorStore.features
   }),
