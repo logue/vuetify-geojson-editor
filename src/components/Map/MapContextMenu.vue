@@ -38,8 +38,8 @@ const copyLink = async (): Promise<void> => {
   /** パス */
   const path = router.resolve({
     query: {
-      x: coordinate.value[1].toFixed(6).toString(),
-      y: coordinate.value[0].toFixed(6).toString(),
+      x: coordinate.value[1]!.toFixed(6).toString(),
+      y: coordinate.value[0]!.toFixed(6).toString(),
       zoom: Math.round(zoom.value).toString()
     }
   });
@@ -66,8 +66,8 @@ const toImage = async (toFile = false): Promise<void> => {
 
     /** 仮想描画Canvas */
     const mapCanvas = document.createElement('canvas');
-    mapCanvas.width = size[0];
-    mapCanvas.height = size[1];
+    mapCanvas.width = size[0] || 0;
+    mapCanvas.height = size[1] || 0;
 
     /** 描画コンテキスト */
     const mapContext = mapCanvas.getContext('2d') as CanvasRenderingContext2D;
@@ -162,9 +162,9 @@ defineExpose({ show, hide, position, coordinate });
         <v-icon size="small">mdi-crosshairs</v-icon>
         Coordinate
         <v-icon size="small">mdi-arrow-left-right</v-icon>
-        {{ coordinate[0].toFixed(6) }},
+        {{ coordinate[0]!.toFixed(6) }},
         <v-icon size="small">mdi-arrow-up-down</v-icon>
-        {{ coordinate[1].toFixed(6) }}
+        {{ coordinate[1]!.toFixed(6) }}
         &nbsp;
         <v-icon size="small">mdi-magnify</v-icon>
         Zoom: {{ Math.round(zoom) }}

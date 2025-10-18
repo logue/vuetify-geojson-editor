@@ -51,8 +51,8 @@ const copy = async () => {
   codec.compress(geoJsonEditorStore.topojson).then(async (json: string) => {
     /** 発行するクエリ */
     const query: Record<string, string> = {
-      x: coordinate.value[1].toString(),
-      y: coordinate.value[0].toString(),
+      x: coordinate.value[1]!.toString(),
+      y: coordinate.value[0]!.toString(),
       zoom: zoom.value.toString(),
       level: level.value.toString(),
       t: json

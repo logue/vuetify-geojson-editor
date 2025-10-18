@@ -245,7 +245,7 @@ const interactions: Interaction[] = map.value.getInteractions().getArray();
 const pinchRotateInteraction = interactions.filter((interaction: Interaction) => {
   return interaction instanceof PinchRotate;
 })[0];
-pinchRotateInteraction.setActive(false);
+pinchRotateInteraction!.setActive(false);
 
 /** カーソルピンをクリックした時 */
 const cursorClick = new Select({
@@ -282,7 +282,7 @@ map.value.on('moveend', () => {
   /** 中心座標 */
   const center = view.getCenter() ?? props.center;
   // 現在の座標を中心座標に合わせる
-  currentPosition.value = [center[0], center[1]];
+  currentPosition.value = [center[0] || 0, center[1] || 0];
   // 現在のズーム値を保存
   currentZoom.value = view.getZoom() ?? 0;
 });

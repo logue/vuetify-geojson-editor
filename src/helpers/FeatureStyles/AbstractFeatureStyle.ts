@@ -1,15 +1,15 @@
 import chroma from 'chroma-js';
 import { camelCase } from 'es-toolkit';
 import { Style, Circle, Text, Fill, Stroke, Icon } from 'ol/style';
-import colors from 'vuetify/lib/util/colors.mjs';
+import colors from 'vuetify/lib/util/colors.js';
 
 import type FeatureStyleInterface from '@/interfaces/FeatureStyleInterface';
-import type { MaterialColorType } from '@/types/MaterialColorType';
+import type { MaterialColorSet, MaterialColorType } from '@/types/MaterialColorType';
 
 /** ピンのスタイル */
 export default abstract class AbstractFeatureStyle implements FeatureStyleInterface {
   /** カラーセット */
-  protected colorSet: Record<string, string>;
+  protected colorSet: MaterialColorSet;
   /** フォント */
   protected fontFace: string;
 
