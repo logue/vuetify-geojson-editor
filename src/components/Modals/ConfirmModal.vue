@@ -76,22 +76,12 @@ defineExpose({ show });
           Discard
         </v-btn>
         <v-spacer />
-        <v-btn
-          v-if="danger"
-          color="red"
-          prepend-icon="mdi-close-octagon"
-          variant="text"
-          @click="submit"
-        >
-          OK
-        </v-btn>
         <v-btn variant="text" color="secondary" prepend-icon="mdi-cancel" @click="hide">
           Cancel
         </v-btn>
         <v-btn
-          v-if="!danger"
           variant="text"
-          color="primary"
+          :color="danger ? 'red' : 'primary'"
           prepend-icon="mdi-check"
           @click="submit"
         >
