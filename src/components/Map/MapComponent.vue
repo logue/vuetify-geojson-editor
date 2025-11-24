@@ -1,52 +1,12 @@
 <script setup lang="ts">
 /** マップコンポーネント */
-import { useMapCursorStore } from '@/store';
-import {
-  computed,
-  onMounted,
-  onUnmounted,
-  ref,
-  shallowRef,
-  type PropType,
-  type Ref,
-  type ShallowRef,
-  type WritableComputedRef
-} from 'vue';
+import { onMounted, onUnmounted, ref, type PropType, type Ref } from 'vue';
 import { useRoute } from 'vue-router';
-
-import { compact } from 'es-toolkit';
-// openlayers
-import Feature from 'ol/Feature';
-import Geolocation from 'ol/Geolocation';
-import Map from 'ol/Map';
-import View from 'ol/View';
-import { Attribution, MousePosition, Zoom, ZoomSlider, ScaleLine } from 'ol/control';
-import { createStringXY } from 'ol/coordinate';
-import { singleClick } from 'ol/events/condition';
-import MVT from 'ol/format/MVT';
-import Point from 'ol/geom/Point';
-import { Interaction, PinchRotate, Select } from 'ol/interaction';
-import { Tile, Vector as VectorLayer } from 'ol/layer';
-import VectorTileLayer from 'ol/layer/VectorTile';
-import { transform } from 'ol/proj';
-import { OSM, Vector as VectorSource, XYZ } from 'ol/source';
-import VectorTileSource from 'ol/source/VectorTile';
-// ol-ext
-import LayerPopup from 'ol-ext/control/LayerPopup';
-import Notification from 'ol-ext/control/Notification';
-import ProgressBar from 'ol-ext/control/ProgressBar';
-import Scale from 'ol-ext/control/Scale';
 
 import type { Coordinate } from 'ol/coordinate';
 import type { Extent } from 'ol/extent';
 
-// ヘルパ
-import { stylingVectorTile } from '@/helpers/FeatureStyles/stylingVectorTile';
-import { pinStyle } from '@/helpers/FeatureUtility';
-
-// import featureAnimation from 'ol-ext/featureanimation/FeatureAnimation';
-// import Bounce from 'ol-ext/featureanimation/Bounce';
-// import Drop from 'ol-ext/featureanimation/Drop';
+import { useMapSetup } from '@/composables/useMapSetup';
 
 interface Emits {
   /** 準備完了 */
@@ -82,217 +42,28 @@ const emit = defineEmits<Emits>();
 
 /** Route */
 const route = useRoute();
-/** マップのカーソルストア */
-const mapCursorStore = useMapCursorStore();
 
 /** マップのDOM */
 const ol: Ref<InstanceType<typeof HTMLDivElement> | undefined> = ref();
 
-/** 現在のズーム */
-const currentZoom: WritableComputedRef<number> = computed({
-  get: () => mapCursorStore.zoom,
-  set: z => mapCursorStore.setZoom(z)
-});
-
-/** 現在地 */
-const currentPosition: WritableComputedRef<Coordinate> = computed({
-  get: () => mapCursorStore.coordinate,
-  set: coordinate => mapCursorStore.setCoordinate(coordinate)
+/** マップセットアップ */
+const { map, notification, setupMoveEndHandler, setFromQuery } = useMapSetup({
+  zoom: props.zoom,
+  minZoom: props.minZoom,
+  maxZoom: props.maxZoom,
+  extentLimit: props.extentLimit,
+  center: props.center,
+  loadingMessage: props.loadingMessage
 });
 
 /* Query String */
 const query = route?.query as Record<string, string>;
 
-// 現在地を上書き
-if (query.x && query.y) {
-  currentPosition.value = [parseFloat(query.y), parseFloat(query.x)];
-} else if (props.center) {
-  currentPosition.value = props.center;
-}
+// クエリパラメータから初期設定
+setFromQuery(query);
 
-// 初期ズーム値
-currentZoom.value = query.zoom ? parseInt(query.zoom) : props.zoom;
-
-/** カーソル */
-const cursorFeature: Feature<Point> = new Feature({
-  geometry: new Point(currentPosition.value),
-  name: 'cursor'
-});
-
-/** ビュー */
-const view: View = new View({
-  center: transform(currentPosition.value, 'EPSG:4326', 'EPSG:3857'),
-  projection: 'EPSG:3857',
-  zoom: currentZoom.value,
-  minZoom: props.minZoom,
-  maxZoom: props.maxZoom,
-  extent: props.extentLimit
-});
-
-/** ジオロケーション設定 */
-const geolocation = new Geolocation();
-geolocation.setProjection(view.getProjection());
-
-// トラッキング開始
-geolocation.setTracking(true);
-
-geolocation.on('change:position', () => {
-  const coordinates = geolocation.getPosition();
-  cursorFeature.setGeometry(coordinates ? new Point(coordinates) : undefined);
-});
-
-/** カーソルレイヤ */
-const cursorLayer = new VectorLayer({
-  // @ts-ignore
-  title: '現在地',
-  zIndex: 999,
-  style: pinStyle,
-  visible: true,
-  source: new VectorSource({
-    features: [cursorFeature]
-  }),
-  properties: {
-    id: 'cursorLayer'
-  }
-});
-
-/** 通知 */
-const notification = new Notification();
-
-/** マップをセットアップ */
-const map: ShallowRef<Map> = shallowRef(
-  new Map({
-    controls: [
-      new Zoom(),
-      new MousePosition({
-        coordinateFormat: createStringXY(4),
-        projection: 'EPSG:4326'
-      }),
-      new ZoomSlider(),
-      new Attribution({ collapsible: false }),
-      new ProgressBar({ label: props.loadingMessage }),
-      new Scale({}),
-      new ScaleLine(),
-      new LayerPopup(),
-      notification
-    ],
-    view,
-    layers: compact([
-      new Tile({
-        // @ts-ignore
-        title: 'OpenStreetMap',
-        baseLayer: true,
-        zIndex: 1,
-        properties: { id: 'osm' },
-        source: new OSM(),
-        visible: true
-      }),
-      new Tile({
-        // @ts-ignore
-        title: '国土地理院標準地図',
-        baseLayer: true,
-        zIndex: 1,
-        properties: { id: 'gsi' },
-        source: new XYZ({
-          url: 'https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png',
-          attributions: [
-            '<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank">国土地理院</a>'
-          ]
-        }),
-        visible: false
-      }),
-      new VectorTileLayer({
-        // @ts-ignore
-        title: '国土地理院ベクトルタイル',
-        baseLayer: true,
-        zIndex: 2,
-        properties: { id: 'gsi-vector' },
-        source: new VectorTileSource({
-          format: new MVT(),
-          url: 'https://cyberjapandata.gsi.go.jp/xyz/experimental_bvmap/{z}/{x}/{y}.pbf',
-          maxZoom: 17,
-          minZoom: 4,
-          attributions: [
-            '<a href="https://maps.gsi.go.jp/vector/" target="_blank">地理院地図Vector</a>'
-          ]
-        }),
-        renderBuffer: 100,
-        style: stylingVectorTile, //スタイリング用の関数（後述）
-        visible: false
-      }),
-      new Tile({
-        // @ts-ignore
-        title: '全国最新写真（シームレス）',
-        baseLayer: true,
-        zIndex: 0,
-        properties: { id: 'seamlessphoto' },
-        source: new XYZ({
-          url: 'https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg',
-          attributions: [
-            '<a href="https://maps.gsi.go.jp/development/ichiran.html#seamlessphoto" target="_blank">国土地理院</a>'
-          ]
-        }),
-        visible: false
-      }),
-      cursorLayer
-    ])
-  })
-);
-
-/** インタラクション */
-const interactions: Interaction[] = map.value.getInteractions().getArray();
-/** 回転を無効化 */
-const pinchRotateInteraction = interactions.filter((interaction: Interaction) => {
-  return interaction instanceof PinchRotate;
-})[0];
-pinchRotateInteraction!.setActive(false);
-
-/** カーソルピンをクリックした時 */
-const cursorClick = new Select({
-  condition: singleClick,
-  layers: [cursorLayer]
-});
-cursorClick.on('select', () => {
-  // cursorLayer.setVisible(false);
-});
-map.value.addInteraction(cursorClick);
-
-/*
-アニメーション処理
-(this.cursorLayer as any).animateFeature(cursorFeature, [
-  new featureAnimation(
-    new Drop({
-      speed: 0.8,
-      side: 1,
-    }),
-    new Bounce({ easing: (p0: number) => p0 })
-  ),
-]);
-*/
-
-if (route?.query.x && route?.query.y) {
-  // クエリから来た場合は初期位置にマーカーを設置
-  cursorLayer.setVisible(true);
-}
-
-// マップの設定を保存
-map.value.on('moveend', () => {
-  /** 現在のビュー */
-  const view = map.value.getView();
-  /** 中心座標 */
-  const center = view.getCenter() ?? props.center;
-  // 現在の座標を中心座標に合わせる
-  currentPosition.value = [center[0] || 0, center[1] || 0];
-  // 現在のズーム値を保存
-  currentZoom.value = view.getZoom() ?? 0;
-});
-
-/** プログレスバー */
-const progress = new ProgressBar({
-  label: props.loadingMessage,
-  layers: map.value.getAllLayers()
-});
-map.value.addControl(progress);
+// マップの移動終了イベントを設定
+setupMoveEndHandler(props.center);
 
 /** 読み込まれたとき */
 onMounted(() => {
