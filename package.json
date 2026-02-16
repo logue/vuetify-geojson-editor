@@ -131,6 +131,7 @@
     "@isaacs/brace-expansion": ">=5.0.1",
     "core-js": ">=3.42.0",
     "json5": ">=2.2.3",
+    "jspdf": ">=4.1.0",
     "yaml": ">=2.3.2"
   },
   "stackblitz": {

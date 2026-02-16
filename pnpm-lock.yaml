@@ -8,6 +8,7 @@ overrides:
   '@isaacs/brace-expansion': '>=5.0.1'
   core-js: '>=3.42.0'
   json5: '>=2.2.3'
+  jspdf: '>=4.1.0'
   yaml: '>=2.3.2'
 
 importers:
@@ -1059,7 +1060,7 @@ packages:
   '@siedlerchr/types-ol-ext@3.6.6':
     resolution: {integrity: sha512-i89x5AvSjnt6d418KMaZ4yL7NydVLfm/rlR2ICoGhKV2YO6xp6MpyN+2H4eimPP3Q6i90nKxcUt0s5ETcisAQA==}
     peerDependencies:
-      jspdf: ^4.0.0
+      jspdf: '>=4.1.0'
 
   '@sindresorhus/merge-streams@4.0.0':
     resolution: {integrity: sha512-tlqY9xq5ukxTUZBmoOp+m61cqwQD5pHJtFY3Mn8CA8ps6yghLH/Hw8UPdqg4OLmFW3IFlcXnQNmo/dh8HzXYIQ==}
