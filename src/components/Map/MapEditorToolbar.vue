@@ -97,7 +97,7 @@ const clear = () => {
 
 <template>
   <!-- ツールバー -->
-  <v-toolbar color="primary" dense elevation="2">
+  <v-toolbar color="primary" density="compact" elevation="2">
     <v-btn-toggle v-model="selectedTool" class="px-0" variant="text" theme="dark">
       <v-tooltip location="bottom">
         <template #activator="{ props: slotProps }">
