@@ -97,16 +97,12 @@ export default defineStore(
       const stream = JSON.stringify(
         type === 'topojson'
           ? {
-              // TopoJsonのスキーマーヘッダを挿入
-              ...{
-                $schema:
-                  'https://raw.githubusercontent.com/Casyfill/TopoJSON_schema/master/topology.json'
-              },
+              $schema:
+                'https://raw.githubusercontent.com/Casyfill/TopoJSON_schema/master/topology.json',
               ...topology({ data })
             }
           : {
-              // GeoJsonのスキーマーヘッダを挿入
-              ...{ $schema: 'https://json.schemastore.org/geojson.json' },
+              $schema: 'https://json.schemastore.org/geojson.json',
               ...data
             },
         null,

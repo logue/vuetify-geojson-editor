@@ -39,7 +39,7 @@ globalThis.URL.revokeObjectURL = vi.fn();
 (HTMLCanvasElement.prototype.getContext as any) = vi.fn(() => ({
   fillRect: vi.fn(),
   clearRect: vi.fn(),
-  getImageData: vi.fn(() => ({ data: new Array(4) })),
+  getImageData: vi.fn(() => ({ data: [] })),
   putImageData: vi.fn(),
   createImageData: vi.fn(() => []),
   setTransform: vi.fn(),
