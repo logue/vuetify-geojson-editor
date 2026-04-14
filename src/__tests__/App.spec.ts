@@ -1,41 +1,52 @@
 import { mount } from '@vue/test-utils';
 import { setActivePinia, createPinia } from 'pinia';
 import { describe, expect, it, beforeEach, vi } from 'vitest';
+import { nextTick, reactive } from 'vue';
 
 import App from '../App.vue';
 
 import { vuetifyInstance } from '@/__tests__/setup';
 
+const appTitle = import.meta.env.VITE_APP_TITLE ?? 'Vuetify3 Application';
+
 // ストアのモック
-const mockGlobalStore = {
+const mockGlobalStore = reactive({
   loading: false,
   progress: null as number | null,
   message: '',
-  setLoading: vi.fn(),
-  setMessage: vi.fn()
-};
+  setLoading: vi.fn((value = false) => {
+    mockGlobalStore.loading = value;
+  }),
+  setMessage: vi.fn((value = '') => {
+    mockGlobalStore.message = value;
+  })
+});
 
-const mockConfigStore = {
+const mockConfigStore = reactive({
   theme: false,
-  toggleTheme: vi.fn()
-};
+  toggleTheme: vi.fn<() => void>()
+});
 
 vi.mock('@/store', () => ({
-  useGlobalStore: vi.fn(() => mockGlobalStore),
-  useConfigStore: vi.fn(() => mockConfigStore)
+  useGlobalStore: vi.fn<() => typeof mockGlobalStore>(() => mockGlobalStore),
+  useConfigStore: vi.fn<() => typeof mockConfigStore>(() => mockConfigStore)
 }));
 
 // Vuetifyテーマのモック
-vi.mock('vuetify', () => ({
-  useTheme: vi.fn(() => ({
-    computedThemes: {
-      value: {
-        dark: { colors: { primary: '#1976d2' } },
-        light: { colors: { primary: '#1976d2' } }
+vi.mock('vuetify', async importOriginal => {
+  const actual = await importOriginal<typeof import('vuetify')>();
+  return {
+    ...actual,
+    useTheme: vi.fn<() => void>(() => ({
+      computedThemes: {
+        value: {
+          dark: { colors: { primary: '#1976d2' } },
+          light: { colors: { primary: '#1976d2' } }
+        }
       }
-    }
-  }))
-}));
+    }))
+  };
+});
 
 // ルーターのモック
 const mockRoute = {
@@ -45,7 +56,7 @@ const mockRoute = {
 };
 
 vi.mock('vue-router', () => ({
-  useRoute: vi.fn(() => mockRoute)
+  useRoute: vi.fn<() => typeof mockRoute>(() => mockRoute)
 }));
 
 // コンポーネントのモック
@@ -67,6 +78,9 @@ describe('App.vue', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
+    mockGlobalStore.loading = false;
+    mockGlobalStore.progress = null;
+    mockGlobalStore.message = '';
   });
 
   it('should render app structure correctly', () => {
@@ -121,7 +135,7 @@ describe('App.vue', () => {
 
     const title = wrapper.find('.v-app-bar-title');
     expect(title.exists()).toBe(true);
-    expect(title.text()).toContain('Vuetify3 Application');
+    expect(title.text()).toContain(appTitle);
   });
 
   it('should show loading overlay when loading is true', () => {
@@ -137,8 +151,9 @@ describe('App.vue', () => {
       }
     });
 
-    const overlay = wrapper.find('.v-overlay');
+    const overlay = wrapper.findComponent({ name: 'VOverlay' });
     expect(overlay.exists()).toBe(true);
+    expect(overlay.props('modelValue')).toBe(true);
   });
 
   it('should show progress bar when loading is true', () => {
@@ -160,8 +175,6 @@ describe('App.vue', () => {
   });
 
   it('should show snackbar when message is set', async () => {
-    mockGlobalStore.message = 'Test message';
-
     const wrapper = mount(App, {
       global: {
         plugins: [vuetifyInstance],
@@ -172,11 +185,13 @@ describe('App.vue', () => {
       }
     });
 
-    // snackbarVisibilityがwatchされてtrueになる
+    mockGlobalStore.setMessage('Test message');
+    await nextTick();
     await wrapper.vm.$nextTick();
 
-    const snackbar = wrapper.find('.v-snackbar');
+    const snackbar = wrapper.findComponent({ name: 'VSnackbar' });
     expect(snackbar.exists()).toBe(true);
+    expect(snackbar.props('modelValue')).toBe(true);
   });
 
   it('should clear message when snackbar is closed', async () => {
@@ -192,11 +207,8 @@ describe('App.vue', () => {
       }
     });
 
-    // snackbarのクローズボタンをクリックしてメッセージがクリアされることを確認
-    const closeButton = wrapper.find('[icon="mdi-close"]');
-    if (closeButton.exists()) {
-      await closeButton.trigger('click');
-    }
+    const snackbar = wrapper.findComponent({ name: 'VSnackbar' });
+    await snackbar.vm.$emit('update:modelValue', false);
 
     expect(mockGlobalStore.setMessage).toHaveBeenCalled();
   });
@@ -230,7 +242,7 @@ describe('App.vue', () => {
       }
     });
 
-    expect(document.title).toBe('Vuetify3 Application');
+    expect(document.title).toBe(appTitle);
 
     // テスト後にタイトルを復元
     document.title = originalTitle;

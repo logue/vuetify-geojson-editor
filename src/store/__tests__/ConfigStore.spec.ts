@@ -4,7 +4,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import useConfigStore from '../ConfigStore';
 
 // window.matchMediaのモック
-const mockMatchMedia = vi.fn();
+const mockMatchMedia = vi.fn<() => MediaQueryList>();
 Object.defineProperty(globalThis, 'matchMedia', {
   writable: true,
   value: mockMatchMedia
@@ -20,11 +20,11 @@ describe('ConfigStore', () => {
       matches: false,
       media: '(prefers-color-scheme: dark)',
       onchange: null,
-      addListener: vi.fn(),
-      removeListener: vi.fn(),
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-      dispatchEvent: vi.fn()
+      addListener: vi.fn<() => void>(),
+      removeListener: vi.fn<() => void>(),
+      addEventListener: vi.fn<() => void>(),
+      removeEventListener: vi.fn<() => void>(),
+      dispatchEvent: vi.fn<() => boolean>()
     });
   });
 
@@ -33,11 +33,11 @@ describe('ConfigStore', () => {
       matches: false,
       media: '(prefers-color-scheme: dark)',
       onchange: null,
-      addListener: vi.fn(),
-      removeListener: vi.fn(),
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-      dispatchEvent: vi.fn()
+      addListener: vi.fn<() => void>(),
+      removeListener: vi.fn<() => void>(),
+      addEventListener: vi.fn<() => void>(),
+      removeEventListener: vi.fn<() => void>(),
+      dispatchEvent: vi.fn<() => boolean>()
     });
 
     const configStore = useConfigStore();
@@ -49,11 +49,11 @@ describe('ConfigStore', () => {
       matches: true,
       media: '(prefers-color-scheme: dark)',
       onchange: null,
-      addListener: vi.fn(),
-      removeListener: vi.fn(),
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-      dispatchEvent: vi.fn()
+      addListener: vi.fn<() => void>(),
+      removeListener: vi.fn<() => void>(),
+      addEventListener: vi.fn<() => void>(),
+      removeEventListener: vi.fn<() => void>(),
+      dispatchEvent: vi.fn<() => boolean>()
     });
 
     const configStore = useConfigStore();

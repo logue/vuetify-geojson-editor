@@ -6,24 +6,30 @@ import useGeoJsonEditorStore from '../GeoJsonEditorStore';
 import type { GeoJSONObject } from 'ol/format/GeoJSON';
 
 // OpenLayersのモック
+vi.mock('@turf/clean-coords', () => ({
+  default: vi.fn((input: unknown) => input)
+}));
+
 vi.mock('ol/format/GeoJSON', () => ({
-  GeoJSON: vi.fn().mockImplementation(() => ({
-    readFeatures: vi.fn(() => []),
-    writeFeatures: vi.fn(() =>
-      JSON.stringify({
-        type: 'FeatureCollection',
-        features: []
-      })
-    )
-  }))
+  default: vi.fn(function GeoJSON() {
+    return {
+      readFeatures: vi.fn<() => any>(() => []),
+      writeFeatures: vi.fn<() => string>(() =>
+        JSON.stringify({
+          type: 'FeatureCollection',
+          features: []
+        })
+      )
+    };
+  })
 }));
 
 vi.mock('ol', () => ({
-  Feature: vi.fn().mockImplementation(() => ({
-    getId: vi.fn(),
-    setId: vi.fn(),
-    getProperties: vi.fn(() => ({})),
-    setProperties: vi.fn()
+  Feature: vi.fn<() => void>().mockImplementation(() => ({
+    getId: vi.fn<() => string>(() => 'test-id'),
+    setId: vi.fn<() => void>(),
+    getProperties: vi.fn<() => any>(() => ({})),
+    setProperties: vi.fn<() => void>()
   }))
 }));
 

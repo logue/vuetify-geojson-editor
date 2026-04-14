@@ -7,103 +7,127 @@ import useGeoJsonEditor from '../useGeoJsonEditor';
 
 // OpenLayersのモック
 const mockMap = {
-  addInteraction: vi.fn(),
-  removeInteraction: vi.fn(),
-  getInteractions: vi.fn(() => ({
-    getArray: vi.fn(() => [])
+  addInteraction: vi.fn<() => void>(),
+  removeInteraction: vi.fn<() => void>(),
+  getInteractions: vi.fn<() => any>(() => ({
+    getArray: vi.fn<() => any>(() => [])
   }))
 };
 
+const mockSource = {
+  clear: vi.fn<() => void>(),
+  addFeatures: vi.fn<() => void>(),
+  removeFeature: vi.fn<() => void>(),
+  getFeatures: vi.fn<() => any>(() => []),
+  getFeatureById: vi.fn<() => any>()
+};
+
 const mockLayer = {
-  getSource: vi.fn(() => ({
-    clear: vi.fn(),
-    addFeatures: vi.fn(),
-    removeFeature: vi.fn(),
-    getFeatures: vi.fn(() => []),
-    getFeatureById: vi.fn()
-  }))
+  getSource: vi.fn<() => any>(() => mockSource)
 };
 
 // OpenLayersのインタラクションクラスをモック
 vi.mock('ol/interaction', () => ({
-  Draw: vi.fn().mockImplementation(() => ({
-    on: vi.fn(),
-    setActive: vi.fn()
-  })),
-  Modify: vi.fn().mockImplementation(() => ({
-    on: vi.fn(),
-    setActive: vi.fn()
-  })),
-  Translate: vi.fn().mockImplementation(() => ({
-    on: vi.fn(),
-    setActive: vi.fn()
-  })),
-  Select: vi.fn().mockImplementation(() => ({
-    on: vi.fn(),
-    getFeatures: vi.fn(() => ({
-      clear: vi.fn(),
-      getArray: vi.fn(() => [])
-    })),
-    setActive: vi.fn()
-  })),
-  Snap: vi.fn().mockImplementation(() => ({
-    on: vi.fn(),
-    setActive: vi.fn()
-  }))
+  Draw: vi.fn(function Draw() {
+    return {
+      on: vi.fn<() => void>(),
+      setActive: vi.fn<() => void>()
+    };
+  }),
+  Modify: vi.fn(function Modify() {
+    return {
+      on: vi.fn<() => void>(),
+      setActive: vi.fn<() => void>()
+    };
+  }),
+  Translate: vi.fn(function Translate() {
+    return {
+      on: vi.fn<() => void>(),
+      setActive: vi.fn<() => void>()
+    };
+  }),
+  Select: vi.fn(function Select() {
+    return {
+      on: vi.fn<() => void>(),
+      getFeatures: vi.fn<() => any>(() => ({
+        clear: vi.fn<() => void>(),
+        getArray: vi.fn<() => any>(() => [])
+      })),
+      setActive: vi.fn<() => void>()
+    };
+  }),
+  Snap: vi.fn(function Snap() {
+    return {
+      on: vi.fn<() => void>(),
+      setActive: vi.fn<() => void>()
+    };
+  })
 }));
 
 vi.mock('ol-ext/interaction/Delete', () => ({
-  default: vi.fn().mockImplementation(() => ({
-    on: vi.fn(),
-    setActive: vi.fn()
-  }))
+  default: vi.fn(function Delete() {
+    return {
+      on: vi.fn<() => void>(),
+      setActive: vi.fn<() => void>()
+    };
+  })
 }));
 
 vi.mock('ol-ext/interaction/DrawHole', () => ({
-  default: vi.fn().mockImplementation(() => ({
-    on: vi.fn(),
-    setActive: vi.fn(),
-    getPolygon: vi.fn()
-  }))
+  default: vi.fn(function DrawHole() {
+    return {
+      on: vi.fn<() => void>(),
+      setActive: vi.fn<() => void>(),
+      getPolygon: vi.fn<() => void>()
+    };
+  })
 }));
 
 vi.mock('ol-ext/interaction/DrawRegular', () => ({
-  default: vi.fn().mockImplementation(() => ({
-    on: vi.fn(),
-    setActive: vi.fn()
-  }))
+  default: vi.fn(function DrawRegular() {
+    return {
+      on: vi.fn<() => void>(),
+      setActive: vi.fn<() => void>()
+    };
+  })
 }));
 
 vi.mock('ol-ext/interaction/FillAttribute', () => ({
-  default: vi.fn().mockImplementation(() => ({
-    on: vi.fn(),
-    setActive: vi.fn()
-  }))
+  default: vi.fn(function FillAttribute() {
+    return {
+      on: vi.fn<() => void>(),
+      setActive: vi.fn<() => void>()
+    };
+  })
 }));
 
 vi.mock('ol-ext/interaction/Transform', () => ({
-  default: vi.fn().mockImplementation(() => ({
-    on: vi.fn(),
-    setActive: vi.fn(),
-    setCenter: vi.fn()
-  }))
+  default: vi.fn(function Transform() {
+    return {
+      on: vi.fn<() => void>(),
+      setActive: vi.fn<() => void>(),
+      setCenter: vi.fn<() => void>()
+    };
+  })
 }));
 
 vi.mock('ol-ext/interaction/UndoRedo', () => ({
-  default: vi.fn().mockImplementation(() => ({
-    on: vi.fn(),
-    undo: vi.fn(),
-    redo: vi.fn()
-  }))
+  default: vi.fn(function UndoRedo() {
+    return {
+      on: vi.fn<() => void>(),
+      undo: vi.fn<() => void>(),
+      redo: vi.fn<() => void>()
+    };
+  })
 }));
 
 // ストアのモック
 vi.mock('@/store', () => ({
-  useGeoJsonEditorStore: vi.fn(() => ({
+  useGeoJsonEditorStore: vi.fn<() => any>(() => ({
     features: [],
-    setFeatures: vi.fn(),
-    setRefresh: vi.fn(),
-    clear: vi.fn()
+    setFeatures: vi.fn<() => void>(),
+    setRefresh: vi.fn<() => void>(),
+    clear: vi.fn<() => void>()
   }))
 }));
 
@@ -111,6 +135,7 @@ describe('useGeoJsonEditor', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
+    mockSource.clear.mockClear();
   });
 
   it('should initialize with default values', () => {
@@ -178,7 +203,7 @@ describe('useGeoJsonEditor', () => {
 
     expect(typeof composable.redrawFeatures).toBe('function');
     composable.redrawFeatures();
-    expect(mockLayer.getSource().clear).toHaveBeenCalled();
+    expect(mockSource.clear).toHaveBeenCalled();
   });
 
   it('should provide update feature function', () => {
@@ -191,9 +216,9 @@ describe('useGeoJsonEditor', () => {
     });
 
     const mockFeature = {
-      getId: vi.fn(() => 'test-id'),
-      getProperties: vi.fn(() => ({})),
-      setProperties: vi.fn()
+      getId: vi.fn<() => string>(() => 'test-id'),
+      getProperties: vi.fn<() => any>(() => ({})),
+      setProperties: vi.fn<() => void>()
     };
 
     expect(typeof composable.updateFeature).toBe('function');
@@ -210,8 +235,8 @@ describe('useGeoJsonEditor', () => {
     });
 
     const mockFeature = {
-      getId: vi.fn(() => 'test-id'),
-      getProperties: vi.fn(() => ({}))
+      getId: vi.fn<() => string>(() => 'test-id'),
+      getProperties: vi.fn<() => any>(() => ({}))
     };
 
     expect(typeof composable.deleteFeature).toBe('function');

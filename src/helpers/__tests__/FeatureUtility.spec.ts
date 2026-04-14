@@ -11,56 +11,57 @@ import {
 
 import type { FeatureCollection } from 'geojson';
 
-// axiosのモック
-vi.mock('@/plugins/axios', () => ({
-  default: {
-    get: vi.fn()
-  }
-}));
+function createMockStyle() {
+  return {
+    getImage: vi.fn<() => void>(() => ({
+      setScale: vi.fn<() => void>(),
+      setOpacity: vi.fn<() => void>()
+    })),
+    getText: vi.fn<() => void>(() => ({
+      setText: vi.fn<() => void>(),
+      setFont: vi.fn<() => void>()
+    })),
+    getStroke: vi.fn<() => void>(() => ({
+      setWidth: vi.fn<() => void>()
+    })),
+    getFill: vi.fn<() => void>(() => ({
+      getColor: vi.fn<() => string>(() => '#ff0000'),
+      setColor: vi.fn<() => void>()
+    }))
+  };
+}
 
 // ストアのモック
 vi.mock('@/store', () => ({
-  useGlobalStore: vi.fn(() => ({
-    setMessage: vi.fn()
+  useGlobalStore: vi.fn<() => any>(() => ({
+    setMessage: vi.fn<() => void>()
   }))
 }));
 
 // OpenLayersのモック
 vi.mock('ol/layer/Vector', () => ({
-  Vector: vi.fn()
+  Vector: vi.fn<() => void>()
 }));
 
 vi.mock('ol/source/Vector', () => ({
-  Vector: vi.fn()
+  Vector: vi.fn<() => void>()
 }));
 
 vi.mock('ol/style', () => ({
-  Icon: vi.fn(),
-  Style: vi.fn().mockImplementation(() => ({
-    getImage: vi.fn(() => ({
-      setScale: vi.fn(),
-      setOpacity: vi.fn()
-    })),
-    getText: vi.fn(() => ({
-      setText: vi.fn(),
-      setFont: vi.fn()
-    })),
-    getStroke: vi.fn(() => ({
-      setWidth: vi.fn()
-    })),
-    getFill: vi.fn(() => ({
-      getColor: vi.fn(() => '#ff0000'),
-      setColor: vi.fn()
-    }))
-  }))
+  Icon: vi.fn<() => void>(function Icon() {
+    return {};
+  }),
+  Style: vi.fn<() => void>(function Style() {
+    return createMockStyle();
+  })
 }));
 
 // FeatureStylesのモック
 vi.mock('@/helpers/FeatureStyles', () => ({
   default: {
-    getIconStyle: vi.fn(() => new (vi.fn())()),
-    getSectionPolygonStyle: vi.fn(() => new (vi.fn())()),
-    getStyle: vi.fn(() => new (vi.fn())()),
+    getIconStyle: vi.fn<() => any>(() => createMockStyle()),
+    getSectionPolygonStyle: vi.fn<() => any>(() => createMockStyle()),
+    getStyle: vi.fn<() => any>(() => createMockStyle()),
     fontFace: 'Arial'
   }
 }));
@@ -77,14 +78,15 @@ vi.mock('@/helpers/FeatureStyles/FeatureStatus', () => ({
 
 describe('FeatureUtility', () => {
   const createMockFeature = (properties: any, geometryType = 'Point') => ({
-    getProperties: vi.fn(() => properties),
-    getGeometry: vi.fn(() => ({
-      getType: vi.fn(() => geometryType)
+    getProperties: vi.fn<() => any>(() => properties),
+    getGeometry: vi.fn<() => any>(() => ({
+      getType: vi.fn<() => string>(() => geometryType)
     }))
   });
 
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.stubGlobal('fetch', vi.fn());
   });
 
   describe('getGeoJson', () => {
@@ -105,17 +107,18 @@ describe('FeatureUtility', () => {
         ]
       };
 
-      const axios = await import('@/plugins/axios');
-      (axios.default.get as any).mockResolvedValue({ data: mockData });
+      (fetch as any).mockResolvedValue({
+        ok: true,
+        json: vi.fn<() => Promise<FeatureCollection>>().mockResolvedValue(mockData)
+      });
 
       const result = await getGeoJson('test');
       expect(result).toEqual(mockData);
-      expect(axios.default.get).toHaveBeenCalledWith('undefined/data/test.geojson');
+      expect(fetch).toHaveBeenCalledWith('/data/test.geojson');
     });
 
     it('should return null on error', async () => {
-      const axios = await import('@/plugins/axios');
-      (axios.default.get as any).mockRejectedValue(new Error('Network error'));
+      (fetch as any).mockRejectedValue(new Error('Network error'));
 
       const result = await getGeoJson('test');
       expect(result).toBeNull();
@@ -135,8 +138,8 @@ describe('FeatureUtility', () => {
 
     it('should set style on vector layer', () => {
       const mockVectorLayer = {
-        setStyle: vi.fn(),
-        getProperties: vi.fn(() => ({ id: 'test-layer' }))
+        setStyle: vi.fn<() => void>(),
+        getProperties: vi.fn<() => any>(() => ({ id: 'test-layer' }))
       };
 
       setFeaturesStyle(mockVectorLayer as any, 0, 10);
@@ -151,8 +154,8 @@ describe('FeatureUtility', () => {
 
     it('should set style on vector layer for visibility control', () => {
       const mockVectorLayer = {
-        setStyle: vi.fn(),
-        getProperties: vi.fn(() => ({ id: 'test-layer' }))
+        setStyle: vi.fn<() => void>(),
+        getProperties: vi.fn<() => any>(() => ({ id: 'test-layer' }))
       };
 
       setFeaturesVisibility(mockVectorLayer as any, 0, ['marker']);

@@ -27,40 +27,54 @@ globalThis.ResizeObserver = ResizeObserver;
 // Vitest環境でのCSSのモック
 globalThis.CSS = {
   ...globalThis.CSS,
-  supports: vi.fn(() => true)
+  supports: vi.fn<() => boolean>(() => true)
 };
 
 // URLパターンのモック
-globalThis.URL.createObjectURL = vi.fn(() => 'mock-object-url');
-globalThis.URL.revokeObjectURL = vi.fn();
+globalThis.URL.createObjectURL = vi.fn<() => string>(() => 'mock-object-url');
+globalThis.URL.revokeObjectURL = vi.fn<() => void>();
+
+// Vuetifyが参照するvisualViewportのモック
+Object.defineProperty(globalThis, 'visualViewport', {
+  writable: true,
+  value: {
+    width: 1280,
+    height: 720,
+    scale: 1,
+    offsetLeft: 0,
+    offsetTop: 0,
+    addEventListener: vi.fn<() => void>(),
+    removeEventListener: vi.fn<() => void>()
+  }
+});
 
 // Canvas描画のモック（OpenLayers用）
 /* eslint-disable @typescript-eslint/no-explicit-any */
-(HTMLCanvasElement.prototype.getContext as any) = vi.fn(() => ({
-  fillRect: vi.fn(),
-  clearRect: vi.fn(),
-  getImageData: vi.fn(() => ({ data: [] })),
-  putImageData: vi.fn(),
-  createImageData: vi.fn(() => []),
-  setTransform: vi.fn(),
-  drawImage: vi.fn(),
-  save: vi.fn(),
-  fillText: vi.fn(),
-  restore: vi.fn(),
-  beginPath: vi.fn(),
-  moveTo: vi.fn(),
-  lineTo: vi.fn(),
-  closePath: vi.fn(),
-  stroke: vi.fn(),
-  translate: vi.fn(),
-  scale: vi.fn(),
-  rotate: vi.fn(),
-  arc: vi.fn(),
-  fill: vi.fn(),
-  measureText: vi.fn(() => ({ width: 0 })),
-  transform: vi.fn(),
-  rect: vi.fn(),
-  clip: vi.fn()
+(HTMLCanvasElement.prototype.getContext as any) = vi.fn<() => void>(() => ({
+  fillRect: vi.fn<() => void>(),
+  clearRect: vi.fn<() => void>(),
+  getImageData: vi.fn<() => { data: number[] }>(() => ({ data: [] })),
+  putImageData: vi.fn<() => void>(),
+  createImageData: vi.fn<() => any>(() => []),
+  setTransform: vi.fn<() => void>(),
+  drawImage: vi.fn<() => void>(),
+  save: vi.fn<() => void>(),
+  fillText: vi.fn<() => void>(),
+  restore: vi.fn<() => void>(),
+  beginPath: vi.fn<() => void>(),
+  moveTo: vi.fn<() => void>(),
+  lineTo: vi.fn<() => void>(),
+  closePath: vi.fn<() => void>(),
+  stroke: vi.fn<() => void>(),
+  translate: vi.fn<() => void>(),
+  scale: vi.fn<() => void>(),
+  rotate: vi.fn<() => void>(),
+  arc: vi.fn<() => void>(),
+  fill: vi.fn<() => void>(),
+  measureText: vi.fn<() => { width: number }>(() => ({ width: 0 })),
+  transform: vi.fn<() => void>(),
+  rect: vi.fn<() => void>(),
+  clip: vi.fn<() => void>()
 }));
 
 // globalThis.matchMediaのモック
@@ -70,53 +84,61 @@ Object.defineProperty(globalThis, 'matchMedia', {
     matches: false,
     media: query,
     onchange: null,
-    addListener: vi.fn(),
-    removeListener: vi.fn(),
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-    dispatchEvent: vi.fn()
+    addListener: vi.fn<() => void>(),
+    removeListener: vi.fn<() => void>(),
+    addEventListener: vi.fn<() => void>(),
+    removeEventListener: vi.fn<() => void>(),
+    dispatchEvent: vi.fn<() => void>()
   }))
 });
 
 // navigator.geolocationのモック
 Object.defineProperty(navigator, 'geolocation', {
   value: {
-    getCurrentPosition: vi.fn(),
-    watchPosition: vi.fn(),
-    clearWatch: vi.fn()
+    getCurrentPosition: vi.fn<() => void>(),
+    watchPosition: vi.fn<() => void>(),
+    clearWatch: vi.fn<() => void>()
   }
 });
 
 // IntersectionObserverのモック
-(globalThis as any).IntersectionObserver = vi.fn().mockImplementation(() => ({
-  observe: vi.fn(),
-  unobserve: vi.fn(),
-  disconnect: vi.fn()
-}));
+(globalThis as any).IntersectionObserver = vi.fn(function IntersectionObserver() {
+  return {
+    observe: vi.fn<() => void>(),
+    unobserve: vi.fn<() => void>(),
+    disconnect: vi.fn<() => void>()
+  };
+});
 
 // MutationObserverのモック
-(globalThis as any).MutationObserver = vi.fn().mockImplementation(() => ({
-  observe: vi.fn(),
-  disconnect: vi.fn(),
-  takeRecords: vi.fn()
-}));
+(globalThis as any).MutationObserver = vi.fn(function MutationObserver() {
+  return {
+    observe: vi.fn<() => void>(),
+    disconnect: vi.fn<() => void>(),
+    takeRecords: vi.fn<() => void>()
+  };
+});
 
 // Blobのモック
-(globalThis as any).Blob = vi.fn().mockImplementation((parts, properties) => ({
-  size: parts?.reduce((acc: number, part: string) => acc + part.length, 0) ?? 0,
-  type: properties?.type ?? '',
-  parts,
-  properties
-}));
+(globalThis as any).Blob = vi.fn(function Blob(parts, properties) {
+  return {
+    size: parts?.reduce((acc: number, part: string) => acc + part.length, 0) ?? 0,
+    type: properties?.type ?? '',
+    parts,
+    properties
+  };
+});
 
 // FileReaderのモック
-(globalThis as any).FileReader = vi.fn().mockImplementation(() => ({
-  readAsText: vi.fn(),
-  readAsDataURL: vi.fn(),
-  onload: null,
-  onerror: null,
-  result: null
-}));
+(globalThis as any).FileReader = vi.fn(function FileReader() {
+  return {
+    readAsText: vi.fn<() => void>(),
+    readAsDataURL: vi.fn(),
+    onload: null,
+    onerror: null,
+    result: null
+  };
+});
 
 // requestAnimationFrameのモック
 (globalThis as any).requestAnimationFrame = vi.fn(cb => setTimeout(cb, 0));

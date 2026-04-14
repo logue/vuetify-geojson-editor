@@ -14,7 +14,6 @@ import type { FeatureLike } from 'ol/Feature';
 
 import FeatureStyles from '@/helpers/FeatureStyles';
 import FeatureStatus from '@/helpers/FeatureStyles/FeatureStatus';
-import axios from '@/plugins/axios';
 
 /**
  * Geojsonを読み込む
@@ -25,10 +24,15 @@ import axios from '@/plugins/axios';
 export async function getGeoJson(file: string): Promise<FeatureCollection | null> {
   const globalStore = useGlobalStore();
   try {
-    const ret = await axios.get(`${import.meta.env.BASE_URL}data/${file}.geojson`);
-    return ret.data;
+    const response = await fetch(`${import.meta.env.BASE_URL}data/${file}.geojson`);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return (await response.json()) as FeatureCollection;
   } catch (error) {
-    globalStore.setMessage(error?.toString());
+    globalStore.setMessage(error instanceof Error ? error.toString() : String(error));
   }
   return null;
 }
