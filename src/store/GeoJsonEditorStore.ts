@@ -79,7 +79,7 @@ export default defineStore(
     ): Blob {
       // IDを削除
       if (geojson.value.type === 'FeatureCollection') {
-        geojson.value.features.forEach((feature: any) => {
+        geojson.value.features.forEach((feature: { id?: string | number }) => {
           delete feature.id;
           return feature;
         });

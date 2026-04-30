@@ -49,7 +49,7 @@ Object.defineProperty(globalThis, 'visualViewport', {
 });
 
 // Canvas描画のモック（OpenLayers用）
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any -- Canvas mock requires dynamic typing for OpenLayers compatibility */
 (HTMLCanvasElement.prototype.getContext as any) = vi.fn<() => void>(() => ({
   fillRect: vi.fn<() => void>(),
   clearRect: vi.fn<() => void>(),
@@ -80,7 +80,7 @@ Object.defineProperty(globalThis, 'visualViewport', {
 // globalThis.matchMediaのモック
 Object.defineProperty(globalThis, 'matchMedia', {
   writable: true,
-  value: vi.fn().mockImplementation(query => ({
+  value: vi.fn<(query: string) => MediaQueryList>().mockImplementation(query => ({
     matches: false,
     media: query,
     onchange: null,
@@ -88,7 +88,7 @@ Object.defineProperty(globalThis, 'matchMedia', {
     removeListener: vi.fn<() => void>(),
     addEventListener: vi.fn<() => void>(),
     removeEventListener: vi.fn<() => void>(),
-    dispatchEvent: vi.fn<() => void>()
+    dispatchEvent: vi.fn<(event: Event) => boolean>()
   }))
 });
 
@@ -102,7 +102,7 @@ Object.defineProperty(navigator, 'geolocation', {
 });
 
 // IntersectionObserverのモック
-(globalThis as any).IntersectionObserver = vi.fn(function IntersectionObserver() {
+(globalThis as any).IntersectionObserver = vi.fn<() => void>(function IntersectionObserver() {
   return {
     observe: vi.fn<() => void>(),
     unobserve: vi.fn<() => void>(),
@@ -111,7 +111,7 @@ Object.defineProperty(navigator, 'geolocation', {
 });
 
 // MutationObserverのモック
-(globalThis as any).MutationObserver = vi.fn(function MutationObserver() {
+(globalThis as any).MutationObserver = vi.fn<() => void>(function MutationObserver() {
   return {
     observe: vi.fn<() => void>(),
     disconnect: vi.fn<() => void>(),
@@ -120,20 +120,22 @@ Object.defineProperty(navigator, 'geolocation', {
 });
 
 // Blobのモック
-(globalThis as any).Blob = vi.fn(function Blob(parts, properties) {
-  return {
-    size: parts?.reduce((acc: number, part: string) => acc + part.length, 0) ?? 0,
-    type: properties?.type ?? '',
-    parts,
-    properties
-  };
-});
+(globalThis as any).Blob = vi.fn<(parts?: BlobPart[], properties?: BlobPropertyBag) => Blob>(
+  function Blob(parts?: BlobPart[], properties?: BlobPropertyBag) {
+    return {
+      size: parts?.reduce((acc: number, part: BlobPart) => acc + (part as string).length, 0) ?? 0,
+      type: properties?.type ?? '',
+      parts,
+      properties
+    } as unknown as Blob;
+  }
+);
 
 // FileReaderのモック
-(globalThis as any).FileReader = vi.fn(function FileReader() {
+(globalThis as any).FileReader = vi.fn<() => void>(function FileReader() {
   return {
     readAsText: vi.fn<() => void>(),
-    readAsDataURL: vi.fn(),
+    readAsDataURL: vi.fn<() => void>(),
     onload: null,
     onerror: null,
     result: null
@@ -141,8 +143,10 @@ Object.defineProperty(navigator, 'geolocation', {
 });
 
 // requestAnimationFrameのモック
-(globalThis as any).requestAnimationFrame = vi.fn(cb => setTimeout(cb, 0));
-(globalThis as any).cancelAnimationFrame = vi.fn(id => clearTimeout(id));
-/* eslint-enable @typescript-eslint/no-explicit-any */
+(globalThis as any).requestAnimationFrame = vi.fn<(cb: FrameRequestCallback) => number>(cb =>
+  setTimeout(cb, 0)
+);
+(globalThis as any).cancelAnimationFrame = vi.fn<(id: number) => void>(id => clearTimeout(id));
+/* eslint-enable @typescript-eslint/no-explicit-any -- Canvas mock requires dynamic typing for OpenLayers compatibility */
 
 export default {};

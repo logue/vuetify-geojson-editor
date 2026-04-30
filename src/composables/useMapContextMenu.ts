@@ -89,14 +89,7 @@ export function useMapContextMenu(map: Ref<Map | undefined>) {
         mapContext.drawImage(gridCanvas, 0, 0);
       }
 
-      CanvasRenderingContext2D.prototype.setTransform.apply(mapContext, [1, 0, 0, 1, 0, 0] as [
-        number,
-        number,
-        number,
-        number,
-        number,
-        number
-      ]);
+      mapContext.setTransform(1, 0, 0, 1, 0, 0);
 
       mapCanvas.toBlob(
         async (blob: Blob | null): Promise<void> => {

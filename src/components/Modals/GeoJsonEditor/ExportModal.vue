@@ -62,9 +62,9 @@ defineExpose({ show });
         </v-radio-group>
         <v-text-field
           v-model="fileName"
+          :suffix="`.${type}`"
           prepend-icon="mdi-file-download-outline"
           label="Filename"
-          :suffix="`.${type}`"
           hide-details
         />
         <v-switch v-model="format" label="Compress" />

@@ -369,9 +369,10 @@ function getInteraction(
       /** 開始座標 */
       const firstPoint = false;
       // 選択時に対象ポリゴンの中心を基準とする
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Transform event type from ol-ext has no public TypeScript definition
       transform.on(['select'], (e: any) => {
         if (firstPoint && e.features?.getLength()) {
-          transform.setCenter(e.features.getArray()[0].getGeometry().getFirstCoordinate());
+          transform.setCenter(e.features.getArray()[0]?.getGeometry().getFirstCoordinate());
         }
       });
       return transform;
@@ -383,7 +384,7 @@ function getInteraction(
     case 'hole': {
       // TODO: as any
       const hole = new DrawHole({ layers: [vector], type: 'Polygon' });
-      source.removeFeature(hole.getPolygon() as any);
+      source.removeFeature(hole.getPolygon() as unknown as Feature<Geometry>);
       return hole;
     }
     default:

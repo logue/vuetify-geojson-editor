@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { toRef, type PropType } from 'vue';
+import { toRef } from 'vue';
 
 import type Map from 'ol/Map';
 
@@ -7,10 +7,10 @@ import { useMapContextMenu } from '@/composables/useMapContextMenu';
 
 /** MapContextMenu */
 /** プロップ */
-const props = defineProps({
+const props = defineProps<{
   /** マップ */
-  map: { type: Object as PropType<Map | undefined>, default: undefined }
-});
+  map?: Map;
+}>();
 
 /** マップのリアクティブ参照 */
 const mapRef = toRef(props, 'map');
@@ -23,7 +23,7 @@ defineExpose({ show, hide, position, coordinate });
 </script>
 
 <template>
-  <v-menu v-model="visibility" absolute :style="`top: ${position.y}px; left: ${position.x}px`">
+  <v-menu v-model="visibility" :style="`top: ${position.y}px; left: ${position.x}px`" absolute>
     <v-list density="compact">
       <!-- 座標やズーム値 -->
       <v-list-subheader>

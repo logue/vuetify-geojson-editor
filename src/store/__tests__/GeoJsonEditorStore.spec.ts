@@ -7,13 +7,13 @@ import type { GeoJSONObject } from 'ol/format/GeoJSON';
 
 // OpenLayersのモック
 vi.mock('@turf/clean-coords', () => ({
-  default: vi.fn((input: unknown) => input)
+  default: vi.fn<(input: unknown) => unknown>((input: unknown) => input)
 }));
 
 vi.mock('ol/format/GeoJSON', () => ({
-  default: vi.fn(function GeoJSON() {
+  default: vi.fn<() => object>(function GeoJSON() {
     return {
-      readFeatures: vi.fn<() => any>(() => []),
+      readFeatures: vi.fn<() => unknown[]>(() => []),
       writeFeatures: vi.fn<() => string>(() =>
         JSON.stringify({
           type: 'FeatureCollection',
@@ -28,7 +28,7 @@ vi.mock('ol', () => ({
   Feature: vi.fn<() => void>().mockImplementation(() => ({
     getId: vi.fn<() => string>(() => 'test-id'),
     setId: vi.fn<() => void>(),
-    getProperties: vi.fn<() => any>(() => ({})),
+    getProperties: vi.fn<() => Record<string, unknown>>(() => ({})),
     setProperties: vi.fn<() => void>()
   }))
 }));

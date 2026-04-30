@@ -3,31 +3,42 @@
 import { ref, type Ref } from 'vue';
 
 /** プロップ */
-defineProps({
-  /** ダイアログのタイトル */
-  title: { type: String, required: true },
-  /** ダイアログのメッセージ */
-  message: { type: String, default: '' },
-  /** 破棄ボタンを表示する */
-  discardable: { type: Boolean, default: false },
-  /** 破壊的操作か（ボタンの位置を逆転させる） */
-  danger: { type: Boolean, default: false }
-});
+withDefaults(
+  defineProps<{
+    /** ダイアログのタイトル */
+    title: string;
+    /** ダイアログのメッセージ */
+    message?: string;
+    /** 破棄ボタンを表示する */
+    discardable?: boolean;
+    /** 破壊的操作か（ボタンの位置を逆転させる） */
+    danger?: boolean;
+  }>(),
+  {
+    message: '',
+    discardable: false,
+    danger: false
+  }
+);
 /** エミット */
-const emit = defineEmits(['submit', 'cancel', 'discard']);
+const emit = defineEmits<{
+  (e: 'submit', value: unknown): void;
+  (e: 'cancel'): void;
+  (e: 'discard', value: unknown): void;
+}>();
 
 /** モーダルの表示制御 */
 const modal: Ref<boolean> = ref(false);
 
 /** パラメータ */
-const param: Ref<any> = ref(null);
+const param: Ref<unknown> = ref(null);
 
 /**
  * モーダルを開く
  *
  * @param arr - 何らかのパラメータ
  */
-const show = (arr?: any) => {
+const show = (arr?: unknown) => {
   param.value = arr;
   modal.value = true;
 };
@@ -56,7 +67,7 @@ defineExpose({ show });
 </script>
 
 <template>
-  <v-dialog v-model="modal" persistent max-width="640px" @keydown.esc="hide">
+  <v-dialog v-model="modal" max-width="640px" persistent @keydown.esc="hide">
     <v-card :title="title" :subtitle="message">
       <template #append>
         <v-tooltip text="Close">
@@ -80,8 +91,8 @@ defineExpose({ show });
           Cancel
         </v-btn>
         <v-btn
-          variant="text"
           :color="danger ? 'red' : 'primary'"
+          variant="text"
           prepend-icon="mdi-check"
           @click="submit"
         >

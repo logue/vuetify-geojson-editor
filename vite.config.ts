@@ -17,11 +17,17 @@ import pkg from './package.json';
  * @see {@link https://vitejs.dev/config/}
  */
 export default defineConfig(({ command, mode }): UserConfig => {
+  const buildDate = new Date().toISOString();
+
   const config: UserConfig = {
     // https://vitejs.dev/config/shared-options.html#base
     base: '/vuetify-geojson-editor/',
     // https://vitejs.dev/config/shared-options.html#define
-    define: { 'process.env': {} },
+    define: {
+      'process.env': {},
+      __APP_VERSION__: JSON.stringify(pkg.version),
+      __BUILD_DATE__: JSON.stringify(buildDate)
+    },
     plugins: [
       // Vue3
       vue({
@@ -81,7 +87,9 @@ export default defineConfig(({ command, mode }): UserConfig => {
             if (
               id.includes('/node_modules/@vue/') ||
               id.includes('/node_modules/vue') ||
-              id.includes('/node_modules/pinia')
+              id.includes('/node_modules/pinia') ||
+              id.includes('/node_modules/destr/') || // pinia-plugin-persistedstate uses destr.
+              id.includes('/node_modules/deep-pick-omit/') // pinia-plugin-persistedstate uses deep-pick-omit.
             ) {
               // VueとPiniaをまとめる
               return 'vue';
@@ -130,6 +138,7 @@ export default defineConfig(({ command, mode }): UserConfig => {
   };
 
   // Write meta data.
+  // eslint-disable-next-line security/detect-non-literal-fs-filename -- path is derived from import.meta.url which is a static module URL
   writeFileSync(
     fileURLToPath(new URL('./src/Meta.ts', import.meta.url)),
 

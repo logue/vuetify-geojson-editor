@@ -1,4 +1,4 @@
-import AbstractStyle from '../AbstractFeatureStyle';
+import AbstractStyle from '@/helpers/FeatureStyles/AbstractFeatureStyle';
 
 /** デフォルトのスタイル */
 export default class DefaultStyle extends AbstractStyle {

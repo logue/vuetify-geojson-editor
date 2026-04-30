@@ -166,6 +166,7 @@ const getIconStyleOption = (iconname: string): IconStyleOption | null => {
     return null;
   }
 
+  // eslint-disable-next-line security/detect-object-injection -- iconname comes from known sprite JSON keys, not user input
   const info = spriteJson[iconname];
   if (info) {
     const scale = info.y < 770 ? 0.5 : 0.3;

@@ -98,8 +98,8 @@ onMounted(() => {
       </router-view>
     </v-main>
 
-    <v-overlay v-model="loading" app class="justify-center align-center" persistent>
-      <v-progress-circular indeterminate size="64" />
+    <v-overlay v-model="loading" class="justify-center align-center" app persistent>
+      <v-progress-circular size="64" indeterminate />
     </v-overlay>
 
     <v-snackbar v-model="snackbarVisibility" @update:model-value="onSnackbarChanged">
@@ -109,13 +109,16 @@ onMounted(() => {
       </template>
     </v-snackbar>
 
-    <v-footer app elevation="3">
+    <v-footer elevation="3" app>
       <span class="mr-5">2025 &copy;</span>
     </v-footer>
   </v-app>
   <teleport to="head">
-    <meta name="theme-color" :content="theme.computedThemes.value[isDark]!.colors.primary" />
-    <link rel="icon" :href="logo" type="image/svg+xml" />
+    <meta
+      :content="String(theme.computedThemes.value[isDark]!.colors.primary)"
+      name="theme-color"
+    />
+    <link :href="logo" rel="icon" type="image/svg+xml" />
   </teleport>
 </template>
 

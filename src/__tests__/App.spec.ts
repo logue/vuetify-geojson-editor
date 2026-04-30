@@ -14,10 +14,10 @@ const mockGlobalStore = reactive({
   loading: false,
   progress: null as number | null,
   message: '',
-  setLoading: vi.fn((value = false) => {
+  setLoading: vi.fn<(value?: boolean) => void>((value = false) => {
     mockGlobalStore.loading = value;
   }),
-  setMessage: vi.fn((value = '') => {
+  setMessage: vi.fn<(value?: string) => void>((value = '') => {
     mockGlobalStore.message = value;
   })
 });

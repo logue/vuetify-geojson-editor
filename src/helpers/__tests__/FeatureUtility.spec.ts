@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any -- OpenLayers mock objects require dynamic typing */
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 import {
@@ -244,3 +244,5 @@ describe('FeatureUtility', () => {
     });
   });
 });
+
+/* eslint-enable @typescript-eslint/no-explicit-any -- OpenLayers mock objects require dynamic typing */

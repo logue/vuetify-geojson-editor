@@ -118,7 +118,7 @@ onBeforeRouteUpdate(async (to, from, next) => {
 </script>
 
 <template>
-  <v-container fluid class="px-0 py-0 d-flex flex-column h-100">
+  <v-container class="px-0 py-0 d-flex flex-column h-100" fluid>
     <!-- ツールバー -->
     <map-editor-toolbar
       v-if="mapComponent"

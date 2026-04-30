@@ -10,6 +10,7 @@ import { useTheme } from 'vuetify';
 // Openlayers
 import type FeatureProperties from '@/interfaces/FeatureProperties';
 import type Feature from 'ol/Feature';
+import type { Geometry } from 'ol/geom';
 
 import { DefaultProperties } from '@/interfaces/FeatureProperties';
 import { MaterialColors } from '@/types/MaterialColorType';
@@ -23,7 +24,10 @@ interface PropertiesEditorEmit {
 }
 */
 
-const emits = defineEmits(['submit', 'delete']);
+const emits = defineEmits<{
+  (e: 'submit', value: Feature<Geometry>): void;
+  (e: 'delete', value: Feature<Geometry>): void;
+}>();
 
 /** vuetify */
 const theme = useTheme();
@@ -35,7 +39,7 @@ const modal: Ref<boolean> = ref(false);
 const properties: Ref<FeatureProperties> = ref(DefaultProperties);
 
 /** 選択済みのピン */
-const feature: Ref<Feature<any> | undefined> = ref();
+const feature: Ref<Feature<Geometry> | undefined> = ref();
 
 /** タブ */
 const tab: Ref<string> = ref('basic');
@@ -52,11 +56,11 @@ watch(modal, v => {
 });
 
 /** 画面を開く */
-const show = (f: Feature<any>) => {
+const show = (f: Feature<Geometry>) => {
   modal.value = true;
   feature.value = f;
   properties.value = f.getProperties() as FeatureProperties;
-  isPoint.value = f.getGeometry().flatCoordinates.length === 2;
+  isPoint.value = f.getGeometry()?.getType() === 'Point';
 };
 
 /** キャンセル */
@@ -79,7 +83,9 @@ const submit = () => {
 
 /** 削除 */
 const del = () => {
-  emits('delete', feature.value);
+  if (feature.value) {
+    emits('delete', feature.value);
+  }
   // モーダルを閉じる
   modal.value = false;
 };
@@ -95,7 +101,7 @@ defineExpose({ show });
 </script>
 
 <template>
-  <v-dialog v-model="modal" persistent max-width="1024px" @keydown.esc="hide">
+  <v-dialog v-model="modal" max-width="1024px" persistent @keydown.esc="hide">
     <v-card title="Edit Properties" subtitle="Edit the properties of the selected feature.">
       <template #append>
         <v-tooltip text="Close">
@@ -135,18 +141,20 @@ defineExpose({ show });
                   label="Feature Color"
                   prepend-icon="mdi-palette"
                 >
-                  <template #item="{ props, item }">
-                    <v-list-item v-bind="props" :title="item.title">
+                  <template #item="{ props: itemProps }">
+                    <v-list-item v-bind="itemProps">
                       <template #prepend>
-                        <v-icon :color="item.value">
-                          mdi-checkbox-{{ item.value === properties.color ? 'marked' : 'blank' }}
+                        <v-icon :color="itemProps.value as string">
+                          mdi-checkbox-{{
+                            (itemProps.value as string) === properties.color ? 'marked' : 'blank'
+                          }}
                         </v-icon>
                       </template>
                     </v-list-item>
                   </template>
                   <template #selection="{ item }">
-                    <v-icon :color="item.value">mdi-checkbox-blank</v-icon>
-                    {{ item.title }}
+                    <v-icon :color="item as string">mdi-checkbox-blank</v-icon>
+                    {{ item }}
                   </template>
                 </v-select>
               </v-col>

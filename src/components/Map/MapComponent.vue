@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** マップコンポーネント */
-import { onMounted, onUnmounted, ref, type PropType, type Ref } from 'vue';
+import { onMounted, onUnmounted, ref, type Ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import type { Coordinate } from 'ol/coordinate';
@@ -16,27 +16,32 @@ interface Emits {
 }
 
 /** プロップ */
-const props = defineProps({
-  zoom: { type: Number, default: 8 },
-  /** 最小ズームアウト値 */
-  minZoom: { type: Number, default: 4 },
-  /** 最大ズームイン値 */
-  maxZoom: { type: Number, default: 18 },
-  /** 表示限界領域（↓←↑→） */
-  extentLimit: {
-    type: Array as PropType<Extent | undefined>,
-    default: () => undefined
-  },
-  /** 中心座標 */
-  center: {
-    type: Array as PropType<Coordinate>,
-    default: () => [139.766667, 35.681111]
-  },
-  /** コンテキストメニューを表示する */
-  contextMenu: { type: Boolean, default: true },
-  /** ローディングのテキスト */
-  loadingMessage: { type: String, default: 'Now Loading...' }
-});
+const props = withDefaults(
+  defineProps<{
+    zoom?: number;
+    /** 最小ズームアウト値 */
+    minZoom?: number;
+    /** 最大ズームイン値 */
+    maxZoom?: number;
+    /** 表示限界領域（↓←↑→） */
+    extentLimit?: Extent;
+    /** 中心座標 */
+    center?: Coordinate;
+    /** コンテキストメニューを表示する */
+    contextMenu?: boolean;
+    /** ローディングのテキスト */
+    loadingMessage?: string;
+  }>(),
+  {
+    zoom: 8,
+    minZoom: 4,
+    maxZoom: 18,
+    extentLimit: undefined,
+    center: () => [139.766667, 35.681111] as Coordinate,
+    contextMenu: true,
+    loadingMessage: 'Now Loading...'
+  }
+);
 
 const emit = defineEmits<Emits>();
 

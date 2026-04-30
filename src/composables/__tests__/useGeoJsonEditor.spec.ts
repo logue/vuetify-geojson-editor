@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any -- OpenLayers mock objects require dynamic typing */
 import { setActivePinia, createPinia } from 'pinia';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ref } from 'vue';
@@ -28,25 +28,25 @@ const mockLayer = {
 
 // OpenLayersのインタラクションクラスをモック
 vi.mock('ol/interaction', () => ({
-  Draw: vi.fn(function Draw() {
+  Draw: vi.fn<() => void>(function Draw() {
     return {
       on: vi.fn<() => void>(),
       setActive: vi.fn<() => void>()
     };
   }),
-  Modify: vi.fn(function Modify() {
+  Modify: vi.fn<() => void>(function Modify() {
     return {
       on: vi.fn<() => void>(),
       setActive: vi.fn<() => void>()
     };
   }),
-  Translate: vi.fn(function Translate() {
+  Translate: vi.fn<() => void>(function Translate() {
     return {
       on: vi.fn<() => void>(),
       setActive: vi.fn<() => void>()
     };
   }),
-  Select: vi.fn(function Select() {
+  Select: vi.fn<() => void>(function Select() {
     return {
       on: vi.fn<() => void>(),
       getFeatures: vi.fn<() => any>(() => ({
@@ -56,7 +56,7 @@ vi.mock('ol/interaction', () => ({
       setActive: vi.fn<() => void>()
     };
   }),
-  Snap: vi.fn(function Snap() {
+  Snap: vi.fn<() => void>(function Snap() {
     return {
       on: vi.fn<() => void>(),
       setActive: vi.fn<() => void>()
@@ -65,7 +65,7 @@ vi.mock('ol/interaction', () => ({
 }));
 
 vi.mock('ol-ext/interaction/Delete', () => ({
-  default: vi.fn(function Delete() {
+  default: vi.fn<() => void>(function Delete() {
     return {
       on: vi.fn<() => void>(),
       setActive: vi.fn<() => void>()
@@ -74,7 +74,7 @@ vi.mock('ol-ext/interaction/Delete', () => ({
 }));
 
 vi.mock('ol-ext/interaction/DrawHole', () => ({
-  default: vi.fn(function DrawHole() {
+  default: vi.fn<() => void>(function DrawHole() {
     return {
       on: vi.fn<() => void>(),
       setActive: vi.fn<() => void>(),
@@ -84,7 +84,7 @@ vi.mock('ol-ext/interaction/DrawHole', () => ({
 }));
 
 vi.mock('ol-ext/interaction/DrawRegular', () => ({
-  default: vi.fn(function DrawRegular() {
+  default: vi.fn<() => void>(function DrawRegular() {
     return {
       on: vi.fn<() => void>(),
       setActive: vi.fn<() => void>()
@@ -93,7 +93,7 @@ vi.mock('ol-ext/interaction/DrawRegular', () => ({
 }));
 
 vi.mock('ol-ext/interaction/FillAttribute', () => ({
-  default: vi.fn(function FillAttribute() {
+  default: vi.fn<() => void>(function FillAttribute() {
     return {
       on: vi.fn<() => void>(),
       setActive: vi.fn<() => void>()
@@ -102,7 +102,7 @@ vi.mock('ol-ext/interaction/FillAttribute', () => ({
 }));
 
 vi.mock('ol-ext/interaction/Transform', () => ({
-  default: vi.fn(function Transform() {
+  default: vi.fn<() => void>(function Transform() {
     return {
       on: vi.fn<() => void>(),
       setActive: vi.fn<() => void>(),
@@ -112,7 +112,7 @@ vi.mock('ol-ext/interaction/Transform', () => ({
 }));
 
 vi.mock('ol-ext/interaction/UndoRedo', () => ({
-  default: vi.fn(function UndoRedo() {
+  default: vi.fn<() => void>(function UndoRedo() {
     return {
       on: vi.fn<() => void>(),
       undo: vi.fn<() => void>(),
@@ -285,3 +285,5 @@ describe('useGeoJsonEditor', () => {
     expect(composable.selectedTool.value).toBe('polygon');
   });
 });
+
+/* eslint-enable @typescript-eslint/no-explicit-any -- OpenLayers mock objects require dynamic typing */

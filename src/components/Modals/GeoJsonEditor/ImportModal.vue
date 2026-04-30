@@ -11,7 +11,7 @@ import type { Feature, FeatureCollection } from 'geojson';
 import type { GeoJSONObject } from 'ol/format/GeoJSON';
 import type { Topology } from 'topojson-specification';
 
-const emits = defineEmits(['loaded']);
+const emits = defineEmits<{ (e: 'loaded'): void }>();
 
 /** グローバルストア */
 const globalStore = useGlobalStore();
@@ -139,12 +139,12 @@ defineExpose({ show, hide });
       <v-card-text>
         <v-file-input
           v-model="file"
-          show-size
-          required
           placeholder="Choose a GeoJSON file."
           label="GeoJson"
           prepend-icon="mdi-paperclip"
           accept="application/geo+json"
+          show-size
+          required
           @emptied="file = undefined"
         />
       </v-card-text>

@@ -12,7 +12,7 @@ import ExportModal from '@/components/Modals/GeoJsonEditor/ExportModal.vue';
 import ImportModal from '@/components/Modals/GeoJsonEditor/ImportModal.vue';
 
 /** Emits */
-const emits = defineEmits({ close: () => true });
+const emits = defineEmits<{ (e: 'close'): void }>();
 
 const geoJsonEditorStore = useGeoJsonEditorStore();
 
@@ -76,7 +76,7 @@ defineExpose({ show });
 </script>
 
 <template>
-  <v-dialog v-model="modal" fullscreen transition="dialog-bottom-transition">
+  <v-dialog v-model="modal" transition="dialog-bottom-transition" fullscreen>
     <v-card class="d-flex flex-column">
       <template #title>Source</template>
       <template #append>
@@ -93,10 +93,10 @@ defineExpose({ show });
         :dark="dark"
         :lang="json()"
         :linter="jsonParseLinter()"
-        basic
         class="flex-grow-1"
-        gutter
         style="flex-basis: 0; overflow-y: scroll"
+        basic
+        gutter
         wrap
       />
       <v-card-actions class="flex-grow-0" style="flex-basis: auto">
