@@ -5,16 +5,4 @@ allowBuilds:
   unrs-resolver: true
   vue-demi: true
 minimumReleaseAgeExclude:
-  - '@vue/language-core@3.3.3'
-  - lint-staged@17.0.6
-  - vue-tsc@3.3.3
-  - '@playwright/test@1.61.1'
-  - playwright-core@1.61.1
-  - playwright@1.61.1
-  - vite@8.1.0
-onlyBuiltDependencies:
-  - '@parcel/watcher'
-  - core-js
-  - esbuild
-  - unrs-resolver
-  - vue-demi
+  - vuetify@4.1.3
