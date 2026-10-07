@@ -1,18 +1,18 @@
 <script setup lang="ts">
 /** マップコンポーネント */
-import { onMounted, onUnmounted, ref, type Ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { onMounted, onUnmounted, ref, type Ref } from "vue";
+import { useRoute } from "vue-router";
 
-import { useMapSetup } from '@/composables/useMapSetup';
+import { useMapSetup } from "@/composables/useMapSetup";
 
-import type { Coordinate } from 'ol/coordinate';
-import type { Extent } from 'ol/extent';
+import type { Coordinate } from "ol/coordinate";
+import type { Extent } from "ol/extent";
 
 interface Emits {
   /** 準備完了 */
-  (event: 'ready', value: HTMLDivElement): void;
+  (event: "ready", value: HTMLDivElement): void;
   /** コンテキストメニュー */
-  (event: 'contextmenu', value: MouseEvent): void;
+  (event: "contextmenu", value: MouseEvent): void;
 }
 
 /** プロップ */
@@ -39,8 +39,8 @@ const props = withDefaults(
     extentLimit: undefined,
     center: () => [139.766667, 35.681111] as Coordinate,
     contextMenu: true,
-    loadingMessage: 'Now Loading...'
-  }
+    loadingMessage: "Now Loading...",
+  },
 );
 
 const emit = defineEmits<Emits>();
@@ -58,7 +58,7 @@ const { map, notification, setupMoveEndHandler, setFromQuery } = useMapSetup({
   maxZoom: props.maxZoom,
   extentLimit: props.extentLimit,
   center: props.center,
-  loadingMessage: props.loadingMessage
+  loadingMessage: props.loadingMessage,
 });
 
 /* Query String */
@@ -75,13 +75,13 @@ onMounted(() => {
   if (ol.value) {
     map.value.setTarget(ol.value);
     // 準備完了通知
-    emit('ready', ol.value);
+    emit("ready", ol.value);
   }
 
   /** コンテキストメニュー */
-  map.value.getViewport().addEventListener('contextmenu', (e: MouseEvent) => {
+  map.value.getViewport()!.addEventListener("contextmenu", (e: MouseEvent) => {
     e.preventDefault();
-    emit('contextmenu', e);
+    emit("contextmenu", e);
   });
 });
 

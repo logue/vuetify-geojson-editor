@@ -150,7 +150,7 @@ const loadJSON = async (
 let spriteJson: Record<string, SpriteInfo> | null = null;
 
 // アプリケーション起動時に一度読み込む例 (IIFEを使用)
-(async () => {
+void (async () => {
   spriteJson = await loadJSON(SPRITE_JSON_URL);
   if (!spriteJson) {
     console.warn(

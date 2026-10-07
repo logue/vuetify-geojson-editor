@@ -33,6 +33,10 @@ export default class AnimateRoute {
 
   /** アニメーション中か */
   private animating: boolean;
+  /** postrender ハンドラー */
+  private readonly onPostRender = (event: RenderEvent): void => {
+    this.moveFeature(event);
+  };
 
   /** 移動量 */
   private distance: number;
@@ -117,7 +121,7 @@ export default class AnimateRoute {
   public start(): void {
     this.animating = true;
     this.lastTime = Date.now();
-    this.vectorLayer.on('postrender', this.moveFeature);
+    this.vectorLayer.on('postrender', this.onPostRender);
     this.currentFeature.setGeometry(undefined);
   }
 
@@ -125,7 +129,7 @@ export default class AnimateRoute {
   public stop(): void {
     this.animating = false;
     this.currentFeature.setGeometry(this.currentPosition);
-    this.vectorLayer.un('postrender', this.moveFeature);
+    this.vectorLayer.un('postrender', this.onPostRender);
   }
 
   /** 一時停止 */
