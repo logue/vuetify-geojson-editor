@@ -15,7 +15,8 @@ export default defineStore('map-cursor', () => {
   /**
    * Store current Location
    *
-   * @param coordinate - Current coordinate
+   * @param coordinate Current coordinate
+   * @param coord
    */
   function setCoordinate(coord: Coordinate) {
     coordinate.value = coord;
@@ -23,7 +24,8 @@ export default defineStore('map-cursor', () => {
   /**
    * Store map zoom
    *
-   * @param zoom - Current zoom
+   * @param zoom Current zoom
+   * @param z
    */
   function setZoom(z: number) {
     zoom.value = z;
@@ -31,7 +33,8 @@ export default defineStore('map-cursor', () => {
   /**
    * Store map layer
    *
-   * @param level - Current layer
+   * @param level Current layer
+   * @param l
    */
   function setLevel(l: number) {
     level.value = l;

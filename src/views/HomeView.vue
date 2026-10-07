@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useGlobalStore, useMapCursorStore, useGeoJsonEditorStore } from '@/store';
+import { useGeoJsonEditorStore, useGlobalStore, useMapCursorStore } from '@/store';
 import { computed, nextTick, onMounted, ref, watch, type Ref, type WritableComputedRef } from 'vue';
 import { onBeforeRouteUpdate } from 'vue-router';
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** 座標データインポートモーダル */
-import { useGlobalStore, useGeoJsonEditorStore } from '@/store';
+import { useGeoJsonEditorStore, useGlobalStore } from '@/store';
 import { computed, nextTick, ref, type Ref, type WritableComputedRef } from 'vue';
 
 import rewind from '@turf/rewind';

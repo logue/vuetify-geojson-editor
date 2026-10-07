@@ -12,7 +12,7 @@ import { v4 } from 'uuid';
 import type { GeoJSONObject } from 'ol/format/GeoJSON';
 import type { Topology } from 'topojson-specification';
 
-import { DefaultProperties } from '@/interfaces/FeatureProperties';
+import { FeatureProperties } from '@/types/FeatureProperties';
 
 /** GeoJsonEditor Store */
 export default defineStore(
@@ -35,7 +35,10 @@ export default defineStore(
     /** Request Update Flag */
     const requestRefresh: Ref<boolean> = ref(true);
 
-    /** GeoJsonからフィーチャーを書き込む */
+    /**
+     * GeoJsonからフィーチャーを書き込む
+     * @param features
+     */
     function setFeatures(features: Feature[]) {
       // カウンタ
       let count = 0;
@@ -52,7 +55,7 @@ export default defineStore(
         let p = f.getProperties();
         if (!p) {
           // プロパティがない場合デフォルト値を入れておく
-          p = DefaultProperties;
+          p = FeatureProperties;
           p.no = count;
         }
         f.setProperties(p);
@@ -68,9 +71,9 @@ export default defineStore(
     }
 
     /**
-     * @param type - ファイル形式
-     * @param format - 整形するか
-     * @param clean - 重複する座標を削除するか
+     * @param type ファイル形式
+     * @param format 整形するか
+     * @param clean 重複する座標を削除するか
      */
     function exportBlob(
       type: 'geojson' | 'topojson' = 'geojson',
@@ -118,7 +121,7 @@ export default defineStore(
     /**
      * GeoJsonを保存する
      *
-     * @param source - GeoJSONデータ
+     * @param source GeoJSONデータ
      */
     function setGeoJson(source: GeoJSONObject) {
       geojson.value = source;
@@ -136,7 +139,7 @@ export default defineStore(
     /**
      * 更新要求フラグをセット
      *
-     * @param flag - 更新フラグ
+     * @param flag 更新フラグ
      */
     function setRefresh(flag = true) {
       requestRefresh.value = flag;

@@ -2,9 +2,9 @@ import { useGlobalStore } from '@/store';
 import {
   createRouter,
   createWebHistory,
-  type Router,
   type NavigationGuardNext,
   type RouteLocationNormalized,
+  type Router,
   type RouteRecordRaw
 } from 'vue-router';
 

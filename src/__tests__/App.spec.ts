@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
-import { setActivePinia, createPinia } from 'pinia';
-import { describe, expect, it, beforeEach, vi } from 'vitest';
+import { createPinia, setActivePinia } from 'pinia';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { nextTick, reactive } from 'vue';
 
 import App from '../App.vue';

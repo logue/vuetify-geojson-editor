@@ -17,7 +17,7 @@ export default defineStore('global', () => {
   /**
    * Show loading Overlay
    *
-   * @param display - visibility
+   * @param display visibility
    */
   function setLoading(display: boolean): void {
     loading.value = display;
@@ -30,7 +30,7 @@ export default defineStore('global', () => {
   /**
    * Update progress value
    *
-   * @param v - progress value
+   * @param v progress value
    */
   function setProgress(v: number | null = null): void {
     // update progress value
@@ -42,7 +42,7 @@ export default defineStore('global', () => {
   /**
    * Show snackbar message
    *
-   * @param msg - snackbar message
+   * @param msg snackbar message
    */
   function setMessage(msg = ''): void {
     // put snackbar text

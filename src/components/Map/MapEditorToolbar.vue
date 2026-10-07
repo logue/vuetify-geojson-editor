@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useGeoJsonEditorStore } from '@/store';
-import { computed, toRef, ref, watch, type Ref, type WritableComputedRef } from 'vue';
+import { computed, ref, toRef, watch, type Ref, type WritableComputedRef } from 'vue';
 
 import type { Feature, Map } from 'ol';
 import type VectorLayer from 'ol/layer/Vector';

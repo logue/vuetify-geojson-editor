@@ -1,5 +1,5 @@
 import { type FeatureLike } from 'ol/Feature';
-import { Style, Fill, Stroke, Text, Icon } from 'ol/style';
+import { Fill, Icon, Stroke, Style, Text } from 'ol/style';
 
 import type { GeoJsonProperties } from 'geojson';
 
@@ -176,10 +176,9 @@ const getIconStyleOption = (iconname: string): IconStyleOption | null => {
       offset: [info.x, info.y],
       scale: scale
     };
-  } else {
-    // console.warn(`Icon "${iconname}" not found in sprite JSON.`);
-    return null;
   }
+  // console.warn(`Icon "${iconname}" not found in sprite JSON.`);
+  return null;
 };
 
 /**
@@ -255,7 +254,7 @@ const getContourLineWidth = (f: FeatureLike): number => {
 /**
  * OpenLayersで地理院地図のベクタータイルを使用するためのスタイリング関数
  * @param feature OpenLayersのFeatureオブジェクト
- * @param resolution 現在の解像度 (使用されていないため、必要に応じて削除可能)
+ * @param _resolution 現在の解像度 (使用されていないため、必要に応じて削除可能)
  * @returns スタイルオブジェクトの配列
  */
 export const stylingVectorTile = (feature: FeatureLike, _resolution: number): Style[] => {

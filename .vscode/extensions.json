@@ -1,13 +1,13 @@
 {
   "recommendations": [
-    "dbaeumer.vscode-eslint",
-    "esbenp.prettier-vscode",
-    "johnsoncodehk.vscode-typescript-web",
-    "stylelint.vscode-stylelint",
+    "EditorConfig.EditorConfig",
+    "ms-playwright.playwright",
+    "oxc.oxc-vscode",
+    "vitest.explorer",
     "Vue.volar"
   ],
   "unwantedRecommendations": [
-    "Vue.vscode-typescript-vue-plugin",
-    "octref.vetur",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode"
   ]
 }

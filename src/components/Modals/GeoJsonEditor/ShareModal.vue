@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** 共有モーダル */
-import { useGlobalStore, useGeoJsonEditorStore, useMapCursorStore } from '@/store';
+import { useGeoJsonEditorStore, useGlobalStore, useMapCursorStore } from '@/store';
 import { computed, nextTick, ref, type ComputedRef, type Ref, type WritableComputedRef } from 'vue';
 import { useRouter } from 'vue-router';
 

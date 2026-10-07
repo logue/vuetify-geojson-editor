@@ -1,9 +1,9 @@
 import { useGeoJsonEditorStore } from '@/store';
-import { ref, watch, onUnmounted, unref, type Ref } from 'vue';
+import { onUnmounted, ref, unref, watch, type Ref } from 'vue';
 
 import MapBrowserEventType from 'ol/MapBrowserEventType';
 import { shiftKeyOnly } from 'ol/events/condition';
-import { Draw, Modify, Translate, Select, Snap, Interaction } from 'ol/interaction';
+import { Draw, Interaction, Modify, Select, Snap, Translate } from 'ol/interaction';
 import Delete from 'ol-ext/interaction/Delete';
 import DrawHole from 'ol-ext/interaction/DrawHole';
 import DrawRegular from 'ol-ext/interaction/DrawRegular';
@@ -12,9 +12,10 @@ import Transform from 'ol-ext/interaction/Transform';
 import UndoRedo from 'ol-ext/interaction/UndoRedo';
 import { v4 } from 'uuid';
 
-import type { Map, Feature, MapBrowserEvent } from 'ol';
+import type { Feature, Map } from 'ol';
 import type Collection from 'ol/Collection';
 import type { FeatureLike } from 'ol/Feature';
+import type MapBrowserEvent from 'ol/MapBrowserEvent';
 import type Geometry from 'ol/geom/Geometry';
 import type { DrawEvent } from 'ol/interaction/Draw';
 import type { SelectEvent } from 'ol/interaction/Select';
@@ -23,7 +24,7 @@ import type VectorSource from 'ol/source/Vector';
 
 import FeatureStatus from '@/helpers/FeatureStyles/FeatureStatus';
 import { getFeatureStyle } from '@/helpers/FeatureUtility';
-import { DefaultProperties } from '@/interfaces/FeatureProperties';
+import { FeatureProperties } from '@/types/FeatureProperties';
 
 /** GeoJsonエディタストア */
 const geoJsonEditorStore = useGeoJsonEditorStore();
@@ -128,7 +129,7 @@ export default function useGeoJsonEditor(options: UseGeoJsonEditorOptions) {
   // --- Methods exposed to the component ---
   const onFeatureChange = (feature: Feature) => {
     feature.setId(v4());
-    feature.setProperties(DefaultProperties);
+    feature.setProperties(FeatureProperties);
     // 描画後は自動で移動モードに切り替える
     selectedTool.value = 'translate';
     updateFeature(feature);
@@ -142,7 +143,7 @@ export default function useGeoJsonEditor(options: UseGeoJsonEditorOptions) {
   /**
    * ピンを更新
    *
-   * @param feature - 対象ピン
+   * @param feature 対象ピン
    */
   const updateFeature = (feature: Feature) => {
     const source = unref(layer).getSource();
@@ -167,7 +168,7 @@ export default function useGeoJsonEditor(options: UseGeoJsonEditorOptions) {
   /**
    * ピンを削除
    *
-   * @param feature - 対象ピン
+   * @param feature 対象ピン
    */
   const deleteFeature = (feature: Feature) => {
     const source = unref(layer).getSource();
@@ -257,10 +258,10 @@ export default function useGeoJsonEditor(options: UseGeoJsonEditorOptions) {
 /**
  * インタラクションを取得
  *
- * @param name - インタラクション名
- * @param vector - ベクターレイヤー
- * @param tolerance - 許容誤差
- * @param features - 選択済みのピン／ポリゴン
+ * @param name インタラクション名
+ * @param vector ベクターレイヤー
+ * @param tolerance 許容誤差
+ * @param features 選択済みのピン／ポリゴン
  */
 function getInteraction(
   name: string,

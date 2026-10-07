@@ -1,5 +1,5 @@
-import { setActivePinia, createPinia } from 'pinia';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { createPinia, setActivePinia } from 'pinia';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import useGeoJsonEditorStore from '../GeoJsonEditorStore';
 

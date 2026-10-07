@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any -- OpenLayers mock objects require dynamic typing */
-import { setActivePinia, createPinia } from 'pinia';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { createPinia, setActivePinia } from 'pinia';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ref } from 'vue';
 
 import useGeoJsonEditor from '../useGeoJsonEditor';

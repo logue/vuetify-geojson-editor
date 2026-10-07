@@ -1,49 +1,70 @@
+# Dependencies
+.claude/
+.pnp
+.pnp.js
+node_modules/
+
+# Build / Cache
+.cache
+.data
+.mf
+.nitro
+.nuxt
+.output
+
+# Test Report
+coverage/
+reports/
+test-results/
+
+# Production / Build output
+target/
+dist/
+docs/
+demo/
+storybook-static/
+
 # Logs
 logs
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
 
-node_modules
-.DS_Store
-dist
-dist-ssr
-coverage
-*.local
+# Runtime data
+.cargo/config.toml
+.pnpm/crates/
+.rstack
+.rspack-profile-*
+.rsdoctor
+*.pid
+*.pid.lock
+*.seed
+pids
 
-# Editor directories and files
+# Environment
+.env
+.env.*
+!.env.example
+
+# Lockfiles
+*.lock
+!Cargo.lock
+# pnpm-lock.yaml # as you need to commit this file for reproducible builds
+# pnpm-workspace.yaml # as you need to commit this file for reproducible builds
+
+# IDE
+.idea
+*.iml
+*.sublime-project
+*.sublime-workspace
+*.swo
+*.swp
 .vscode/*
 !.vscode/extensions.json
-.idea
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+!.vscode/mcp.json
+!.vscode/settings.json
 
-*.tsbuildinfo
-
-.eslintcache
-
-# Cypress
-/cypress/videos/
-/cypress/screenshots/
-
-# Vitest
-__screenshots__/
-
-# Vite
-*.timestamp-*-*.mjs
-
-test-results/
-playwright-report/
-
-.bak
-.backup
-
-# Special File
-.husky/
-src/Meta.ts
+# Local
+/local
+.DS_Store
+*.local
+*.log*
+Thumbs.db

@@ -23,8 +23,8 @@ export default class Factory {
   /**
    * スタイルを取得
    *
-   * @param color - マテリアルカラー
-   * @param status - ステータス
+   * @param color マテリアルカラー
+   * @param status ステータス
    */
   static getStyle(
     color: MaterialColorType,
@@ -58,8 +58,8 @@ export default class Factory {
   /**
    * セクションのポリゴンスタイルを取得
    *
-   * @param color - マテリアルカラー
-   * @param status - ステータス
+   * @param color マテリアルカラー
+   * @param status ステータス
    */
   static getSectionPolygonStyle(
     color: MaterialColorType,
@@ -92,9 +92,9 @@ export default class Factory {
   /**
    * アイコンスタイルを取得
    *
-   * @param icon - アイコン
-   * @param color - テキストカラー
-   * @param status - ステータス
+   * @param icon アイコン
+   * @param color テキストカラー
+   * @param status ステータス
    */
   static getIconStyle(
     icon = 'pin',
@@ -125,7 +125,7 @@ export default class Factory {
   /**
    * グリッドスタイル
    *
-   * @param color - マテリアルカラー
+   * @param color マテリアルカラー
    */
   static getGridStyle(color: MaterialColorType = 'light-blue'): Style {
     return new DefaultStyle(color, this.fontFace).getGridStyle();

@@ -44,9 +44,10 @@ export default class AnimateRoute {
   /**
    * アニメーション処理
    *
-   * @param map - マップ
-   * @param vectorLayer - 対象レイヤ
-   * @param route - 対象のラインの線
+   * @param map マップ
+   * @param vectorLayer 対象レイヤ
+   * @param route 対象のラインの線
+   * @param reverse
    */
   constructor(
     map: Map,
@@ -80,7 +81,7 @@ export default class AnimateRoute {
   /**
    * アニメーション処理
    *
-   * @param event - イベント
+   * @param event イベント
    */
   private moveFeature(event: RenderEvent): void {
     if (!this.route || !event.frameState) {

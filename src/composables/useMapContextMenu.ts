@@ -11,6 +11,7 @@ import type { Size } from 'ol/size';
 
 /**
  * マップのコンテキストメニュー機能を提供するComposable
+ * @param map
  */
 export function useMapContextMenu(map: Ref<Map | undefined>) {
   /** Route */
@@ -48,7 +49,7 @@ export function useMapContextMenu(map: Ref<Map | undefined>) {
   /**
    * 表示されているマップを画像として保存
    *
-   * @param toFile - ファイルとして保存するか
+   * @param toFile ファイルとして保存するか
    */
   const toImage = async (toFile = false): Promise<void> => {
     if (!map.value) {
@@ -121,6 +122,7 @@ export function useMapContextMenu(map: Ref<Map | undefined>) {
 
   /**
    * コンテキストメニューを表示
+   * @param e
    */
   const show = (e?: MouseEvent): void => {
     if (map.value && e) {

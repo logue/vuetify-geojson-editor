@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any -- OpenLayers mock objects require dynamic typing */
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
-  getGeoJson,
-  setFeaturesStyle,
-  setFeaturesVisibility,
   getFeatureStyle,
-  pinStyle
+  getGeoJson,
+  pinStyle,
+  setFeaturesStyle,
+  setFeaturesVisibility
 } from '../FeatureUtility';
 
 import type { FeatureCollection } from 'geojson';

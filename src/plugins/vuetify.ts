@@ -10,8 +10,8 @@ import * as labsComponents from 'vuetify/labs/components';
 import { en, ja } from 'vuetify/locale';
 
 // Styles
-import 'vuetify/styles';
 import '@mdi/font/css/materialdesignicons.css';
+import 'vuetify/styles';
 
 /**
  * Vuetify Components

@@ -36,7 +36,7 @@ const param: Ref<unknown> = ref(null);
 /**
  * モーダルを開く
  *
- * @param arr - 何らかのパラメータ
+ * @param arr 何らかのパラメータ
  */
 const show = (arr?: unknown) => {
   param.value = arr;

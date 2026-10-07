@@ -7,7 +7,7 @@ import Feature from 'ol/Feature';
 import Geolocation from 'ol/Geolocation';
 import Map from 'ol/Map';
 import View from 'ol/View';
-import { Attribution, MousePosition, Zoom, ZoomSlider, ScaleLine } from 'ol/control';
+import { Attribution, MousePosition, ScaleLine, Zoom, ZoomSlider } from 'ol/control';
 import { createStringXY } from 'ol/coordinate';
 import { singleClick } from 'ol/events/condition';
 import MVT from 'ol/format/MVT';
@@ -33,23 +33,24 @@ import { pinStyle } from '@/helpers/FeatureUtility';
 
 export interface MapSetupOptions {
   /** ズーム値 */
-  zoom?: number;
+  zoom: number;
   /** 最小ズームアウト値 */
-  minZoom?: number;
+  minZoom: number;
   /** 最大ズームイン値 */
-  maxZoom?: number;
+  maxZoom: number;
   /** 表示限界領域（↓←↑→） */
-  extentLimit?: Extent;
+  extentLimit: Extent;
   /** 中心座標 */
-  center?: Coordinate;
+  center: Coordinate;
   /** ローディングのテキスト */
-  loadingMessage?: string;
+  loadingMessage: string;
 }
 
 /**
  * OpenLayersマップのセットアップと管理を行うComposable
+ * @param options
  */
-export function useMapSetup(options: MapSetupOptions = {}) {
+export function useMapSetup(options: Partial<MapSetupOptions> = {}) {
   const {
     zoom = 8,
     minZoom = 4,
@@ -229,6 +230,7 @@ export function useMapSetup(options: MapSetupOptions = {}) {
 
   /**
    * マップの移動終了イベントを設定
+   * @param centerCoordinate
    */
   const setupMoveEndHandler = (centerCoordinate: Coordinate) => {
     map.value.on('moveend', () => {
@@ -241,6 +243,7 @@ export function useMapSetup(options: MapSetupOptions = {}) {
 
   /**
    * カーソルレイヤーの表示/非表示を設定
+   * @param visible
    */
   const setCursorVisible = (visible: boolean) => {
     cursorLayer.setVisible(visible);
@@ -248,6 +251,7 @@ export function useMapSetup(options: MapSetupOptions = {}) {
 
   /**
    * クエリパラメータから初期位置とズームを設定
+   * @param query
    */
   const setFromQuery = (query: Record<string, string>) => {
     if (query.x && query.y) {

@@ -8,18 +8,18 @@ import { Vector as VectorSource } from 'ol/source';
 import { Icon, Style } from 'ol/style';
 
 import type { FeatureStatusType } from '@/helpers/FeatureStyles/FeatureStatus';
-import type FeatureProperties from '@/interfaces/FeatureProperties';
 import type { FeatureCollection } from 'geojson';
 import type { FeatureLike } from 'ol/Feature';
 
 import FeatureStyles from '@/helpers/FeatureStyles';
 import FeatureStatus from '@/helpers/FeatureStyles/FeatureStatus';
+import { FeatureProperties } from '@/types/FeatureProperties';
 
 /**
  * Geojsonを読み込む
  *
- * @param file - Geojsonファイルのパス
- * @returns
+ * @param file Geojsonファイルのパス
+ * @return
  */
 export async function getGeoJson(file: string): Promise<FeatureCollection | null> {
   const globalStore = useGlobalStore();
@@ -54,16 +54,16 @@ export const pinStyle = new Style({
 /**
  * マーカーのスタイル設定
  *
- * @param vectorLayer - 対象ベクターレイヤー
- * @param level - 階層レベル
- * @param zoom - ズーム値
- * @param status - オーバーライドするスタイル
+ * @param vectorLayer 対象ベクターレイヤー
+ * @param level 階層レベル
+ * @param zoom ズーム値
+ * @param status オーバーライドするスタイル
  */
 export function setFeaturesStyle(
   vectorLayer: VectorLayer<VectorSource> | undefined,
   level = 0,
   zoom = 0,
-  status: FeatureStatusType | undefined = undefined
+  status?: FeatureStatusType
 ): void {
   if (!vectorLayer) {
     return;
@@ -99,9 +99,9 @@ export function setFeaturesStyle(
 /**
  * マーカーの表示／非表示設定
  *
- * @param vectorLayer - 対象レイヤー
- * @param level - レイヤーレベル
- * @param checked - 表示するマーカーの種別
+ * @param vectorLayer 対象レイヤー
+ * @param level レイヤーレベル
+ * @param checked 表示するマーカーの種別
  */
 export function setFeaturesVisibility(
   vectorLayer: VectorLayer<VectorSource> | undefined,
@@ -134,10 +134,10 @@ export function setFeaturesVisibility(
 /**
  * スタイルを取得
  *
- * @param feature - ピン
- * @param status - ステータス
- * @param layerId - レイヤ名
- * @returns - ピンのスタイル
+ * @param feature ピン
+ * @param status ステータス
+ * @param layerId レイヤ名
+ * @return - ピンのスタイル
  */
 export function getFeatureStyle(
   feature: FeatureLike,

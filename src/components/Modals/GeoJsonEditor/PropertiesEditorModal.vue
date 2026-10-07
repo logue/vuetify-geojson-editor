@@ -8,11 +8,10 @@ import CodeMirror from 'vue-codemirror6';
 import { useTheme } from 'vuetify';
 
 // Openlayers
-import type FeatureProperties from '@/interfaces/FeatureProperties';
 import type Feature from 'ol/Feature';
 import type { Geometry } from 'ol/geom';
 
-import { DefaultProperties } from '@/interfaces/FeatureProperties';
+import { FeatureProperties } from '@/types/FeatureProperties';
 import { MaterialColors } from '@/types/MaterialColorType';
 
 /* * 親コンポーネントに送信するイベントの定義 * /
@@ -36,7 +35,7 @@ const theme = useTheme();
 const modal: Ref<boolean> = ref(false);
 
 /** ピンの値 */
-const properties: Ref<FeatureProperties> = ref(DefaultProperties);
+const properties: Ref<FeatureProperties> = ref(FeatureProperties);
 
 /** 選択済みのピン */
 const feature: Ref<Feature<Geometry> | undefined> = ref();
@@ -51,11 +50,14 @@ watch(modal, v => {
   // フォームを初期化
   if (!v) {
     feature.value = undefined;
-    properties.value = DefaultProperties;
+    properties.value = FeatureProperties;
   }
 });
 
-/** 画面を開く */
+/**
+ * 画面を開く
+ * @param f
+ */
 const show = (f: Feature<Geometry>) => {
   modal.value = true;
   feature.value = f;
@@ -66,7 +68,7 @@ const show = (f: Feature<Geometry>) => {
 /** キャンセル */
 const hide = () => {
   modal.value = false;
-  properties.value = DefaultProperties;
+  properties.value = FeatureProperties;
 };
 
 /** 保存 */

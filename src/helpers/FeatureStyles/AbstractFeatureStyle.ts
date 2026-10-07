@@ -1,6 +1,6 @@
 import chroma from 'chroma-js';
 import { camelCase } from 'es-toolkit';
-import { Style, Circle, Text, Fill, Stroke, Icon } from 'ol/style';
+import { Circle, Fill, Icon, Stroke, Style, Text } from 'ol/style';
 import colors from 'vuetify/lib/util/colors.js';
 
 import type FeatureStyleInterface from '@/interfaces/FeatureStyleInterface';
@@ -61,8 +61,8 @@ export default abstract class AbstractFeatureStyle implements FeatureStyleInterf
   /**
    * コンストラクタ
    *
-   * @param color - マテリアルカラー
-   * @param fontFace - 使用フォント
+   * @param color マテリアルカラー
+   * @param fontFace 使用フォント
    */
   constructor(
     color: MaterialColorType = 'light-blue',
@@ -124,7 +124,7 @@ export default abstract class AbstractFeatureStyle implements FeatureStyleInterf
   /**
    * アイコンピンのスタイルを取得
    *
-   * @param icon - アイコン
+   * @param icon アイコン
    */
   getIconStyle(icon: string): Style {
     return new Style({
@@ -161,7 +161,7 @@ export default abstract class AbstractFeatureStyle implements FeatureStyleInterf
   /**
    * ラベルのスタイル
    *
-   * @param offset - ピンからのオフセット値
+   * @param offset ピンからのオフセット値
    */
   getLabelStyle(offset: number): Style {
     return new Style({
