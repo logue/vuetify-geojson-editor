@@ -36,7 +36,11 @@ const items: DrawerMenuItem[] = [
         <!-- Sub menu -->
         <v-list-group v-else-if="item.items" v-model="item.active">
           <template #activator="{ props }">
-            <v-list-item v-bind="props" :prepend-icon="item.icon" :title="item.title" />
+            <v-list-item
+              v-bind="props"
+              :prepend-icon="item.icon"
+              :title="item.title"
+            />
           </template>
           <!-- Sub menu item -->
           <template v-for="subItem in item.items" :key="subItem.title">

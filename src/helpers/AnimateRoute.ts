@@ -4,10 +4,10 @@ import { getVectorContext } from 'ol/render';
 
 import { pinStyle } from './FeatureUtility';
 
-import type Map from 'ol/Map';
 import type { Coordinate } from 'ol/coordinate';
 import type LineString from 'ol/geom/LineString';
 import type VectorLayer from 'ol/layer/Vector';
+import type Map from 'ol/Map';
 import type RenderEvent from 'ol/render/Event';
 import type VectorSource from 'ol/source/Vector';
 
@@ -68,7 +68,9 @@ export default class AnimateRoute {
     this.animating = false;
 
     this.startPoint = new Point(
-      !reverse ? this.route.getFirstCoordinate() : this.route.getLastCoordinate()
+      !reverse
+        ? this.route.getFirstCoordinate()
+        : this.route.getLastCoordinate()
     );
 
     this.currentPosition = this.startPoint;

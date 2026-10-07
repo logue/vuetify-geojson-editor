@@ -126,7 +126,9 @@ const ICON_NAMES_MAP: Map<number, string> = new Map([
  * @param path JSONファイルのパス
  * @returns 読み込んだJSONデータ、またはエラーの場合はnull
  */
-const loadJSON = async (path: string): Promise<Record<string, SpriteInfo> | null> => {
+const loadJSON = async (
+  path: string
+): Promise<Record<string, SpriteInfo> | null> => {
   try {
     const response = await fetch(path);
     if (!response.ok) {
@@ -151,7 +153,9 @@ let spriteJson: Record<string, SpriteInfo> | null = null;
 (async () => {
   spriteJson = await loadJSON(SPRITE_JSON_URL);
   if (!spriteJson) {
-    console.warn('Failed to load sprite JSON. Icon styles may not work correctly.');
+    console.warn(
+      'Failed to load sprite JSON. Icon styles may not work correctly.'
+    );
   }
 })();
 
@@ -257,7 +261,10 @@ const getContourLineWidth = (f: FeatureLike): number => {
  * @param _resolution 現在の解像度 (使用されていないため、必要に応じて削除可能)
  * @returns スタイルオブジェクトの配列
  */
-export const stylingVectorTile = (feature: FeatureLike, _resolution: number): Style[] => {
+export const stylingVectorTile = (
+  feature: FeatureLike,
+  _resolution: number
+): Style[] => {
   const styles: Style[] = [];
   const properties = feature.getProperties() as FeatureProperties;
   const layer = properties?.layer;
@@ -474,7 +481,11 @@ export const stylingVectorTile = (feature: FeatureLike, _resolution: number): St
         // トンネル
         styles.push(
           new Style({
-            stroke: new Stroke({ color: railLineColor, width: railLineWidth, lineDash: [5, 5] }),
+            stroke: new Stroke({
+              color: railLineColor,
+              width: railLineWidth,
+              lineDash: [5, 5]
+            }),
             zIndex: 20000
           })
         );

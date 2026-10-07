@@ -3,9 +3,9 @@ import { createPinia, setActivePinia } from 'pinia';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { nextTick, reactive } from 'vue';
 
-import App from '../App.vue';
-
 import { vuetifyInstance } from '@/__tests__/setup';
+
+import App from '../App.vue';
 
 const appTitle = import.meta.env.VITE_APP_TITLE ?? 'Vuetify3 Application';
 

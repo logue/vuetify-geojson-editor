@@ -1,6 +1,4 @@
 <script setup lang="ts">
-/** GeoJsonエディタ */
-import { useGeoJsonEditorStore } from '@/store';
 import { ref, type Ref } from 'vue';
 
 import { json, jsonParseLinter } from '@codemirror/lang-json';
@@ -10,6 +8,8 @@ import { useTheme } from 'vuetify';
 // コンポーネント
 import ExportModal from '@/components/Modals/GeoJsonEditor/ExportModal.vue';
 import ImportModal from '@/components/Modals/GeoJsonEditor/ImportModal.vue';
+/** GeoJsonエディタ */
+import { useGeoJsonEditorStore } from '@/store';
 
 /** Emits */
 const emits = defineEmits<{ (e: 'close'): void }>();
@@ -70,7 +70,8 @@ const showImport = () => importModal.value?.show();
 const showExport = () => exportModal.value?.show();
 
 /** インポート完了時にソースを上書き */
-const onLoaded = () => (source.value = JSON.stringify(geoJsonEditorStore.geojson, null, 2));
+const onLoaded = () =>
+  (source.value = JSON.stringify(geoJsonEditorStore.geojson, null, 2));
 
 defineExpose({ show });
 </script>
@@ -82,11 +83,18 @@ defineExpose({ show });
       <template #append>
         <v-tooltip text="Close">
           <template #activator="{ props }">
-            <v-btn v-bind="props" icon="mdi-close" variant="plain" @click="hide" />
+            <v-btn
+              v-bind="props"
+              icon="mdi-close"
+              variant="plain"
+              @click="hide"
+            />
           </template>
         </v-tooltip>
       </template>
-      <v-card-subtitle class="flex-grow-0" style="flex-basis: auto">Geojson source</v-card-subtitle>
+      <v-card-subtitle class="flex-grow-0" style="flex-basis: auto"
+        >Geojson source</v-card-subtitle
+      >
       <code-mirror
         ref="editor"
         v-model="source"
@@ -100,7 +108,12 @@ defineExpose({ show });
         wrap
       />
       <v-card-actions class="flex-grow-0" style="flex-basis: auto">
-        <v-btn color="orange" prepend-icon="mdi-upload" variant="text" @click="showImport">
+        <v-btn
+          color="orange"
+          prepend-icon="mdi-upload"
+          variant="text"
+          @click="showImport"
+        >
           Import
         </v-btn>
         <v-btn
@@ -113,7 +126,12 @@ defineExpose({ show });
           Export
         </v-btn>
         <v-spacer />
-        <v-btn color="secondary" prepend-icon="mdi-cancel" variant="text" @click="hide">
+        <v-btn
+          color="secondary"
+          prepend-icon="mdi-cancel"
+          variant="text"
+          @click="hide"
+        >
           Cancel
         </v-btn>
         <v-btn

@@ -4,7 +4,10 @@ import { Circle, Fill, Icon, Stroke, Style, Text } from 'ol/style';
 import colors from 'vuetify/lib/util/colors.js';
 
 import type FeatureStyleInterface from '@/interfaces/FeatureStyleInterface';
-import type { MaterialColorSet, MaterialColorType } from '@/types/MaterialColorType';
+import type {
+  MaterialColorSet,
+  MaterialColorType
+} from '@/types/MaterialColorType';
 
 /** ピンのスタイル */
 export default abstract class AbstractFeatureStyle implements FeatureStyleInterface {
@@ -94,7 +97,9 @@ export default abstract class AbstractFeatureStyle implements FeatureStyleInterf
         // Marker Border color
         stroke: new Stroke({
           // Brown and blueGrey and Grey does not have accent color
-          color: chroma(this.pointStrokeColor).alpha(this.pointStrokeOpacity).css(),
+          color: chroma(this.pointStrokeColor)
+            .alpha(this.pointStrokeOpacity)
+            .css(),
           width: this.pointStrokeWidth
         }),
         // Marker fill color
@@ -112,7 +117,9 @@ export default abstract class AbstractFeatureStyle implements FeatureStyleInterf
         }),
         // Text outline color and blur size.
         stroke: new Stroke({
-          color: chroma(this.textStrokeColor).alpha(this.textStrokeOpacity).css(),
+          color: chroma(this.textStrokeColor)
+            .alpha(this.textStrokeOpacity)
+            .css(),
           width: this.textStrokeWidth
         }),
         overflow: true,
@@ -149,7 +156,9 @@ export default abstract class AbstractFeatureStyle implements FeatureStyleInterf
         }),
         // Text outline color and blur size.
         stroke: new Stroke({
-          color: chroma(this.textStrokeColor).alpha(this.textStrokeOpacity).css(),
+          color: chroma(this.textStrokeColor)
+            .alpha(this.textStrokeOpacity)
+            .css(),
           width: this.textStrokeWidth
         }),
         overflow: true,
@@ -175,7 +184,9 @@ export default abstract class AbstractFeatureStyle implements FeatureStyleInterf
         }),
         // Text outline color and blur size.
         stroke: new Stroke({
-          color: chroma(this.textStrokeColor).alpha(this.textStrokeOpacity).css(),
+          color: chroma(this.textStrokeColor)
+            .alpha(this.textStrokeOpacity)
+            .css(),
           width: this.textStrokeWidth
         }),
         overflow: true,
@@ -202,7 +213,9 @@ export default abstract class AbstractFeatureStyle implements FeatureStyleInterf
         }),
         // Text outline color and blur size.
         stroke: new Stroke({
-          color: chroma(this.colorSet.lighten1).alpha(this.textStrokeOpacity).css(),
+          color: chroma(this.colorSet.lighten1)
+            .alpha(this.textStrokeOpacity)
+            .css(),
           width: 1
         })
       })

@@ -1,35 +1,46 @@
-/** マップセットアップ用Composable */
-import { useMapCursorStore } from '@/store';
-import { computed, shallowRef, type ShallowRef, type WritableComputedRef } from 'vue';
+import {
+  computed,
+  shallowRef,
+  type ShallowRef,
+  type WritableComputedRef
+} from 'vue';
 
-// openlayers
-import Feature from 'ol/Feature';
-import Geolocation from 'ol/Geolocation';
-import Map from 'ol/Map';
-import View from 'ol/View';
-import { Attribution, MousePosition, ScaleLine, Zoom, ZoomSlider } from 'ol/control';
-import { createStringXY } from 'ol/coordinate';
-import { singleClick } from 'ol/events/condition';
-import MVT from 'ol/format/MVT';
-import Point from 'ol/geom/Point';
-import { Interaction, PinchRotate, Select } from 'ol/interaction';
-import { Tile, Vector as VectorLayer } from 'ol/layer';
-import VectorTileLayer from 'ol/layer/VectorTile';
-import { transform } from 'ol/proj';
-import { OSM, Vector as VectorSource, XYZ } from 'ol/source';
-import VectorTileSource from 'ol/source/VectorTile';
 // ol-ext
 import LayerPopup from 'ol-ext/control/LayerPopup';
 import Notification from 'ol-ext/control/Notification';
 import ProgressBar from 'ol-ext/control/ProgressBar';
 import Scale from 'ol-ext/control/Scale';
-
-import type { Coordinate } from 'ol/coordinate';
-import type { Extent } from 'ol/extent';
+import {
+  Attribution,
+  MousePosition,
+  ScaleLine,
+  Zoom,
+  ZoomSlider
+} from 'ol/control';
+import { createStringXY } from 'ol/coordinate';
+import { singleClick } from 'ol/events/condition';
+// openlayers
+import Feature from 'ol/Feature';
+import MVT from 'ol/format/MVT';
+import Geolocation from 'ol/Geolocation';
+import Point from 'ol/geom/Point';
+import { Interaction, PinchRotate, Select } from 'ol/interaction';
+import { Tile, Vector as VectorLayer } from 'ol/layer';
+import VectorTileLayer from 'ol/layer/VectorTile';
+import Map from 'ol/Map';
+import { transform } from 'ol/proj';
+import { OSM, Vector as VectorSource, XYZ } from 'ol/source';
+import VectorTileSource from 'ol/source/VectorTile';
+import View from 'ol/View';
 
 // ヘルパ
 import { stylingVectorTile } from '@/helpers/FeatureStyles/stylingVectorTile';
 import { pinStyle } from '@/helpers/FeatureUtility';
+/** マップセットアップ用Composable */
+import { useMapCursorStore } from '@/store';
+
+import type { Coordinate } from 'ol/coordinate';
+import type { Extent } from 'ol/extent';
 
 export interface MapSetupOptions {
   /** ズーム値 */
@@ -209,9 +220,11 @@ export function useMapSetup(options: Partial<MapSetupOptions> = {}) {
   const interactions: Interaction[] = map.value.getInteractions().getArray();
 
   /** 回転を無効化 */
-  const pinchRotateInteraction = interactions.find((interaction: Interaction) => {
-    return interaction instanceof PinchRotate;
-  });
+  const pinchRotateInteraction = interactions.find(
+    (interaction: Interaction) => {
+      return interaction instanceof PinchRotate;
+    }
+  );
   pinchRotateInteraction?.setActive(false);
 
   /** カーソルピンをクリックした時 */
@@ -255,7 +268,10 @@ export function useMapSetup(options: Partial<MapSetupOptions> = {}) {
    */
   const setFromQuery = (query: Record<string, string>) => {
     if (query.x && query.y) {
-      currentPosition.value = [Number.parseFloat(query.y), Number.parseFloat(query.x)];
+      currentPosition.value = [
+        Number.parseFloat(query.y),
+        Number.parseFloat(query.x)
+      ];
       setCursorVisible(true);
     }
     if (query.zoom) {

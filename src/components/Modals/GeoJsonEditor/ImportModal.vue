@@ -1,11 +1,18 @@
 <script setup lang="ts">
-/** 座標データインポートモーダル */
-import { useGeoJsonEditorStore, useGlobalStore } from '@/store';
-import { computed, nextTick, ref, type Ref, type WritableComputedRef } from 'vue';
+import {
+  computed,
+  nextTick,
+  ref,
+  type Ref,
+  type WritableComputedRef
+} from 'vue';
 
 import rewind from '@turf/rewind';
 import { feature } from 'topojson-client';
 import { v4 as uuidv4 } from 'uuid';
+
+/** 座標データインポートモーダル */
+import { useGeoJsonEditorStore, useGlobalStore } from '@/store';
 
 import type { Feature, FeatureCollection } from 'geojson';
 import type { GeoJSONObject } from 'ol/format/GeoJSON';
@@ -131,7 +138,12 @@ defineExpose({ show, hide });
       <template #append>
         <v-tooltip text="Close">
           <template #activator="{ props }">
-            <v-btn v-bind="props" icon="mdi-close" variant="plain" @click="hide" />
+            <v-btn
+              v-bind="props"
+              icon="mdi-close"
+              variant="plain"
+              @click="hide"
+            />
           </template>
         </v-tooltip>
       </template>
@@ -150,10 +162,21 @@ defineExpose({ show, hide });
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn color="secondary" prepend-icon="mdi-cancel" variant="text" @click="hide">
+        <v-btn
+          color="secondary"
+          prepend-icon="mdi-cancel"
+          variant="text"
+          @click="hide"
+        >
           Cancel
         </v-btn>
-        <v-btn color="primary" prepend-icon="mdi-check" variant="text" @click="load">OK</v-btn>
+        <v-btn
+          color="primary"
+          prepend-icon="mdi-check"
+          variant="text"
+          @click="load"
+          >OK</v-btn
+        >
       </v-card-actions>
     </v-card>
   </v-dialog>

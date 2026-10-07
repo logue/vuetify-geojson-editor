@@ -1,9 +1,10 @@
 <script setup lang="ts">
-/** エクスポートモーダル */
-import { useGeoJsonEditorStore, useGlobalStore } from '@/store';
 import { nextTick, ref, type Ref } from 'vue';
 
 import { createWriteStream } from 'streamsaver';
+
+/** エクスポートモーダル */
+import { useGeoJsonEditorStore, useGlobalStore } from '@/store';
 
 /** グローバルストア */
 const globalStore = useGlobalStore();
@@ -51,7 +52,12 @@ defineExpose({ show });
       <template #append>
         <v-tooltip text="Close">
           <template #activator="{ props }">
-            <v-btn v-bind="props" icon="mdi-close" variant="plain" @click="hide" />
+            <v-btn
+              v-bind="props"
+              icon="mdi-close"
+              variant="plain"
+              @click="hide"
+            />
           </template>
         </v-tooltip>
       </template>
@@ -71,10 +77,20 @@ defineExpose({ show });
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn variant="text" color="secondary" prepend-icon="mdi-cancel" @click="hide">
+        <v-btn
+          variant="text"
+          color="secondary"
+          prepend-icon="mdi-cancel"
+          @click="hide"
+        >
           Cancel
         </v-btn>
-        <v-btn variant="text" color="primary" prepend-icon="mdi-file-download" @click="exportFile">
+        <v-btn
+          variant="text"
+          color="primary"
+          prepend-icon="mdi-file-download"
+          @click="exportFile"
+        >
           Save
         </v-btn>
       </v-card-actions>

@@ -1,6 +1,13 @@
 <script setup lang="ts">
-import { useGeoJsonEditorStore, useGlobalStore, useMapCursorStore } from '@/store';
-import { computed, nextTick, onMounted, ref, watch, type Ref, type WritableComputedRef } from 'vue';
+import {
+  computed,
+  nextTick,
+  onMounted,
+  ref,
+  watch,
+  type Ref,
+  type WritableComputedRef
+} from 'vue';
 import { onBeforeRouteUpdate } from 'vue-router';
 
 import VectorLayer from 'ol/layer/Vector';
@@ -12,6 +19,11 @@ import MapContextMenu from '@/components/Map/MapContextMenu.vue';
 import MapEditorToolbar from '@/components/Map/MapEditorToolbar.vue';
 // ヘルパ
 import { getFeatureStyle, setFeaturesStyle } from '@/helpers/FeatureUtility';
+import {
+  useGeoJsonEditorStore,
+  useGlobalStore,
+  useMapCursorStore
+} from '@/store';
 
 /** グローバルストア */
 const globalStore = useGlobalStore();
@@ -23,9 +35,11 @@ const geoJsonEditorStore = useGeoJsonEditorStore();
 /** マップ */
 const mapComponent: Ref<InstanceType<typeof MapComponent> | undefined> = ref();
 /** 確認モーダル */
-const mapContextMenu: Ref<InstanceType<typeof MapContextMenu> | undefined> = ref();
+const mapContextMenu: Ref<InstanceType<typeof MapContextMenu> | undefined> =
+  ref();
 /** ツールバー */
-const mapToolbar: Ref<InstanceType<typeof MapEditorToolbar> | undefined> = ref();
+const mapToolbar: Ref<InstanceType<typeof MapEditorToolbar> | undefined> =
+  ref();
 /** 再描画フラグ */
 const ready: Ref<boolean> = ref(false);
 
@@ -129,6 +143,10 @@ onBeforeRouteUpdate(async (to, from, next) => {
     <!-- マップ -->
     <map-component ref="mapComponent" @contextmenu="mapContextMenu?.show" />
     <!-- コンテキストメニュー -->
-    <map-context-menu v-if="mapComponent" ref="mapContextMenu" :map="mapComponent.map" />
+    <map-context-menu
+      v-if="mapComponent"
+      ref="mapContextMenu"
+      :map="mapComponent.map"
+    />
   </v-container>
 </template>

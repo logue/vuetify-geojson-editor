@@ -109,7 +109,9 @@ describe('FeatureUtility', () => {
 
       (fetch as any).mockResolvedValue({
         ok: true,
-        json: vi.fn<() => Promise<FeatureCollection>>().mockResolvedValue(mockData)
+        json: vi
+          .fn<() => Promise<FeatureCollection>>()
+          .mockResolvedValue(mockData)
       });
 
       const result = await getGeoJson('test');
@@ -192,7 +194,11 @@ describe('FeatureUtility', () => {
         'Polygon'
       );
 
-      const result = getFeatureStyle(mockFeature as any, 'active', 'sectionLayer');
+      const result = getFeatureStyle(
+        mockFeature as any,
+        'active',
+        'sectionLayer'
+      );
       expect(result).toBeDefined();
     });
 

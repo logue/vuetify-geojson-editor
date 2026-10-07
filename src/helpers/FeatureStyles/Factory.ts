@@ -1,10 +1,6 @@
-import SectionPolygonSelectedStyle from './Status/SectionPolygonSelectedStyle';
-
-import type FeatureStyleInterface from '@/interfaces/FeatureStyleInterface';
-import type { MaterialColorType } from '@/types/MaterialColorType';
-import type { Style } from 'ol/style';
-
-import FeatureStatus, { type FeatureStatusType } from '@/helpers/FeatureStyles/FeatureStatus';
+import FeatureStatus, {
+  type FeatureStatusType
+} from '@/helpers/FeatureStyles/FeatureStatus';
 import ActiveStyle from '@/helpers/FeatureStyles/Status/ActiveStyle';
 import DefaultStyle from '@/helpers/FeatureStyles/Status/DefaultStyle';
 import HoverStyle from '@/helpers/FeatureStyles/Status/HoverStyle';
@@ -15,10 +11,17 @@ import SectionPolygonInActiveStyle from '@/helpers/FeatureStyles/Status/SectionP
 import SectionPolygonStyle from '@/helpers/FeatureStyles/Status/SectionPolygonStyle';
 import SelectedStyle from '@/helpers/FeatureStyles/Status/SelectedStyle';
 
+import SectionPolygonSelectedStyle from './Status/SectionPolygonSelectedStyle';
+
+import type FeatureStyleInterface from '@/interfaces/FeatureStyleInterface';
+import type { MaterialColorType } from '@/types/MaterialColorType';
+import type { Style } from 'ol/style';
+
 /** ピンのスタイルのファクトリークラス */
 export default class Factory {
   /** フォント */
-  public static readonly fontFace = "'Roboto', 'Noto Sans JP','Noto Color Emoji', sans-serif";
+  public static readonly fontFace =
+    "'Roboto', 'Noto Sans JP','Noto Color Emoji', sans-serif";
 
   /**
    * スタイルを取得

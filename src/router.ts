@@ -1,4 +1,3 @@
-import { useGlobalStore } from '@/store';
 import {
   createRouter,
   createWebHistory,
@@ -7,6 +6,8 @@ import {
   type Router,
   type RouteRecordRaw
 } from 'vue-router';
+
+import { useGlobalStore } from '@/store';
 
 /** Router Rules */
 const routes: RouteRecordRaw[] = [

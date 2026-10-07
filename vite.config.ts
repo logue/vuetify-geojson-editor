@@ -124,11 +124,11 @@ export default defineConfig(({ mode }): UserConfig => {
           plugins: [
             mode === 'analyze'
               ? // rollup-plugin-visualizer
-              // https://github.com/btd/rollup-plugin-visualizer
-              visualizer({
-                open: true,
-                filename: 'dist/stats.html'
-              })
+                // https://github.com/btd/rollup-plugin-visualizer
+                visualizer({
+                  open: true,
+                  filename: 'dist/stats.html'
+                })
               : undefined
           ]
         }

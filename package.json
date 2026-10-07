@@ -1,45 +1,41 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
   "name": "vuetify-geojson-editor",
-  "description": "Vuetify GeoJson Editor",
-  "version": "0.1.3",
-  "license": "MIT",
-  "type": "module",
+  "version": "0.2.0",
   "private": true,
+  "description": "Vuetify GeoJson Editor",
+  "homepage": "https://github.com/logue/vuetify-geojson-editor",
+  "bugs": {
+    "url": "https://github.com/logue/vuetify-geojson-editor/issues"
+  },
+  "license": "MIT",
   "author": {
     "name": "Logue",
     "email": "logue@hotmail.co.jp",
     "url": "https://logue.dev/"
   },
-  "homepage": "https://github.com/logue/vuetify-geojson-editor",
   "repository": {
     "type": "git",
     "url": "git@github.com:logue/vuetify-geojson-editor.git"
   },
-  "bugs": {
-    "url": "https://github.com/logue/vuetify-geojson-editor/issues"
-  },
-  "engines": {
-    "node": "^22.18.0 || >=24.12.0"
-  },
-  "packageManager": "pnpm@12.9.1",
+  "type": "module",
   "scripts": {
     "dev": "vite",
-    "clean": "rimraf ./node_modules/.vite",
+    "lint": "run-s lint:*",
+    "lint:oxlint": "oxlint --fix",
+    "lint:oxfmt": "oxfmt",
     "build": "run-p type-check \"build-only {@}\" --",
     "build:analyze": "vite build --mode analyze",
     "build:clean": "rimraf dist",
-    "lint": "run-s lint:*",
-    "lint:oxlint": "oxlint . --fix",
-    "lint:eslint": "eslint . --fix --cache --cache-location ./node_modules/.vite/eslint-cache",
-    "lint:prettier": "prettier \"./**/*.{js,ts,json,css,sass,scss,htm,html,vue,md}\" -w -u",
-    "lint:style": "stylelint \"./**/*.{css,sass,scss,htm,html,vue}\" --fix --cache-location ./node_modules/.vite/stylelint-cache && prettier \"./**/*.{css,sass,scss,htm,html,vue}\" -w -u",
     "preview": "vite preview",
     "test:unit": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
+    "clean": "rimraf dist",
+    "clean:hard": "rimraf dist node_modules/.tmp node_modules/.vite node_modules/.vite-tmp",
     "build-only": "vite build",
-    "type-check": "vue-tsc --build"
+    "type-check": "vue-tsc --build",
+    "skills:update": "npx skills update"
   },
   "dependencies": {
     "@codemirror/lang-json": "^6.0.2",
@@ -103,6 +99,7 @@
     "vitest": "^5.0.3",
     "vue-tsc": "^3.3.12"
   },
+  "packageManager": "pnpm@12.9.1",
   "stackblitz": {
     "startCommand": "pnpm run test:unit"
   }

@@ -11,7 +11,8 @@ const FeatureStatus = {
 } as const;
 
 /** ピンの状態型 */
-export type FeatureStatusType = (typeof FeatureStatus)[keyof typeof FeatureStatus];
+export type FeatureStatusType =
+  (typeof FeatureStatus)[keyof typeof FeatureStatus];
 
 /** ピンの状態 */
 export default FeatureStatus;

@@ -9,10 +9,10 @@ import GeoJSON from 'ol/format/GeoJSON';
 import { topology } from 'topojson-server';
 import { v4 } from 'uuid';
 
+import { FeatureProperties } from '@/types/FeatureProperties';
+
 import type { GeoJSONObject } from 'ol/format/GeoJSON';
 import type { Topology } from 'topojson-specification';
-
-import { FeatureProperties } from '@/types/FeatureProperties';
 
 /** GeoJsonEditor Store */
 export default defineStore(
@@ -31,7 +31,9 @@ export default defineStore(
       type: 'FeatureCollection',
       features: []
     });
-    const topojson: ComputedRef<Topology> = computed(() => topology({ data: geojson.value }));
+    const topojson: ComputedRef<Topology> = computed(() =>
+      topology({ data: geojson.value })
+    );
     /** Request Update Flag */
     const requestRefresh: Ref<boolean> = ref(true);
 

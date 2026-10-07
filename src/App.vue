@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useConfigStore, useGlobalStore } from '@/store';
 import {
   computed,
   nextTick,
@@ -17,6 +16,7 @@ import { useTheme } from 'vuetify';
 import logo from '@/assets/logo.svg';
 import AppBarMenuComponent from '@/components/AppBarMenuComponent.vue';
 import DrawerComponent from '@/components/DrawerComponent.vue';
+import { useConfigStore, useGlobalStore } from '@/store';
 
 /** Vuetify Theme */
 const theme = useTheme();
@@ -40,7 +40,9 @@ const loading: WritableComputedRef<boolean> = computed({
 });
 
 /** Appbar progressbar value */
-const progress: ComputedRef<number | null> = computed(() => globalStore.progress);
+const progress: ComputedRef<number | null> = computed(
+  () => globalStore.progress
+);
 
 /** Snackbar visibility */
 const snackbarVisibility: Ref<boolean> = ref(false);
@@ -49,7 +51,9 @@ const snackbarVisibility: Ref<boolean> = ref(false);
 const snackbarText: ComputedRef<string> = computed(() => globalStore.message);
 
 /** Toggle Dark mode */
-const isDark: ComputedRef<string> = computed(() => (configStore.theme ? 'dark' : 'light'));
+const isDark: ComputedRef<string> = computed(() =>
+  configStore.theme ? 'dark' : 'light'
+);
 
 // When snackbar text has been set, show snackbar.
 watch(
@@ -98,11 +102,19 @@ onMounted(() => {
       </router-view>
     </v-main>
 
-    <v-overlay v-model="loading" class="justify-center align-center" app persistent>
+    <v-overlay
+      v-model="loading"
+      class="justify-center align-center"
+      app
+      persistent
+    >
       <v-progress-circular size="64" indeterminate />
     </v-overlay>
 
-    <v-snackbar v-model="snackbarVisibility" @update:model-value="onSnackbarChanged">
+    <v-snackbar
+      v-model="snackbarVisibility"
+      @update:model-value="onSnackbarChanged"
+    >
       {{ snackbarText }}
       <template #actions>
         <v-btn icon="mdi-close" @click="onSnackbarChanged" />
@@ -132,7 +144,8 @@ html {
   overflow-y: auto;
   // Modern scrollbar style
   scrollbar-width: thin;
-  scrollbar-color: map.get(settings.$grey, 'lighten-2') map.get(settings.$grey, 'base');
+  scrollbar-color: map.get(settings.$grey, 'lighten-2')
+    map.get(settings.$grey, 'base');
 }
 
 ::-webkit-scrollbar {

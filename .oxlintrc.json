@@ -81,13 +81,7 @@
   "overrides": [
     {
       // Type checking already covers these core rules in TypeScript files.
-      "files": [
-        "**/*.ts",
-        "**/*.tsx",
-        "**/*.mts",
-        "**/*.cts",
-        "**/*.vue"
-      ],
+      "files": ["**/*.ts", "**/*.tsx", "**/*.mts", "**/*.cts", "**/*.vue"],
       "rules": {
         "constructor-super": "off",
         "getter-return": "off",
@@ -112,9 +106,7 @@
       }
     },
     {
-      "files": [
-        "**/*.{vue,ts,mts,tsx}"
-      ],
+      "files": ["**/*.{vue,ts,mts,tsx}"],
       "rules": {
         "@eslint-community/eslint-comments/require-description": "error",
         // const lines: string[] = []; style
@@ -180,10 +172,7 @@
       }
     },
     {
-      "files": [
-        "*.vue",
-        "**/*.vue"
-      ],
+      "files": ["*.vue", "**/*.vue"],
       "rules": {
         "vue/component-definition-name-casing": "warn",
         "vue/no-arrow-functions-in-watch": "error",
@@ -222,20 +211,12 @@
         "vue/valid-define-props": "error",
         "vue/valid-next-tick": "error",
         // defineProps / defineEmits only support type-based declarations (Prohibit runtime declaration style)
-        "vue/define-emits-declaration": [
-          "error",
-          "type-based"
-        ],
-        "vue/define-props-declaration": [
-          "error",
-          "type-based"
-        ]
+        "vue/define-emits-declaration": ["error", "type-based"],
+        "vue/define-props-declaration": ["error", "type-based"]
       }
     },
     {
-      "files": [
-        "e2e/**/*.{test,spec}.{js,ts,jsx,tsx}"
-      ],
+      "files": ["e2e/**/*.{test,spec}.{js,ts,jsx,tsx}"],
       "env": {
         "shared-node-browser": true
       },
@@ -281,9 +262,7 @@
       }
     },
     {
-      "files": [
-        "src/**/__tests__/*"
-      ],
+      "files": ["src/**/__tests__/*"],
       "rules": {
         "vitest/expect-expect": "error",
         "vitest/no-commented-out-tests": "error",

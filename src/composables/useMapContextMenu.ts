@@ -1,12 +1,13 @@
-/** マップコンテキストメニュー用Composable */
-import { useGlobalStore, useMapCursorStore } from '@/store';
 import { computed, ref, type ComputedRef, type Ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { createWriteStream } from 'streamsaver';
 
-import type Map from 'ol/Map';
+/** マップコンテキストメニュー用Composable */
+import { useGlobalStore, useMapCursorStore } from '@/store';
+
 import type { Coordinate } from 'ol/coordinate';
+import type Map from 'ol/Map';
 import type { Size } from 'ol/size';
 
 /**
@@ -70,22 +71,30 @@ export function useMapContextMenu(map: Ref<Map | undefined>) {
       mapContext.fillRect(0, 0, mapCanvas.width, mapCanvas.height);
 
       let matrix;
-      Array.prototype.forEach.call(document.querySelectorAll('.ol-layer canvas'), canvas => {
-        if (canvas.width < 0) {
-          return;
+      Array.prototype.forEach.call(
+        document.querySelectorAll('.ol-layer canvas'),
+        canvas => {
+          if (canvas.width < 0) {
+            return;
+          }
+          const opacity = canvas.parentNode.style.opacity;
+          mapContext.globalAlpha = opacity === '' ? 1 : Number(opacity);
+          const transform = canvas.style.transform;
+          matrix = transform
+            .match(/^matrix\(([^(]*)\)$/)[1]
+            .split(',')
+            .map(Number);
+          CanvasRenderingContext2D.prototype.setTransform.apply(
+            mapContext,
+            matrix
+          );
+          mapContext.drawImage(canvas, 0, 0);
         }
-        const opacity = canvas.parentNode.style.opacity;
-        mapContext.globalAlpha = opacity === '' ? 1 : Number(opacity);
-        const transform = canvas.style.transform;
-        matrix = transform
-          .match(/^matrix\(([^(]*)\)$/)[1]
-          .split(',')
-          .map(Number);
-        CanvasRenderingContext2D.prototype.setTransform.apply(mapContext, matrix);
-        mapContext.drawImage(canvas, 0, 0);
-      });
+      );
 
-      const gridCanvas = document.querySelector('.ol-fixedoverlay') as HTMLCanvasElement;
+      const gridCanvas = document.querySelector(
+        '.ol-fixedoverlay'
+      ) as HTMLCanvasElement;
       if (gridCanvas) {
         mapContext.drawImage(gridCanvas, 0, 0);
       }

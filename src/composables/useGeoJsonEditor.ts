@@ -1,30 +1,37 @@
-import { useGeoJsonEditorStore } from '@/store';
 import { onUnmounted, ref, unref, watch, type Ref } from 'vue';
 
-import MapBrowserEventType from 'ol/MapBrowserEventType';
-import { shiftKeyOnly } from 'ol/events/condition';
-import { Draw, Interaction, Modify, Select, Snap, Translate } from 'ol/interaction';
 import Delete from 'ol-ext/interaction/Delete';
 import DrawHole from 'ol-ext/interaction/DrawHole';
 import DrawRegular from 'ol-ext/interaction/DrawRegular';
 import FillAttribute from 'ol-ext/interaction/FillAttribute';
 import Transform from 'ol-ext/interaction/Transform';
 import UndoRedo from 'ol-ext/interaction/UndoRedo';
+import { shiftKeyOnly } from 'ol/events/condition';
+import {
+  Draw,
+  Interaction,
+  Modify,
+  Select,
+  Snap,
+  Translate
+} from 'ol/interaction';
+import MapBrowserEventType from 'ol/MapBrowserEventType';
 import { v4 } from 'uuid';
+
+import FeatureStatus from '@/helpers/FeatureStyles/FeatureStatus';
+import { getFeatureStyle } from '@/helpers/FeatureUtility';
+import { useGeoJsonEditorStore } from '@/store';
+import { FeatureProperties } from '@/types/FeatureProperties';
 
 import type { Feature, Map } from 'ol';
 import type Collection from 'ol/Collection';
 import type { FeatureLike } from 'ol/Feature';
-import type MapBrowserEvent from 'ol/MapBrowserEvent';
 import type Geometry from 'ol/geom/Geometry';
 import type { DrawEvent } from 'ol/interaction/Draw';
 import type { SelectEvent } from 'ol/interaction/Select';
 import type VectorLayer from 'ol/layer/Vector';
+import type MapBrowserEvent from 'ol/MapBrowserEvent';
 import type VectorSource from 'ol/source/Vector';
-
-import FeatureStatus from '@/helpers/FeatureStyles/FeatureStatus';
-import { getFeatureStyle } from '@/helpers/FeatureUtility';
-import { FeatureProperties } from '@/types/FeatureProperties';
 
 /** GeoJsonエディタストア */
 const geoJsonEditorStore = useGeoJsonEditorStore();
@@ -58,7 +65,8 @@ export default function useGeoJsonEditor(options: UseGeoJsonEditorOptions) {
    * @see {@link https://openlayers.org/en/latest/apidoc/module-ol_interaction_Select-Select.html}
    */
   const selectInteraction = new Select({
-    condition: (e: MapBrowserEvent) => e.type === MapBrowserEventType.SINGLECLICK,
+    condition: (e: MapBrowserEvent) =>
+      e.type === MapBrowserEventType.SINGLECLICK,
     layers: [unref(layer)], // Refから値を取り出す
     hitTolerance: unref(tolerance),
     style: (f: FeatureLike) => getFeatureStyle(f, FeatureStatus.SELECTED),
@@ -373,7 +381,9 @@ function getInteraction(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Transform event type from ol-ext has no public TypeScript definition
       transform.on(['select'], (e: any) => {
         if (firstPoint && e.features?.getLength()) {
-          transform.setCenter(e.features.getArray()[0]?.getGeometry().getFirstCoordinate());
+          transform.setCenter(
+            e.features.getArray()[0]?.getGeometry().getFirstCoordinate()
+          );
         }
       });
       return transform;

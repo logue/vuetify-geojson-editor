@@ -1,15 +1,22 @@
 <script lang="ts" setup>
-import { useGeoJsonEditorStore } from '@/store';
-import { computed, ref, toRef, watch, type Ref, type WritableComputedRef } from 'vue';
-
-import type { Feature, Map } from 'ol';
-import type VectorLayer from 'ol/layer/Vector';
-import type VectorSource from 'ol/source/Vector';
+import {
+  computed,
+  ref,
+  toRef,
+  watch,
+  type Ref,
+  type WritableComputedRef
+} from 'vue';
 
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue';
 import PropertiesEditorModal from '@/components/Modals/GeoJsonEditor/PropertiesEditorModal.vue';
 import SourceModal from '@/components/Modals/GeoJsonEditor/SourceModal.vue';
 import useGeoJsonEditor from '@/composables/useGeoJsonEditor';
+import { useGeoJsonEditorStore } from '@/store';
+
+import type { Feature, Map } from 'ol';
+import type VectorLayer from 'ol/layer/Vector';
+import type VectorSource from 'ol/source/Vector';
 
 const props = defineProps<{
   /** Openlayersのマップオブジェクト */
@@ -38,7 +45,9 @@ const codeModal: Ref<InstanceType<typeof SourceModal> | undefined> = ref();
 const confirmModal: Ref<InstanceType<typeof ConfirmModal> | undefined> = ref();
 
 /** プロパティ編集モーダル */
-const propertiesModal: Ref<InstanceType<typeof PropertiesEditorModal> | undefined> = ref();
+const propertiesModal: Ref<
+  InstanceType<typeof PropertiesEditorModal> | undefined
+> = ref();
 
 // --- Composableの利用 ---
 // Composableに必要なリアクティブな値を渡す
@@ -85,49 +94,89 @@ const clear = () => {
 <template>
   <!-- ツールバー -->
   <v-toolbar color="primary" density="compact" elevation="2">
-    <v-btn-toggle v-model="selectedTool" class="px-0" variant="text" theme="dark">
+    <v-btn-toggle
+      v-model="selectedTool"
+      class="px-0"
+      variant="text"
+      theme="dark"
+    >
       <v-tooltip location="bottom">
         <template #activator="{ props: slotProps }">
-          <v-btn icon="mdi-cursor-default" value="default" tile v-bind="slotProps" />
+          <v-btn
+            icon="mdi-cursor-default"
+            value="default"
+            tile
+            v-bind="slotProps"
+          />
         </template>
         Default
       </v-tooltip>
       <v-divider vertical />
       <v-tooltip location="bottom">
         <template #activator="{ props: slotProps }">
-          <v-btn icon="mdi-arrow-all" value="translate" tile v-bind="slotProps" />
+          <v-btn
+            icon="mdi-arrow-all"
+            value="translate"
+            tile
+            v-bind="slotProps"
+          />
         </template>
         Translate
       </v-tooltip>
       <v-tooltip location="bottom">
         <template #activator="{ props: slotProps }">
-          <v-btn icon="mdi-vector-point-select" value="edit" tile v-bind="slotProps" />
+          <v-btn
+            icon="mdi-vector-point-select"
+            value="edit"
+            tile
+            v-bind="slotProps"
+          />
         </template>
         Edit Properties
       </v-tooltip>
       <v-divider vertical />
       <v-tooltip location="bottom">
         <template #activator="{ props: slotProps }">
-          <v-btn icon="mdi-vector-polyline-edit" value="modify" tile v-bind="slotProps" />
+          <v-btn
+            icon="mdi-vector-polyline-edit"
+            value="modify"
+            tile
+            v-bind="slotProps"
+          />
         </template>
         Modify (Alt + Click to delete point.)
       </v-tooltip>
       <v-tooltip location="bottom">
         <template #activator="{ props: slotProps }">
-          <v-btn icon="mdi-vector-square-edit" value="transform" tile v-bind="slotProps" />
+          <v-btn
+            icon="mdi-vector-square-edit"
+            value="transform"
+            tile
+            v-bind="slotProps"
+          />
         </template>
         Rotate / Scale / Move
       </v-tooltip>
       <v-tooltip location="bottom">
         <template #activator="{ props: slotProps }">
-          <v-btn icon="mdi-vector-square-remove" value="delete" tile v-bind="slotProps" />
+          <v-btn
+            icon="mdi-vector-square-remove"
+            value="delete"
+            tile
+            v-bind="slotProps"
+          />
         </template>
         Delete
       </v-tooltip>
       <v-divider vertical />
       <v-tooltip location="bottom">
         <template #activator="{ props: slotProps }">
-          <v-btn icon="mdi-vector-point-plus" value="point" tile v-bind="slotProps" />
+          <v-btn
+            icon="mdi-vector-point-plus"
+            value="point"
+            tile
+            v-bind="slotProps"
+          />
         </template>
         Point
       </v-tooltip>
@@ -139,32 +188,57 @@ const clear = () => {
       </v-tooltip>
       <v-tooltip location="bottom">
         <template #activator="{ props: slotProps }">
-          <v-btn icon="mdi-vector-polygon" value="polygon" tile v-bind="slotProps" />
+          <v-btn
+            icon="mdi-vector-polygon"
+            value="polygon"
+            tile
+            v-bind="slotProps"
+          />
         </template>
         Polygon
       </v-tooltip>
       <v-tooltip location="bottom">
         <template #activator="{ props: slotProps }">
-          <v-btn icon="mdi-vector-difference" value="hole" tile v-bind="slotProps" />
+          <v-btn
+            icon="mdi-vector-difference"
+            value="hole"
+            tile
+            v-bind="slotProps"
+          />
         </template>
         Draw Hole
       </v-tooltip>
       <v-tooltip location="bottom">
         <template #activator="{ props: slotProps }">
-          <v-btn icon="mdi-vector-square" value="square" tile v-bind="slotProps" />
+          <v-btn
+            icon="mdi-vector-square"
+            value="square"
+            tile
+            v-bind="slotProps"
+          />
         </template>
         Square
       </v-tooltip>
       <v-tooltip location="bottom">
         <template #activator="{ props: slotProps }">
-          <v-btn icon="mdi-vector-circle" value="circle" tile v-bind="slotProps" />
+          <v-btn
+            icon="mdi-vector-circle"
+            value="circle"
+            tile
+            v-bind="slotProps"
+          />
         </template>
         Circle
       </v-tooltip>
       <v-divider vertical />
       <v-tooltip location="bottom">
         <template #activator="{ props: slotProps }">
-          <v-btn icon="mdi-format-color-fill" value="fill" tile v-bind="slotProps" />
+          <v-btn
+            icon="mdi-format-color-fill"
+            value="fill"
+            tile
+            v-bind="slotProps"
+          />
         </template>
         Fill
       </v-tooltip>
@@ -198,14 +272,24 @@ const clear = () => {
     <v-divider vertical />
     <v-tooltip location="bottom">
       <template #activator="{ props: slotProps }">
-        <v-btn icon="mdi-delete" tile v-bind="slotProps" @click="confirmModal?.show()" />
+        <v-btn
+          icon="mdi-delete"
+          tile
+          v-bind="slotProps"
+          @click="confirmModal?.show()"
+        />
       </template>
       Clear
     </v-tooltip>
     <v-divider vertical />
     <v-tooltip location="bottom">
       <template #activator="{ props: slotProps }">
-        <v-btn icon="mdi-code-json" tile v-bind="slotProps" @click="showSource" />
+        <v-btn
+          icon="mdi-code-json"
+          tile
+          v-bind="slotProps"
+          @click="showSource"
+        />
       </template>
       Geojson Source
     </v-tooltip>

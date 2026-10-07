@@ -1,11 +1,23 @@
 <script setup lang="ts">
-/** 共有モーダル */
-import { useGeoJsonEditorStore, useGlobalStore, useMapCursorStore } from '@/store';
-import { computed, nextTick, ref, type ComputedRef, type Ref, type WritableComputedRef } from 'vue';
+import {
+  computed,
+  nextTick,
+  ref,
+  type ComputedRef,
+  type Ref,
+  type WritableComputedRef
+} from 'vue';
 import { useRouter } from 'vue-router';
 
 //@ts-ignore
 import JsonUrl from 'json-url';
+
+/** 共有モーダル */
+import {
+  useGeoJsonEditorStore,
+  useGlobalStore,
+  useMapCursorStore
+} from '@/store';
 // import { createWriteStream } from 'streamsaver';
 
 import type { Coordinate } from 'ol/coordinate';
@@ -31,7 +43,9 @@ const modal: Ref<boolean> = ref(false);
 /** マップ */
 const share: Ref<string> = ref('base');
 /** 共有座標 */
-const coordinate: ComputedRef<Coordinate> = computed(() => mapCursorStore.coordinate);
+const coordinate: ComputedRef<Coordinate> = computed(
+  () => mapCursorStore.coordinate
+);
 /** 共有ズーム */
 const zoom: ComputedRef<number> = computed(() => mapCursorStore.zoom);
 /** 共有レイヤー */
@@ -78,18 +92,32 @@ defineExpose({ show, hide });
 
 <template>
   <v-dialog v-model="modal" max-width="640px" @keydown.esc="hide">
-    <v-card title="Share" subtitle="Save the displayed markers and polygons as a URL.">
+    <v-card
+      title="Share"
+      subtitle="Save the displayed markers and polygons as a URL."
+    >
       <template #append>
         <v-tooltip text="Close">
           <template #activator="{ props }">
-            <v-btn v-bind="props" icon="mdi-close" variant="plain" @click="hide" />
+            <v-btn
+              v-bind="props"
+              icon="mdi-close"
+              variant="plain"
+              @click="hide"
+            />
           </template>
         </v-tooltip>
       </template>
       <v-card-text>
-        <v-alert density="compact" icon="mdi-alert" type="warning" class="mb-0 mt-1">
-          No third party can retrieve data from this shared URL and edit the coordinate information.
-          If you want to collaborate, select "Save as file" and share the generated file.
+        <v-alert
+          density="compact"
+          icon="mdi-alert"
+          type="warning"
+          class="mb-0 mt-1"
+        >
+          No third party can retrieve data from this shared URL and edit the
+          coordinate information. If you want to collaborate, select "Save as
+          file" and share the generated file.
         </v-alert>
         <v-input
           label="Center"
@@ -135,10 +163,20 @@ defineExpose({ show, hide });
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn color="secondary" variant="text" prepend-icon="mdi-cancel" @click="hide">
+        <v-btn
+          color="secondary"
+          variant="text"
+          prepend-icon="mdi-cancel"
+          @click="hide"
+        >
           Cancel
         </v-btn>
-        <v-btn color="primary" variant="text" prepend-icon="mdi-clipboard-arrow-down" @click="copy">
+        <v-btn
+          color="primary"
+          variant="text"
+          prepend-icon="mdi-clipboard-arrow-down"
+          @click="copy"
+        >
           Share
         </v-btn>
       </v-card-actions>

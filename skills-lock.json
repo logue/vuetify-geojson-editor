@@ -7,6 +7,12 @@
       "skillPath": "skills/create-adaptable-composable/SKILL.md",
       "computedHash": "2f215126499d29a733be980ef9ce8f4ffb5f25a8831aec965d86c0cd21b2c5d2"
     },
+    "openlayers": {
+      "source": "mapsnippets/openlayers-skill",
+      "sourceType": "github",
+      "skillPath": "skills/openlayers/SKILL.md",
+      "computedHash": "6ba59f1406a1b70e59255c28170ee488127d6d9341bd318d07ddefc7a066e24e"
+    },
     "vue-best-practices": {
       "source": "vuejs-ai/skills",
       "sourceType": "github",

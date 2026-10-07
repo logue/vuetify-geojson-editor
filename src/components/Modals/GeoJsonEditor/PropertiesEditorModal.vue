@@ -7,12 +7,12 @@ import { markdown } from '@codemirror/lang-markdown';
 import CodeMirror from 'vue-codemirror6';
 import { useTheme } from 'vuetify';
 
+import { FeatureProperties } from '@/types/FeatureProperties';
+import { MaterialColors } from '@/types/MaterialColorType';
+
 // Openlayers
 import type Feature from 'ol/Feature';
 import type { Geometry } from 'ol/geom';
-
-import { FeatureProperties } from '@/types/FeatureProperties';
-import { MaterialColors } from '@/types/MaterialColorType';
 
 /* * 親コンポーネントに送信するイベントの定義 * /
 interface PropertiesEditorEmit {
@@ -104,18 +104,28 @@ defineExpose({ show });
 
 <template>
   <v-dialog v-model="modal" max-width="1024px" persistent @keydown.esc="hide">
-    <v-card title="Edit Properties" subtitle="Edit the properties of the selected feature.">
+    <v-card
+      title="Edit Properties"
+      subtitle="Edit the properties of the selected feature."
+    >
       <template #append>
         <v-tooltip text="Close">
           <template #activator="{ props }">
-            <v-btn v-bind="props" icon="mdi-close" variant="plain" @click="hide" />
+            <v-btn
+              v-bind="props"
+              icon="mdi-close"
+              variant="plain"
+              @click="hide"
+            />
           </template>
         </v-tooltip>
       </template>
       <v-card-text>
         <v-tabs v-model="tab">
           <v-tab value="basic" prepend-icon="mdi-information">Basic</v-tab>
-          <v-tab value="description" prepend-icon="mdi-message-text">Description</v-tab>
+          <v-tab value="description" prepend-icon="mdi-message-text"
+            >Description</v-tab
+          >
         </v-tabs>
         <v-window v-model="tab">
           <v-window-item value="basic">
@@ -148,7 +158,9 @@ defineExpose({ show });
                       <template #prepend>
                         <v-icon :color="itemProps.value as string">
                           mdi-checkbox-{{
-                            (itemProps.value as string) === properties.color ? 'marked' : 'blank'
+                            (itemProps.value as string) === properties.color
+                              ? 'marked'
+                              : 'blank'
                           }}
                         </v-icon>
                       </template>
@@ -212,12 +224,25 @@ defineExpose({ show });
         </v-window>
       </v-card-text>
       <v-card-actions>
-        <v-btn color="red" variant="text" prepend-icon="mdi-delete" @click="del">Delate</v-btn>
+        <v-btn color="red" variant="text" prepend-icon="mdi-delete" @click="del"
+          >Delate</v-btn
+        >
         <v-spacer />
-        <v-btn color="secondary" variant="text" prepend-icon="mdi-cancel" @click="hide">
+        <v-btn
+          color="secondary"
+          variant="text"
+          prepend-icon="mdi-cancel"
+          @click="hide"
+        >
           Cancel
         </v-btn>
-        <v-btn color="primary" variant="text" prepend-icon="mdi-check" @click="submit">Save</v-btn>
+        <v-btn
+          color="primary"
+          variant="text"
+          prepend-icon="mdi-check"
+          @click="submit"
+          >Save</v-btn
+        >
       </v-card-actions>
     </v-card>
   </v-dialog>

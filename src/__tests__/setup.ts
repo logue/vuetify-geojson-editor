@@ -80,16 +80,18 @@ Object.defineProperty(globalThis, 'visualViewport', {
 // globalThis.matchMediaのモック
 Object.defineProperty(globalThis, 'matchMedia', {
   writable: true,
-  value: vi.fn<(query: string) => MediaQueryList>().mockImplementation(query => ({
-    matches: false,
-    media: query,
-    onchange: null,
-    addListener: vi.fn<() => void>(),
-    removeListener: vi.fn<() => void>(),
-    addEventListener: vi.fn<() => void>(),
-    removeEventListener: vi.fn<() => void>(),
-    dispatchEvent: vi.fn<(event: Event) => boolean>()
-  }))
+  value: vi
+    .fn<(query: string) => MediaQueryList>()
+    .mockImplementation(query => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: vi.fn<() => void>(),
+      removeListener: vi.fn<() => void>(),
+      addEventListener: vi.fn<() => void>(),
+      removeEventListener: vi.fn<() => void>(),
+      dispatchEvent: vi.fn<(event: Event) => boolean>()
+    }))
 });
 
 // navigator.geolocationのモック
@@ -102,34 +104,42 @@ Object.defineProperty(navigator, 'geolocation', {
 });
 
 // IntersectionObserverのモック
-(globalThis as any).IntersectionObserver = vi.fn<() => void>(function IntersectionObserver() {
-  return {
-    observe: vi.fn<() => void>(),
-    unobserve: vi.fn<() => void>(),
-    disconnect: vi.fn<() => void>()
-  };
-});
-
-// MutationObserverのモック
-(globalThis as any).MutationObserver = vi.fn<() => void>(function MutationObserver() {
-  return {
-    observe: vi.fn<() => void>(),
-    disconnect: vi.fn<() => void>(),
-    takeRecords: vi.fn<() => void>()
-  };
-});
-
-// Blobのモック
-(globalThis as any).Blob = vi.fn<(parts?: BlobPart[], properties?: BlobPropertyBag) => Blob>(
-  function Blob(parts?: BlobPart[], properties?: BlobPropertyBag) {
+(globalThis as any).IntersectionObserver = vi.fn<() => void>(
+  function IntersectionObserver() {
     return {
-      size: parts?.reduce((acc: number, part: BlobPart) => acc + (part as string).length, 0) ?? 0,
-      type: properties?.type ?? '',
-      parts,
-      properties
-    } as unknown as Blob;
+      observe: vi.fn<() => void>(),
+      unobserve: vi.fn<() => void>(),
+      disconnect: vi.fn<() => void>()
+    };
   }
 );
+
+// MutationObserverのモック
+(globalThis as any).MutationObserver = vi.fn<() => void>(
+  function MutationObserver() {
+    return {
+      observe: vi.fn<() => void>(),
+      disconnect: vi.fn<() => void>(),
+      takeRecords: vi.fn<() => void>()
+    };
+  }
+);
+
+// Blobのモック
+(globalThis as any).Blob = vi.fn<
+  (parts?: BlobPart[], properties?: BlobPropertyBag) => Blob
+>(function Blob(parts?: BlobPart[], properties?: BlobPropertyBag) {
+  return {
+    size:
+      parts?.reduce(
+        (acc: number, part: BlobPart) => acc + (part as string).length,
+        0
+      ) ?? 0,
+    type: properties?.type ?? '',
+    parts,
+    properties
+  } as unknown as Blob;
+});
 
 // FileReaderのモック
 (globalThis as any).FileReader = vi.fn<() => void>(function FileReader() {
@@ -143,10 +153,12 @@ Object.defineProperty(navigator, 'geolocation', {
 });
 
 // requestAnimationFrameのモック
-(globalThis as any).requestAnimationFrame = vi.fn<(cb: FrameRequestCallback) => number>(cb =>
-  setTimeout(cb, 0)
+(globalThis as any).requestAnimationFrame = vi.fn<
+  (cb: FrameRequestCallback) => number
+>(cb => setTimeout(cb, 0));
+(globalThis as any).cancelAnimationFrame = vi.fn<(id: number) => void>(id =>
+  clearTimeout(id)
 );
-(globalThis as any).cancelAnimationFrame = vi.fn<(id: number) => void>(id => clearTimeout(id));
 /* eslint-enable @typescript-eslint/no-explicit-any -- Canvas mock requires dynamic typing for OpenLayers compatibility */
 
 export default {};

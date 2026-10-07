@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { toRef } from 'vue';
 
-import type Map from 'ol/Map';
-
 import { useMapContextMenu } from '@/composables/useMapContextMenu';
+
+import type Map from 'ol/Map';
 
 /** MapContextMenu */
 /** プロップ */
@@ -16,14 +16,26 @@ const props = defineProps<{
 const mapRef = toRef(props, 'map');
 
 /** コンテキストメニュー機能 */
-const { visibility, position, coordinate, zoom, copyLink, toImage, show, hide } =
-  useMapContextMenu(mapRef);
+const {
+  visibility,
+  position,
+  coordinate,
+  zoom,
+  copyLink,
+  toImage,
+  show,
+  hide
+} = useMapContextMenu(mapRef);
 
 defineExpose({ show, hide, position, coordinate });
 </script>
 
 <template>
-  <v-menu v-model="visibility" :style="`top: ${position.y}px; left: ${position.x}px`" absolute>
+  <v-menu
+    v-model="visibility"
+    :style="`top: ${position.y}px; left: ${position.x}px`"
+    absolute
+  >
     <v-list density="compact">
       <!-- 座標やズーム値 -->
       <v-list-subheader>

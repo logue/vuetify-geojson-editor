@@ -3,10 +3,10 @@
 import { onMounted, onUnmounted, ref, type Ref } from 'vue';
 import { useRoute } from 'vue-router';
 
+import { useMapSetup } from '@/composables/useMapSetup';
+
 import type { Coordinate } from 'ol/coordinate';
 import type { Extent } from 'ol/extent';
-
-import { useMapSetup } from '@/composables/useMapSetup';
 
 interface Emits {
   /** 準備完了 */

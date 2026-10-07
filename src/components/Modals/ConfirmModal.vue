@@ -72,7 +72,12 @@ defineExpose({ show });
       <template #append>
         <v-tooltip text="Close">
           <template #activator="{ props }">
-            <v-btn v-bind="props" icon="mdi-close" variant="plain" @click="hide" />
+            <v-btn
+              v-bind="props"
+              icon="mdi-close"
+              variant="plain"
+              @click="hide"
+            />
           </template>
         </v-tooltip>
       </template>
@@ -87,7 +92,12 @@ defineExpose({ show });
           Discard
         </v-btn>
         <v-spacer />
-        <v-btn variant="text" color="secondary" prepend-icon="mdi-cancel" @click="hide">
+        <v-btn
+          variant="text"
+          color="secondary"
+          prepend-icon="mdi-cancel"
+          @click="hide"
+        >
           Cancel
         </v-btn>
         <v-btn

@@ -1,19 +1,18 @@
-/** ピンのデザインなどのユーティリティー関数群 */
-import { useGlobalStore } from '@/store';
-
 import chroma from 'chroma-js';
 // openlayers
 import { Vector as VectorLayer } from 'ol/layer';
 import { Vector as VectorSource } from 'ol/source';
 import { Icon, Style } from 'ol/style';
 
+import FeatureStyles from '@/helpers/FeatureStyles';
+import FeatureStatus from '@/helpers/FeatureStyles/FeatureStatus';
+/** ピンのデザインなどのユーティリティー関数群 */
+import { useGlobalStore } from '@/store';
+import { FeatureProperties } from '@/types/FeatureProperties';
+
 import type { FeatureStatusType } from '@/helpers/FeatureStyles/FeatureStatus';
 import type { FeatureCollection } from 'geojson';
 import type { FeatureLike } from 'ol/Feature';
-
-import FeatureStyles from '@/helpers/FeatureStyles';
-import FeatureStatus from '@/helpers/FeatureStyles/FeatureStatus';
-import { FeatureProperties } from '@/types/FeatureProperties';
 
 /**
  * Geojsonを読み込む
@@ -21,10 +20,14 @@ import { FeatureProperties } from '@/types/FeatureProperties';
  * @param file Geojsonファイルのパス
  * @return
  */
-export async function getGeoJson(file: string): Promise<FeatureCollection | null> {
+export async function getGeoJson(
+  file: string
+): Promise<FeatureCollection | null> {
   const globalStore = useGlobalStore();
   try {
-    const response = await fetch(`${import.meta.env.BASE_URL}data/${file}.geojson`);
+    const response = await fetch(
+      `${import.meta.env.BASE_URL}data/${file}.geojson`
+    );
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -32,7 +35,9 @@ export async function getGeoJson(file: string): Promise<FeatureCollection | null
 
     return (await response.json()) as FeatureCollection;
   } catch (error) {
-    globalStore.setMessage(error instanceof Error ? error.toString() : String(error));
+    globalStore.setMessage(
+      error instanceof Error ? error.toString() : String(error)
+    );
   }
   return null;
 }
@@ -73,13 +78,16 @@ export function setFeaturesStyle(
   // const zoom = map.getView().getResolutionForZoom(2);
   vectorLayer.setStyle((feature: FeatureLike, resolution: number) => {
     // GeoJsonのプロパティを取得
-    const props: FeatureProperties = feature.getProperties() as FeatureProperties;
+    const props: FeatureProperties =
+      feature.getProperties() as FeatureProperties;
     /** ジオメトリ */
     const geometry = feature.getGeometry();
     /** 現在のレイヤか */
     const isCurrentLayer = (props.level ?? 0) === level;
     /** ステータス別スタイル */
-    const defaultStyle = isCurrentLayer ? FeatureStatus.ACTIVE : FeatureStatus.INACTIVE;
+    const defaultStyle = isCurrentLayer
+      ? FeatureStatus.ACTIVE
+      : FeatureStatus.INACTIVE;
 
     /** スタイルを反映 */
     const style: Style = getFeatureStyle(
@@ -113,7 +121,8 @@ export function setFeaturesVisibility(
   }
   vectorLayer.setStyle((feature, _resolution: number) => {
     // GeoJsonのプロパティを取得
-    const props: FeatureProperties = feature.getProperties() as FeatureProperties;
+    const props: FeatureProperties =
+      feature.getProperties() as FeatureProperties;
     /** 現在のレイヤか */
     const isCurrentLevel = (props.level ?? 0) === level;
 
@@ -157,7 +166,10 @@ export function getFeatureStyle(
     style.getText()?.setText(props.annotation?.toString());
   } else {
     // Apply marker color
-    if (layerId === 'sectionLayer' && feature.getGeometry()?.getType() === 'Polygon') {
+    if (
+      layerId === 'sectionLayer' &&
+      feature.getGeometry()?.getType() === 'Polygon'
+    ) {
       style = FeatureStyles.getSectionPolygonStyle(props.color, status);
     } else {
       style = FeatureStyles.getStyle(props.color, status);
@@ -192,7 +204,10 @@ export function getFeatureStyle(
 
   // 注釈
   if (props.annotation && !props.icon) {
-    if (feature.getGeometry()?.getType() === 'Point' && typeof props.annotation !== 'number') {
+    if (
+      feature.getGeometry()?.getType() === 'Point' &&
+      typeof props.annotation !== 'number'
+    ) {
       // ポイントのときで数字でない場合は背景のポイント画像を隠す
       // GeoJsonで指定されている文字列は原則的にstring型になるのでその場合はピンの画像が表示されない。
       style.getImage()?.setOpacity(0);
@@ -201,7 +216,9 @@ export function getFeatureStyle(
 
     if (props.annotationStyle) {
       // 注釈スタイルの上書き
-      style.getText()?.setFont(`${props.annotationStyle} ${FeatureStyles.fontFace}`);
+      style
+        .getText()
+        ?.setFont(`${props.annotationStyle} ${FeatureStyles.fontFace}`);
     }
   }
 
